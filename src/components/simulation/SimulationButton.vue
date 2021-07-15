@@ -83,6 +83,17 @@ export default Vue.extend({
             state.project.updateConfig(state.projectConfig);
           },
         },
+        {
+          id: 'simulateWithInsite',
+          input: 'checkbox',
+          title: 'Simulate with insite',
+          value: 'simulateWithInsite',
+          onClick: () => {
+            state.projectConfig.simulateWithInsite =
+              !state.projectConfig.simulateWithInsite;
+            state.project.updateConfig(state.projectConfig);
+          },
+        },
       ],
       project: props.project as Project,
       showMenu: false,
@@ -90,6 +101,7 @@ export default Vue.extend({
         simulateAfterChange: false,
         simulateAfterLoad: false,
         simulateAfterCheckout: false,
+        simulateWithInsite: false,
       },
     });
 

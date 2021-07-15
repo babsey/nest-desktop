@@ -59,13 +59,7 @@ export class NodeCode extends Code {
    */
   nodeParams(): string {
     let script = '';
-    if (this._node.params === undefined || this._node.params.length === 0) {
-      return script;
-    }
-
-    const params: string[] = this._node.filteredParams.map(
-      (param: ModelParameter) => `"${param.id}": ${param.toCode()}`
-    );
+    let params: string[] = [];
 
     if (this._node.model.existing === 'multimeter') {
       const recordFrom: string[] = this._node.recordFrom.map(
@@ -73,6 +67,20 @@ export class NodeCode extends Code {
       );
       params.push(`"record_from": [${recordFrom.join(',')}]`);
     }
+
+    if (
+      this._node.model.elementType === 'recorder' &&
+      this._node.network.project.config.simulateWithInsite
+    ) {
+      params.push('"record_to": "insite"');
+    }
+
+    if (this._node.params !== undefined || this._node.params.length > 0) {
+      this._node.filteredParams.forEach((param: ModelParameter) =>
+        params.push(`"${param.id}": ${param.toCode()}`)
+      );
+    }
+
     if (params.length > 0) {
       script += '{' + this._();
       script += params.join(',' + this._());
