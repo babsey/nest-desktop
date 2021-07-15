@@ -3,5 +3,6 @@
   "simulateAfterChange": false,
   "simulateAfterCheckout": false,
   "simulateAfterLoad": false,
+  "simulateWithInsite": false,
   "showHelp": true
 }
