@@ -3,6 +3,8 @@ import { sha1 } from 'object-hash';
 import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 
+import axios from 'axios';
+
 import { Activity } from '../activity/activity';
 import { ActivityGraph } from '../activity/activityGraph';
 import { AnalogSignalActivity } from '../activity/analogSignalActivity';
@@ -33,6 +35,7 @@ export class Project extends Config {
   private _network: Network; // network of neurons and devices
   private _networkRevisionIdx = -1; // Index of the network history;
   private _networkRevisions: any[] = []; // network history
+  private _refreshIntervalId: any;
   private _rev: string; // rev of the project
   private _simulation: Simulation; // settings for the simulation
   private _state: UnwrapRef<any>;
@@ -512,6 +515,7 @@ export class Project extends Config {
             break;
           case 200:
             this._errorMessage = 'Simulation is finished.';
+            this._simulation.running = false;
             break;
           default:
             this._errorMessage = resp.response;
@@ -536,7 +540,34 @@ export class Project extends Config {
       });
 
     setTimeout(() => {
-      this._simulation.running = false;
+      this._simulation.kernel.biologicalTime = this._simulation.time;
+
+      function onlyUnique(value: number, index: number, self: any) {
+        return self.indexOf(value) === index;
+      }
+
+      this._refreshIntervalId = setInterval(() => {
+        axios.get('http://localhost:8080/nest/spikes').then((response: any) => {
+          const data: any = response.data;
+          const events: any = {
+            senders: data.nodeIds,
+            times: data.simulationTimes,
+          };
+
+          const nodeIds = events.senders.filter(onlyUnique);
+
+          this.updateActivities([
+            {
+              events,
+              nodeIds,
+            },
+          ]);
+
+          if (this._simulation.running === false) {
+            clearInterval(this._refreshIntervalId);
+          }
+        });
+      }, 1000);
     }, 100);
   }
 

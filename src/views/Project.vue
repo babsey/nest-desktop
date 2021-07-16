@@ -332,7 +332,11 @@
     </v-main>
 
     <v-overlay
-      :value="state.loading || projectView.state.project.simulation.running"
+      :value="
+        state.loading ||
+        (projectView.state.project.simulation.running &&
+          !projectView.state.project.config.simulateWithInsite)
+      "
       :z-index="10"
     >
       <v-progress-circular
