@@ -95,6 +95,7 @@ export default Vue.extend({
             state.projectConfig.simulateWithInsite =
               !state.projectConfig.simulateWithInsite;
             state.project.updateConfig(state.projectConfig);
+            state.project.code.generate();
           },
         },
       ],
