@@ -296,7 +296,13 @@
       </transition>
     </v-main>
 
-    <v-overlay :value="state.loading || state.project.simulation.running">
+    <v-overlay
+      :value="
+        state.loading ||
+        (state.project.simulation.running &&
+          !state.project.config.simulateWithInsite)
+      "
+    >
       <v-progress-circular
         :size="70"
         :width="7"
