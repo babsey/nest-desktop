@@ -121,7 +121,11 @@ export default Vue.extend({
      * Start simulation.
      */
     const simulate = () => {
-      state.project.runSimulation();
+      if (state.project.config.simulateWithInsite) {
+        state.project.runSimulationInsite();
+      } else {
+        state.project.runSimulation();
+      }
     };
 
     onMounted(() => {
