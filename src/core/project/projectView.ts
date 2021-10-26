@@ -56,10 +56,12 @@ export class ProjectView {
     this._app = app;
     this._state = reactive({
       activityGraph: 'abstract',
+      fromTime: 0,
       modeIdx: 0,
       networkGraphHeight: 'calc(100vh - 48px)',
       project: new Project(app),
       projectId: '',
+      refreshIntervalId: undefined,
       tool: undefined,
       toolOpened: false,
     });
@@ -102,6 +104,7 @@ export class ProjectView {
     // console.log('Load project: ' + id);
     return this._app.view.initProject(this._state.projectId).then(() => {
       if (this._state.project) {
+        this._state.project.code.generate();
         this.updateProjectMode();
         this._state.project.network.view.reset();
         this._state.activityGraph =
@@ -112,7 +115,8 @@ export class ProjectView {
           this._state.project.config.simulateAfterLoad &&
           this._state.modeIdx === 1 &&
           this._state.project.code.hash !==
-            this._state.project.activityGraph.codeHash
+            this._state.project.activityGraph.codeHash &&
+          !this._state.project.config.simulateWithInsite
         ) {
           this._state.project.runSimulation();
         }
