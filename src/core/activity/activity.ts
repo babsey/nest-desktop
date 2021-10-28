@@ -4,13 +4,14 @@ import { sha1 } from 'object-hash';
 
 export class Activity {
   private _events: any = {};
+  private _hash: string;
   private _idx: number; // generative
+  private _lastFrame: boolean = false;
   private _nodeCollectionId: number;
   private _nodeIds: number[] = [];
   private _nodePositions: number[][] = []; // if spatial
   private _recorder: Node; // parent
   private _recordFrom: String[] = [];
-  private _hash: string;
 
   constructor(recorder: Node, activity: any = {}) {
     this._recorder = recorder;
@@ -28,7 +29,7 @@ export class Activity {
   get lastTime(): number {
     return this._events.times && this._events.times.length > 0
       ? this.events.times[this.events.times.length - 1]
-      : -1;
+      : 0;
   }
 
   get events(): any {
@@ -49,6 +50,14 @@ export class Activity {
 
   set idx(value: number) {
     this._idx = value;
+  }
+
+  get lastFrame(): boolean {
+    return this._lastFrame;
+  }
+
+  set lastFrame(value: boolean) {
+    this._lastFrame = value;
   }
 
   get nEvents(): number {
@@ -87,13 +96,13 @@ export class Activity {
     return this._recordFrom;
   }
 
-  get senders(): number[] {
-    const senders: any[] = [...new Set(this._events.senders)];
-    if (senders.length > 0) {
-      senders.sort((a: number, b: number) => a - b);
-    }
-    return senders;
-  }
+  // get senders(): number[] {
+  //   const senders: any[] = [...new Set(this._events.senders)];
+  //   if (senders.length > 0) {
+  //     senders.sort((a: number, b: number) => a - b);
+  //   }
+  //   return senders;
+  // }
 
   /**
    * Check if activity has events.
@@ -103,11 +112,25 @@ export class Activity {
   }
 
   /**
+   * Reset activity.
+   */
+  reset(): void {
+    this._lastFrame = false;
+    this._events = {};
+    this._recordFrom = [];
+    this._nodeIds = [];
+    this._nodePositions = [];
+  }
+
+  /**
    * Initialize activity.
    *
    * Overwrites events.
    */
   init(activity: any): void {
+    this.reset();
+
+    this._lastFrame = false;
     this._events = activity.events || {};
     this._recordFrom = Object.keys(this._events).filter(
       (event: string) => !['senders', 'times'].includes(event)
@@ -135,6 +158,7 @@ export class Activity {
       const newEvents: number[] = events[eventKey];
       this._events[eventKey] = currEvents.concat(newEvents);
     });
+
     this.updateHash();
   }
 

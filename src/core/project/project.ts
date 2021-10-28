@@ -490,10 +490,10 @@ export class Project extends Config {
   }
 
   /**
-   * Start simulation with recording backend insite.
+   * Start simulation with recording backend Insite.
    *
    * @remarks
-   * During the simulation it updates activities.
+   * During the simulation it gets and updates activities.
    */
   runSimulationInsite(): void {
     // console.log('Run simulation with insite');
@@ -514,6 +514,7 @@ export class Project extends Config {
             this._errorMessage = 'Failed to find NEST Simulator.';
             break;
           case 200:
+            // TODO: ask Marcel if this code is required.
             axios
               .get('http://localhost:8080/nest/simulationTimeInfo')
               .then((response: any) => {
@@ -536,6 +537,8 @@ export class Project extends Config {
             position: 'top-right',
             type: 'error',
           });
+        } else {
+          Vue.$toast.clear();
         }
 
         return resp;
@@ -543,11 +546,20 @@ export class Project extends Config {
       .catch((resp: any) => {
         this._errorMessage = resp.responseText;
         return resp;
+      })
+      .finally(() => {
+        this._simulation.running = false;
       });
 
     this.getActivitiesInsite();
   }
 
+  /**
+   * Get activities from Insite.
+   *
+   * First it checks the simulation has started, then it updates activity graph frequently.
+   * Afterwards it gets activities from Insite.
+   */
   getActivitiesInsite(): void {
     axios
       .get('http://localhost:8080/nest/simulationTimeInfo')
@@ -557,37 +569,93 @@ export class Project extends Config {
       .then((response: any) => {
         this._simulation.kernel.biologicalTime = response.data.end;
 
-        // spike recorder
-        axios
-          .get('http://localhost:8080/nest/spikedetectors/')
-          .then((response: any) => {
-            const activities: any[] = JSON.parse(JSON.stringify(response.data));
-            this.initActivities(activities);
+        // update activity graph during the simulation.
+        this.continuousUpdateActivityGraph();
 
-            this._app.projectView.state.refreshIntervalId = setInterval(() => {
-              // Check if project has activities.
-              this.checkActivities();
-              // Update activity graph.
-              this._activityGraph.update();
-
-              const lastTimes: number[] = this.activities.map(
-                (activity: Activity) => activity.lastTime
-              );
-
-              if (
-                !lastTimes.some(
-                  (time: number) => time < this.simulation.kernel.biologicalTime
-                )
-              ) {
-                clearInterval(this._app.projectView.state.refreshIntervalId);
-              }
-            }, 1000);
-
-            this.spikeActivities.forEach((activity: SpikeActivity) =>
-              activity.getActivityInsite()
-            );
-          });
+        this.getSpikeActivitiesInsite();
+        this.getAnalogSignalActivitiesInsite();
       });
+  }
+
+  /**
+   * Get spike activities from Insite.
+   */
+  getSpikeActivitiesInsite(): void {
+    // console.log('Get spike activities from insite.');
+    axios
+      .get('http://localhost:8080/nest/spikedetectors/')
+      .then((response: any) => {
+        const activities: any[] = response.data.map((data: any) => {
+          return {
+            nodeCollectionId: data.spikedetectorId,
+            nodeIds: data.nodeIds,
+          };
+        });
+
+        // initialize activities.
+        this.initActivities(activities);
+
+        // get spike activities from spike recorders.
+        this.spikeActivities.forEach((activity: SpikeActivity) =>
+          activity.getActivityInsite()
+        );
+      });
+  }
+
+  /**
+   * Get analog signal activities from Insite.
+   */
+  getAnalogSignalActivitiesInsite(): void {
+    // console.log('Get analog signal activities from insite.');
+    axios
+      .get('http://localhost:8080/nest/multimeters')
+      .then((response: any) => {
+        const activities: any[] = response.data.map((data: any) => {
+          const events = { times: [], senders: [] };
+          data.attributes.forEach((attribute: string) => {
+            events[attribute] = [];
+          });
+
+          return {
+            events,
+            nodeCollectionId: data.multimeterId,
+            nodeIds: data.nodeIds,
+          };
+        });
+
+        // initialize activities.
+        this.initActivities(activities);
+
+        // get analog signal activities from multimeters.
+        this.analogSignalActivities.forEach((activity: AnalogSignalActivity) =>
+          activity.getActivityInsite()
+        );
+      });
+  }
+
+  /**
+   * Update activity graph continuously.
+   */
+  continuousUpdateActivityGraph() {
+    this._app.projectView.state.refreshIntervalId = setInterval(() => {
+      // Check if project has activities.
+      this.checkActivities();
+
+      // Update activity graph.
+      this._activityGraph.update();
+
+      const lastFrames: boolean = this.activities.every(
+        (activity: Activity) => activity.lastFrame
+      );
+      if (lastFrames) {
+        clearInterval(this._app.projectView.state.refreshIntervalId);
+      }
+
+      // TODO
+      //
+      // Find better algoritm for stop updating activity graph, e.g. recursive call in timeout
+      //
+    }, 1000);
   }
 
   /*
@@ -698,24 +766,32 @@ export class Project extends Config {
   }
 
   /**
-   * Check whether the project has some events in (spatial) activities.
+   * Check whether the project has some events in activities.
    */
   checkActivities(): void {
     const activities: Activity[] = this.activities;
+
+    // check if it has activities.
     this._hasActivities =
       activities.length > 0
         ? activities.some((activity: Activity) => activity.hasEvents())
         : false;
+
+    // check if it has analog signal activities.
     this._hasAnalogActivities =
       activities.length > 0
         ? activities.some((activity: Activity) =>
             activity.hasNeuronAnalogData()
           )
         : false;
+
+    // check if it has spike activities.
     this._hasSpikeActivities =
       activities.length > 0
         ? activities.some((activity: Activity) => activity.hasSpikeData())
         : false;
+
+    // check if it has spatial activities.
     this._hasSpatialActivities = this.hasActivities
       ? activities.some(
           (activity: Activity) =>

@@ -53,7 +53,7 @@ export class AnalogSignalPlotPanel extends ActivityGraphPanel {
       recordables.forEach((recordFrom: string) => {
         if (activity.nodeIds.length === 1) {
           this.updateSingleLine(activity, recordFrom);
-        } else {
+        } else if (activity.nodeIds.length > 1) {
           this.updateMultipleLines(activity, recordFrom);
         }
       });
@@ -108,13 +108,20 @@ export class AnalogSignalPlotPanel extends ActivityGraphPanel {
    * Update single line data for analog signal.
    */
   updateSingleLine(activity: AnalogSignalActivity, recordFrom: string): void {
+    if (
+      !activity.events.hasOwnProperty(recordFrom) ||
+      activity.nodeIds.length === 0
+    ) {
+      return;
+    }
+
     this.data.push({
       activityIdx: activity.idx,
       id: recordFrom,
       legendgroup: recordFrom + activity.idx,
       mode: 'lines',
       type: 'scattergl',
-      name: recordFrom + ' of ' + activity.senders[0],
+      name: recordFrom + ' of ' + activity.nodeIds[0],
       hoverinfo: 'all',
       showlegend: true,
       visible: true,
@@ -134,20 +141,24 @@ export class AnalogSignalPlotPanel extends ActivityGraphPanel {
     activity: AnalogSignalActivity,
     recordFrom: string
   ): void {
-    if (!activity.events.hasOwnProperty(recordFrom)) {
+    if (
+      !activity.events.hasOwnProperty(recordFrom) ||
+      activity.nodeIds.length === 0
+    ) {
       return;
     }
-    const senders: number[] = activity.senders.slice(0, 100);
-    const events: any[] = senders.map(() => ({ x: [], y: [], name: '' }));
+
+    const nodeIds: number[] = activity.nodeIds.slice(0, 100);
+    const events: any[] = nodeIds.map(() => ({ x: [], y: [], name: '' }));
     activity.events.senders.forEach((sender: number, idx: number) => {
-      const senderIdx: number = senders.indexOf(sender);
+      const senderIdx: number = nodeIds.indexOf(sender);
       if (senderIdx === -1) {
         return;
       }
       events[senderIdx].x.push(activity.events.times[idx]);
       events[senderIdx].y.push(activity.events[recordFrom][idx]);
-      events[senderIdx].name = `${recordFrom} of [${senders[0]} - ${
-        senders[senders.length - 1]
+      events[senderIdx].name = `${recordFrom} of [${nodeIds[0]} - ${
+        nodeIds[nodeIds.length - 1]
       }]`;
     });
 
@@ -175,29 +186,36 @@ export class AnalogSignalPlotPanel extends ActivityGraphPanel {
    * Update average line for analog signals.
    */
   updateAverageLine(activity: AnalogSignalActivity, recordFrom: string): void {
-    const senders: number[] = activity.senders;
-    const events: any[] = senders.map(() => ({ x: [], y: [], name: '' }));
+    if (
+      !activity.events.hasOwnProperty(recordFrom) ||
+      activity.nodeIds.length === 0
+    ) {
+      return;
+    }
+
+    const nodeIds: number[] = activity.nodeIds;
+    const events: any[] = nodeIds.map(() => ({ x: [], y: [], name: '' }));
     activity.events.senders.forEach((sender: number, idx: number) => {
       if (!activity.events.hasOwnProperty(recordFrom)) {
         return;
       }
-      const senderIdx: number = senders.indexOf(sender);
+      const senderIdx: number = nodeIds.indexOf(sender);
       if (senderIdx === -1) {
         return;
       }
       events[senderIdx].x.push(activity.events.times[idx]);
       events[senderIdx].y.push(activity.events[recordFrom][idx]);
-      events[senderIdx].name = `${recordFrom} of [${senders[0]} - ${
-        senders[senders.length - 1]
+      events[senderIdx].name = `${recordFrom} of [${nodeIds[0]} - ${
+        nodeIds[nodeIds.length - 1]
       }]`;
     });
 
     const x: any[] = events[0].x;
     const y: any[] = x.map((_: any, i: number) => {
       const yi: any[] = [];
-      senders.forEach((_: number, idx: number) => yi.push(events[idx].y[i]));
+      nodeIds.forEach((_: number, idx: number) => yi.push(events[idx].y[i]));
       const sum: number = yi.reduce((a: number, b: number) => a + b);
-      const avg: number = sum / senders.length;
+      const avg: number = sum / nodeIds.length;
       return avg;
     });
 

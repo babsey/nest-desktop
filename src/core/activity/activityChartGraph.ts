@@ -178,6 +178,7 @@ export class ActivityChartGraph {
     // console.log('Update activity chart graph');
     this._data = [];
     this.resetLayout();
+
     this._panels.forEach((panel: ActivityGraphPanel) => {
       panel.update();
       panel.updateLayout();
