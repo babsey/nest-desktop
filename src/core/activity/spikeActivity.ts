@@ -13,7 +13,7 @@ export class SpikeActivity extends Activity {
   /**
    * Initialize spike activity.
    */
-  init(activity: any): void {
+  override init(activity: any): void {
     this.reset();
 
     this.events = activity.events || { senders: [], times: [] };
