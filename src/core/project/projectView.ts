@@ -64,6 +64,12 @@ export class ProjectView {
       refreshIntervalId: undefined,
       tool: undefined,
       toolOpened: false,
+      toast: {
+        message: '',
+        pauseOnHover: true,
+        position: 'top-right',
+        type: 'success',
+      },
     });
   }
 

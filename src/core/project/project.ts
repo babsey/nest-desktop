@@ -24,7 +24,6 @@ export class Project extends Config {
   private _createdAt: string; // when is it created in database
   private _description: string; // description about the project
   private _doc: any; // doc data of the database
-  private _errorMessage = '';
   private _hasActivities = false;
   private _hasAnalogActivities = false;
   private _hash: string; // obsolete: hash of serialized network
@@ -101,14 +100,6 @@ export class Project extends Config {
 
   get doc(): any {
     return this._doc;
-  }
-
-  get errorMessage(): string {
-    return this._errorMessage;
-  }
-
-  set errorMessage(value: string) {
-    this._errorMessage = value;
   }
 
   get hash(): string {
@@ -428,7 +419,6 @@ export class Project extends Config {
    */
   async runSimulation(): Promise<any> {
     // console.log('Run simulation');
-    this._errorMessage = '';
     if (this._simulation.kernel.config.autoRNGSeed) {
       this._simulation.kernel.rngSeed = Math.round(Math.random() * 1000);
       this._code.generate();
@@ -443,7 +433,8 @@ export class Project extends Config {
         let data: any;
         switch (resp.status) {
           case 0:
-            this._errorMessage = 'Failed to find NEST Simulator.';
+            this.openToast('Failed to find NEST Simulator.', 'error');
+
             break;
           case 200:
             data = JSON.parse(resp.response).data;
@@ -461,31 +452,21 @@ export class Project extends Config {
             this.commitNetwork(this._network);
             break;
           default:
-            this._errorMessage = resp.response;
+            this.openToast(resp.responseText, 'error');
             break;
         }
-
-        // Show error message via toast notification.
-        if (this._errorMessage) {
-          Vue.$toast.open({
-            message: this._errorMessage,
-            pauseOnHover: true,
-            position: 'top-right',
-            type: 'error',
-          });
-        }
-
-        setTimeout(() => {
-          this._simulation.running = false;
-        }, 100);
         return resp;
       })
       .catch((resp: any) => {
-        this._errorMessage = resp.responseText;
-        setTimeout(() => {
-          this._simulation.running = false;
-        }, 100);
+        this.openToast(resp.responseText, 'error');
         return resp;
+      })
+      .finally(() => {
+        this._simulation.running = false;
+
+        // setTimeout(() => {
+        //   this._simulation.running = false;
+        // }, 100);
       });
   }
 
@@ -496,8 +477,7 @@ export class Project extends Config {
    * During the simulation it gets and updates activities.
    */
   runSimulationInsite(): void {
-    // console.log('Run simulation with insite');
-    this._errorMessage = '';
+    // console.log('Run simulation with Insite');
     this._app.projectView.state.fromTime = 0;
     if (this._simulation.kernel.config.autoRNGSeed) {
       this._simulation.kernel.rngSeed = Math.round(Math.random() * 1000);
@@ -511,47 +491,34 @@ export class Project extends Config {
       .then((resp: any) => {
         switch (resp.status) {
           case 0:
-            this._errorMessage = 'Failed to find NEST Simulator.';
+            this.openToast('Failed to find NEST Simulator.', 'error');
             break;
           case 200:
             // TODO: ask Marcel if this code is required.
             axios
               .get('http://localhost:8080/nest/simulationTimeInfo')
               .then((response: any) => {
-                this._errorMessage = 'Simulation is finished.';
+                this.openToast('Simulation is finished.', 'success');
                 this._simulation.running =
                   response.data.end >
                   response.data.current + response.data.stepSize;
               });
             break;
           default:
-            this._errorMessage = resp.response;
+            this.openToast(resp.responseText, 'error');
             break;
         }
-
-        // Show error message via toast notification.
-        if (this._errorMessage) {
-          Vue.$toast.open({
-            message: this._errorMessage,
-            pauseOnHover: true,
-            position: 'top-right',
-            type: 'error',
-          });
-        } else {
-          Vue.$toast.clear();
-        }
-
         return resp;
       })
       .catch((resp: any) => {
-        this._errorMessage = resp.responseText;
+        this.openToast(resp.responseText, 'error');
         return resp;
       })
       .finally(() => {
         this._simulation.running = false;
       });
 
-    this.getActivitiesInsite();
+    setTimeout(() => this.getActivitiesInsite(), 100); // TODO: suboptimal
   }
 
   /**
@@ -589,6 +556,7 @@ export class Project extends Config {
           return {
             nodeCollectionId: data.spikedetectorId,
             nodeIds: data.nodeIds,
+            nodePositions: data.nodePositions,
           };
         });
 
@@ -868,6 +836,19 @@ export class Project extends Config {
   resetState(): void {
     this._state.selected = false;
     this._state._withActivities = false;
+  }
+
+  /**
+   * Open toast of message from the back end
+   */
+  openToast(message: string, type: string = 'success') {
+    this._app.projectView.state.toast.message = message;
+    this._app.projectView.state.toast.type = type;
+
+    // Show NEST or Python error message via toast notification.
+    if (this._app.projectView.state.toast.message) {
+      Vue.$toast.open(this._app.projectView.state.toast);
+    }
   }
 
   /**
