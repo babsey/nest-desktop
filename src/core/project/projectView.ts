@@ -54,6 +54,8 @@ export class ProjectView {
 
   constructor(app: App) {
     this._app = app;
+
+    // global state for project view.
     this._state = reactive({
       activityGraph: 'abstract',
       fromTime: 0,
@@ -108,21 +110,35 @@ export class ProjectView {
    */
   async init(): Promise<any> {
     // console.log('Load project: ' + id);
+
     return this._app.view.initProject(this._state.projectId).then(() => {
       if (this._state.project) {
-        this._state.project.code.generate();
+        // generate simulation code.
+        if (
+          this._state.project.config.simulateWithInsite !==
+          this._state.project.code.state.codeInsite
+        ) {
+          this._state.project.code.generate();
+        }
+
+        // update view mode for project.
         this.updateProjectMode();
+
+        // reset network graph view.
         this._state.project.network.view.reset();
+
+        // update activity graph view.
         this._state.activityGraph =
           this._state.project.network.view.hasPositions()
             ? this._state.activityGraph
             : 'abstract';
+
+        // run simulation if allowed.
         if (
           this._state.project.config.simulateAfterLoad &&
           this._state.modeIdx === 1 &&
           this._state.project.code.hash !==
-            this._state.project.activityGraph.codeHash &&
-          !this._state.project.config.simulateWithInsite
+            this._state.project.activityGraph.codeHash
         ) {
           this._state.project.runSimulation();
         }
@@ -134,8 +150,13 @@ export class ProjectView {
    * Set height for network graph.
    */
   resizeNetworkGraph(): void {
+    // console.log('Resize network graph');
+
+    // caluclate height for network graph.
     this._state.networkGraphHeight =
       this._state.modeIdx === 2 ? 'calc(30vh)' : 'calc(100vh - 48px)';
+
+    // call resize event.
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 1);
@@ -145,6 +166,8 @@ export class ProjectView {
    * Select view for activity graph.
    */
   selectActivityGraph(mode: string): void {
+    // console.log('Select activity graph');
+
     this._state.activityGraph = mode;
     this._state.modeIdx = 1;
   }
@@ -153,9 +176,13 @@ export class ProjectView {
    * Select tool for this project.
    */
   selectTool(tool: any): void {
+    // console.log('Select project tool');
+
+    // open tool if closed or select other tool.
     this._state.toolOpened = this._state.toolOpened
-      ? this._state.tool != tool
+      ? this._state.tool !== tool
       : true;
+    // set project tool.
     this._state.tool = tool;
   }
 
@@ -167,12 +194,17 @@ export class ProjectView {
    * Update view mode of the project.
    */
   updateProjectMode(): void {
+    // console.log('Update project view');
+
+    // select tool and resize network graph if netwot editor or lab view is selected.
     if ([0, 2].includes(this._state.modeIdx)) {
       this._state.toolOpened = this._state.toolOpened
         ? this._state.modeIdx !== 2
         : this._state.toolOpened;
       this.resizeNetworkGraph();
     }
+
+    // run simulation if allowed.
     if (
       this._state.project.config.simulateAfterLoad &&
       this._state.modeIdx === 1 &&
