@@ -1,0 +1,6 @@
+{
+	"appId": "com.capicator.nest.desktop",
+	"appName": "NEST Desktop",
+	"webDir": "nest_desktop/app",
+	"bundledWebRuntime": false
+}
