@@ -18,6 +18,6 @@ jq -n \
       port: $nest_simulator_port,
       url: $nest_simulator_url
     }
-  }' > /usr/share/nginx/html/config.json
+  }' > /usr/share/nginx/html/config/app.json
 
 exec "$@"
