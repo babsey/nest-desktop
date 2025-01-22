@@ -457,4 +457,13 @@ export class BaseNodes extends BaseObj {
     this.updateAnnotations();
     this.updateHash();
   }
+
+  /**
+   * Update node style, e.g. node color.
+   */
+  updateStyle(): void {
+    this.logger.trace("update node style");
+
+    this.all.forEach((node: NodeGroup | TNode) => node.view.updateStyle());
+  }
 }

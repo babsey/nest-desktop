@@ -5,8 +5,8 @@
  */
 
 import { App } from "vue";
-import { RouteRecordRaw } from "vue-router";
 import { IconSet } from "vuetify";
+import { RouteRecordRaw } from "vue-router";
 
 import { Config } from "@/helpers/common/config";
 import { addIconSet, addTheme } from "@/plugins/vuetify";
@@ -16,6 +16,7 @@ import { TStore } from "@/types";
 import { logger as mainLogger } from "@/utils/logger";
 import { CompletionSource } from "@codemirror/autocomplete";
 
+import { elephant } from "./elephant";
 import { nest } from "./nest";
 import { norse } from "./norse";
 // import { pynn } from "./pynn";
@@ -44,7 +45,7 @@ export const workspaces: Record<string, IWorkspaceProps> = {
   nest,
   norse,
   // pynn,
-  // elephant,
+  elephant,
 };
 
 export function registerWorkspaces(app: App) {
@@ -78,6 +79,7 @@ function initEnabledWorkspace(app: App, workspaceId: string): void {
   app.use({
     async install() {
       logger.trace("install", workspaceId);
+
       const workspaceProps = workspaces[workspaceId];
 
       // Load config files.

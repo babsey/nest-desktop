@@ -3,6 +3,62 @@
 
   <template v-if="projectStore.state.projectId && projectStore.props.workspace === 'nest'">
     <ProjectBar color="nest-project">
+      <template #graphEditor>
+        <v-tab
+          :to="{
+            name: 'nestGraphEditor',
+            params: { projectId: projectStore.state.projectId },
+          }"
+          class="tab-graph-editor"
+          size="small"
+          stacked
+          title="Graph Editor"
+          value="editor"
+        >
+          <v-icon
+            class="mdi-flip-v"
+            :icon="projectViewStore.state.views.graph == 'network' ? 'graph:network' : 'graph:flowchart'"
+          />
+          Editor
+        </v-tab>
+
+        <v-btn height="100%" rounded="0" variant="plain" width="32" style="min-width: 32px">
+          <v-icon icon="mdi:mdi-menu-down" />
+
+          <v-menu activator="parent" target=".tab-graph-editor">
+            <v-list density="compact">
+              <v-list-item
+                :active="projectViewStore.state.views.graph == 'code'"
+                :to="{
+                  name: 'nestGraphEditor',
+                  params: { projectId: projectStore.state.projectId },
+                }"
+                @click.="() => (projectViewStore.state.views.graph = 'code')"
+                prepend-icon="graph:flowchart"
+              >
+                code
+              </v-list-item>
+              <v-list-item
+                :active="projectViewStore.state.views.graph == 'network'"
+                :to="{
+                  name: 'nestGraphEditor',
+                  params: { projectId: projectStore.state.projectId },
+                }"
+                exact
+                @click="() => (projectViewStore.state.views.graph = 'network')"
+              >
+                <template #prepend>
+                  <v-icon icon="graph:network" />
+                </template>
+                network
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-btn>
+
+        <v-divider vertical />
+      </template>
+
       <template #activityExplorer>
         <v-tab
           :to="{
@@ -15,7 +71,10 @@
           title="Activity Explorer"
           value="explore"
         >
-          <v-icon class="mdi-flip-v" icon="mdi:mdi-border-style" />
+          <v-icon
+            :class="{ 'mdi-flip-v': projectViewStore.state.views.activity == 'abstract' }"
+            :icon="projectViewStore.state.views.activity == 'abstract' ? 'mdi:mdi-border-style' : 'mdi:mdi-axis-arrow'"
+          />
           Explorer
         </v-tab>
 
@@ -31,13 +90,25 @@
 
           <v-menu activator="parent" target=".tab-activity-explorer">
             <v-list density="compact">
-              <v-list-item @click="() => (projectViewStore.state.views.activity = 'abstract')">
+              <v-list-item
+                :active="projectViewStore.state.views.activity == 'abstract'"
+                :to="{
+                  name: 'nestActivityExplorer',
+                  params: { projectId: projectStore.state.projectId },
+                }"
+                @click="() => (projectViewStore.state.views.activity = 'abstract')"
+              >
                 <template #prepend>
                   <v-icon class="mdi-flip-v" icon="mdi:mdi-border-style" />
                 </template>
                 abstract
               </v-list-item>
               <v-list-item
+                :active="projectViewStore.state.views.activity == 'spatial'"
+                :to="{
+                  name: 'nestActivityExplorer',
+                  params: { projectId: projectStore.state.projectId },
+                }"
                 prepend-icon="mdi:mdi-axis-arrow"
                 @click="() => (projectViewStore.state.views.activity = 'spatial')"
               >
@@ -62,6 +133,10 @@
     </ProjectBar>
 
     <ProjectController>
+      <!-- <template #graph>
+        <CodeTreeview :code="project.code" />
+      </template> -->
+
       <template #activityController>
         <ActivityChartController
           v-if="projectViewStore.state.views.activity === 'abstract'"
@@ -181,6 +256,7 @@
 import { computed, onMounted, ref } from "vue";
 
 import ActivityChartController from "@/components/activityChart/ActivityChartController.vue";
+// import CodeTreeview from "@/components/code/CodeTreeview.vue";
 import ConnectionEditor from "@/components/connection/ConnectionEditor.vue";
 import Menu from "@/components/common/Menu.vue";
 import NodeEditor from "@/components/node/NodeEditor.vue";

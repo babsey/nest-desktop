@@ -1,6 +1,14 @@
 // project.ts
 
+<<<<<<< HEAD
 import { TActivityGraph, TStore, TCode } from "@/types";
+=======
+import { AxiosResponse } from "axios";
+import { nextTick } from "vue";
+
+import { IAxiosResponseData } from "@/stores/defineBackendStore";
+import { TActivityGraph, TStore, TProject, TCode } from "@/types";
+>>>>>>> 97982526 (Add files for code graph)
 import { truncate } from "@/utils/truncate";
 import { useModelDBStore } from "@/stores/model/modelDBStore";
 
@@ -11,6 +19,7 @@ import { BaseObj } from "../common/base";
 import { IDoc } from "../common/database";
 import { NodeActivities } from "../nodeActivity/nodeActivities";
 import { ProjectState } from "./projectState";
+import { closeLoading, openLoading, useAppStore } from "@/stores/appStore";
 
 export interface IBaseProjectProps extends IDoc {
   activityGraph?: IBaseActivityGraphProps;
@@ -58,7 +67,7 @@ export class BaseProject extends BaseObj {
     this._activityGraph = new this.ActivityGraph(this, projectProps.activityGraph);
 
     // Initialize components.
-    // nextTick(() => this.init());
+    nextTick(() => this.init());
   }
 
   get Activities() {
@@ -189,8 +198,8 @@ export class BaseProject extends BaseObj {
   /**
    * Generate code.
    */
-  generateCode(): void {
-    this.code.generate();
+  initCode(): void {
+    this.code.init();
   }
 
   /**
@@ -200,7 +209,7 @@ export class BaseProject extends BaseObj {
     this.logger.trace("init");
 
     // Generate code.
-    this.generateCode();
+    this.code.init();
 
     // Initialize activities.
     this.activities.init();
@@ -220,6 +229,41 @@ export class BaseProject extends BaseObj {
    */
   initModelStore(): void {
     this._modelDBStore = useModelDBStore();
+  }
+
+  /**
+   * Generate code.
+   * @remarks It renders node codes.
+   */
+  generateCode(): void {
+    this.code.generate();
+  }
+
+  /**
+   * Start analysis.
+   */
+  startAnalysis(): void {
+    this.logger.trace("start analysis");
+
+    const appStore = useAppStore();
+    const projectViewStore = appStore.currentWorkspace.views.project;
+    if (!projectViewStore.state.simulationEvents.onChange) openLoading("Analyzing... Please wait");
+
+    const anatoc = Date.now();
+    this._code
+      .exec()
+      .then((response: AxiosResponse<IAxiosResponseData>) => {
+        this.state.state.stopwatch.analysis = Date.now() - anatoc;
+        if (response == null || response.status !== 200 || response.data == null || !response.data.data) return;
+
+        if (response.data.data.plotly) {
+          const plotly_json = response.data.data.plotly;
+          const vistoc = Date.now();
+          this.activityGraph.activityChartGraph.react(plotly_json.data, plotly_json.layout);
+          this.state.state.stopwatch.visualization = Date.now() - vistoc;
+        }
+      })
+      .finally(closeLoading);
   }
 
   /**

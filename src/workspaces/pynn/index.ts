@@ -1,11 +1,15 @@
 // pynn/index.ts
 
+import { Editor } from "baklavajs";
+
 import { defineViewStore } from "@/stores/defineViewStore";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import { IWorkspaceProps } from "../";
 import iconSet from "./components/iconSet";
 import route from "./routes";
 import { pynnSimulatorInit } from "./stores/backends/pynnSimulatorStore";
+import { registerPyNNNodeTypes } from "./helpers/codeNodeTypes";
 import { usePyNNModelDBStore } from "./stores/model/modelDBStore";
 import { usePyNNModelStore } from "./stores/model/modelStore";
 import { usePyNNProjectDBStore } from "./stores/project/projectDBStore";
@@ -55,12 +59,15 @@ export const pynn: IWorkspaceProps = {
         },
       })(),
     };
+
+    const codeGraphStore = useCodeGraphStore();
+    registerPyNNNodeTypes(codeGraphStore.state.editor as Editor);
   },
   route,
   stores: {},
   theme: {
     "pynn-accent": "#e6007e",
-    "pynn-logo": "#000080",
+    "pynn-logo": "#0F9959",
     pynn: "#0F9959",
   },
   title: "PyNN",

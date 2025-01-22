@@ -109,7 +109,7 @@ export class NetworkProject extends BaseProject {
 
     this.activities.checkRecorders();
 
-    this.generateCode();
+    this.initCode();
 
     this.networkRevision.commit();
 
@@ -130,7 +130,7 @@ export class NetworkProject extends BaseProject {
     this.network.clean();
 
     // Generate simulation code.
-    this.generateCode();
+    this.initCode();
 
     const appStore = useAppStore();
     const projectViewStore = appStore.currentWorkspace.views.project;
@@ -161,8 +161,8 @@ export class NetworkProject extends BaseProject {
     // Initialize simulation.
     this.simulation.init();
 
-    // Generate code.
-    this.generateCode();
+    // Initialize code.
+    this.code.init();
 
     // Initialize activities.
     this.activities.init();

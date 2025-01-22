@@ -1,6 +1,6 @@
 // node.ts
 
-import { TConnection, TModel, TNetwork, TNode, TNodeGroup, TNodes, TProject } from "@/types";
+import { TConnection, TModel, TNetwork, TNetworkProject, TNode, TNodeGroup, TNodes, TSimulation } from "@/types";
 
 import { BaseModel, IModelStateProps, TElementType } from "../model/model";
 import { BaseNodes } from "./nodes";
@@ -263,8 +263,8 @@ export class BaseNode extends BaseObj {
     return this._nodes;
   }
 
-  get project(): TProject {
-    return this._nodes.network.project as TProject;
+  get project(): TNetworkProject {
+    return this.nodes.network.project as TNetworkProject;
   }
 
   get recordables(): NodeRecord[] {
@@ -294,6 +294,10 @@ export class BaseNode extends BaseObj {
 
   get show(): boolean {
     return this._nodes.showNode(this);
+  }
+
+  get simulation(): TSimulation {
+    return this.project.simulation;
   }
 
   get size(): number {

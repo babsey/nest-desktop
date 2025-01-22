@@ -1,7 +1,10 @@
 // nest/index.ts
 
+import { Editor } from "baklavajs";
+
 import { defineViewStore } from "@/stores/defineViewStore";
 import { logger as mainLogger } from "@/utils/logger";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import { IWorkspaceProps } from "../";
 import {
@@ -13,6 +16,7 @@ import {
 import nestIconSet from "./components/iconSet";
 import route from "./routes";
 // import { insiteAccessInit } from "./stores/backends/insiteAccessStore";
+import { registerNESTNodeTypes } from "./helpers/codeNodeTypes";
 import { nestSimulatorInit } from "./stores/backends/nestSimulatorStore";
 import { nestmlServerInit } from "./stores/backends/nestmlServerStore";
 import { useNESTModelDBStore } from "./stores/model/modelDBStore";
@@ -78,6 +82,7 @@ export const nest: IWorkspaceProps = {
         views: {
           activity: "abstract",
           controller: "",
+          graph: "network",
           main: "edit",
         },
       })(),
@@ -90,6 +95,9 @@ export const nest: IWorkspaceProps = {
         },
       })(),
     };
+
+    const codeGraphStore = useCodeGraphStore();
+    registerNESTNodeTypes(codeGraphStore.state.editor as Editor);
   },
   route,
   stores: {},

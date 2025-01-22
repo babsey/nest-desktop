@@ -47,67 +47,69 @@
     <div class="resize-handle left" @mousedown="projectViewStore.resizeRightNav()" />
 
     <div :key="projectStore.state.projectId">
-      <template v-if="projectViewStore.state.views.controller === 'network'">
-        <slot name="network">
-          <NetworkSpecEditor :network="(project.network as BaseNetwork)">
-            <template #model>
-              <slot name="model" />
-            </template>
-            <template #nodes>
-              <slot name="nodes" />
-            </template>
-          </NetworkSpecEditor>
-        </slot>
-      </template>
+      <slot name="graph">
+        <template v-if="projectViewStore.state.views.controller === 'network'">
+          <slot name="network">
+            <NetworkSpecEditor :network="(project.network as BaseNetwork)">
+              <template #model>
+                <slot name="model" />
+              </template>
+              <template #nodes>
+                <slot name="nodes" />
+              </template>
+            </NetworkSpecEditor>
+          </slot>
+        </template>
 
-      <template v-else-if="projectViewStore.state.views.controller === 'kernel'">
-        <slot name="simulationKernel">
-          <SimulationKernelEditor :simulation="(project.simulation as BaseSimulation)" />
-        </slot>
-      </template>
+        <template v-if="projectViewStore.state.views.controller === 'kernel'">
+          <slot name="simulationKernel">
+            <SimulationKernelEditor :simulation="(project.simulation as BaseSimulation)" />
+          </slot>
+        </template>
 
-      <template v-else-if="appStore.state.devMode && projectViewStore.state.views.controller === 'data'">
-        <v-tabs v-model="tab" density="compact">
-          <v-tab value="doc"> DB doc </v-tab>
-          <v-tab value="json"> json </v-tab>
-        </v-tabs>
+        <template v-if="appStore.state.devMode && projectViewStore.state.views.controller === 'data'">
+          <v-tabs v-model="tab" density="compact">
+            <v-tab value="doc"> DB doc </v-tab>
+            <v-tab value="json"> json </v-tab>
+          </v-tabs>
 
-        <v-window v-model="tab">
-          <v-window-item reverse-transition="no-transition" transition="no-transition" value="doc">
-            <codemirror
-              :extensions="extensions"
-              :model-value="projectDoc"
-              disabled
-              style="font-size: 0.75rem; width: 100%"
-            />
-          </v-window-item>
+          <v-window v-model="tab">
+            <v-window-item reverse-transition="no-transition" transition="no-transition" value="doc">
+              <codemirror
+                :extensions="extensions"
+                :model-value="projectDoc"
+                disabled
+                style="font-size: 0.75rem; width: 100%"
+              />
+            </v-window-item>
 
-          <v-window-item reverse-transition="no-transition" transition="no-transition" value="json">
-            <codemirror
-              :extensions="extensions"
-              :model-value="projectJSON"
-              disabled
-              style="font-size: 0.75rem; width: 100%"
-            />
-          </v-window-item>
-        </v-window>
-      </template>
+            <v-window-item reverse-transition="no-transition" transition="no-transition" value="json">
+              <codemirror
+                :extensions="extensions"
+                :model-value="projectJSON"
+                disabled
+                style="font-size: 0.75rem; width: 100%"
+              />
+            </v-window-item>
+          </v-window>
+        </template>
+      </slot>
 
-      <template v-else-if="projectViewStore.state.views.controller === 'code'">
+      <template v-if="projectViewStore.state.views.controller === 'code'">
         <slot name="codeEditor">
           <CodeEditor :code="project.code" />
         </slot>
       </template>
 
-      <template v-else-if="projectViewStore.state.views.controller === 'activity'">
+      <template v-if="projectViewStore.state.views.controller === 'activity' && project.activities.all.length > 0">
         <slot name="activityController">
           <ActivityChartController :graph="(project.activityGraph.activityChartGraph as ActivityChartGraph)" />
         </slot>
       </template>
 
-      <template v-else-if="projectViewStore.state.views.controller === 'stats'">
+      <!-- <template v-if="projectViewStore.state.views.controller === 'stats' && project.activities.all.length > 0">
         <ActivityStats :activities="(project.activities as Activities)" />
-      </template>
+      </template> -->
     </div>
   </v-navigation-drawer>
 
@@ -133,12 +135,12 @@ import { Extension } from "@codemirror/state";
 import { computed, ref } from "vue";
 
 import ActivityChartController from "../activityChart/ActivityChartController.vue";
-import ActivityStats from "../activityStats/ActivityStats.vue";
+// import ActivityStats from "../activityStats/ActivityStats.vue";
 import CodeEditor from "../code/CodeEditor.vue";
 import CodeMirror from "../code/CodeMirror.vue";
 import NetworkSpecEditor from "../network/NetworkSpecEditor.vue";
 import SimulationKernelEditor from "../simulation/SimulationKernelEditor.vue";
-import { Activities } from "@/helpers/activity/activities";
+// import { Activities } from "@/helpers/activity/activities";
 import { ActivityChartGraph } from "@/helpers/activityGraph/activityChartGraph/activityChartGraph";
 import { BaseNetwork } from "@/helpers/network/network";
 import { BaseSimulation } from "@/helpers/simulation/simulation";
@@ -175,7 +177,7 @@ const controllerItems: IControllerItem[] = [
   {
     id: "network",
     icon: {
-      icon: "network:network",
+      icon: "graph:network",
     },
     title: "Edit network",
   },

@@ -1,5 +1,5 @@
 <template>
-  <v-layout id="networkGraphLayout" class="networkGraphLayout" full-height>
+  <v-layout id="graphEditorLayout" class="graphEditorLayout" full-height>
     <NetworkEditorToolbar>
       <template #ContextMenuList="{ graph }">
         <ConnectionMenuList
@@ -13,7 +13,12 @@
         />
       </template>
     </NetworkEditorToolbar>
-    <NetworkGraph :key="currentProject.id" :network="currentProject.network">
+
+    <NetworkGraph
+      v-if="projectViewStore.state.views.graph === 'network'"
+      :key="currentProject.id"
+      :network="currentProject.network"
+    >
       <template #marker="{ connection }">
         <circle
           v-if="connection.view.markerEndLabel === 'assigned'"
@@ -31,6 +36,11 @@
         <g id="nodes" />
       </template>
     </NetworkGraph>
+
+    <CodeGraphEditor
+      v-if="projectViewStore.state.views.graph === 'code'"
+      :view-model="currentProject.code.graph.viewModel"
+    />
   </v-layout>
 </template>
 
@@ -46,4 +56,8 @@ import { NESTConnection } from "../helpers/connection/connection";
 import { NESTNode } from "../helpers/node/node";
 
 import { currentProject } from "../stores/project/projectStore";
+
+import { useAppStore } from "@/stores/appStore";
+const appStore = useAppStore();
+const projectViewStore = appStore.currentWorkspace.views.project;
 </script>

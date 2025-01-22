@@ -5,7 +5,7 @@ import { reactive, watch } from "vue";
 
 import router from "@/router";
 import { BaseProject } from "@/helpers/project/project";
-import { Class, TRoute, TStore } from "@/types";
+import { Class, TNetworkProject, TRoute, TStore } from "@/types";
 import { logger as mainLogger } from "@/utils/logger";
 import { truncate } from "@/utils/truncate";
 
@@ -84,6 +84,7 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
      */
     const loadFirstProject = (): void => {
       const firstProject = projectDBStore.state.projects[0];
+      if (!firstProject) return;
       state.projectId = firstProject.id;
       state.project = projectDBStore.getProject(firstProject.id);
     };
@@ -161,6 +162,24 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
     };
 
     /**
+     * Start analysis of the current project.
+     */
+    const startAnalysis = (): void => {
+      logger.trace("start analysis:", truncate(state.projectId));
+
+      router
+        .push({
+          name: props.workspace + "ActivityExplorer",
+          params: { projectId: state.projectId },
+        })
+        .then(() => {
+          const project = state.project as TProject;
+          // TODO: nextTick doesn't work.
+          setTimeout(() => project.startAnalysis(), 100);
+        });
+    };
+
+    /**
      * Start simulation of the current project.
      */
     const startSimulation = (): void => {
@@ -172,8 +191,9 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
           params: { projectId: state.projectId },
         })
         .then(() => {
+          const project = state.project as TNetworkProject;
           // TODO: nextTick doesn't work.
-          setTimeout(() => state.project?.startSimulation(), 100);
+          setTimeout(() => project.startSimulation(), 100);
         });
     };
 
@@ -186,6 +206,7 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
       reloadProject,
       routeTo,
       saveCurrentProject,
+      startAnalysis,
       startSimulation,
       state,
     };

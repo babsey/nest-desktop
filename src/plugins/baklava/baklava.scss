@@ -1,0 +1,88 @@
+// :root {
+//   // Controls
+//   --baklava-control-color-background: #d3d3d3;
+//   --baklava-control-color-foreground: black;
+
+//   // Nodes
+//   --baklava-node-color-background: #c0c0c0cc;
+//   --baklava-node-color-foreground: black;
+//   --baklava-node-title-color-foreground: black;
+
+//   --baklava-group-node-title-color-foreground: black;
+//   --baklava-node-interface-port-color: black;
+
+//   // Connections
+//   --baklava-color-connection-default: black;
+
+//   // Background pattern
+//   --baklava-editor-background-pattern-default: #dcdcdc;
+//   --baklava-editor-background-pattern-line: #ececec;
+//   --baklava-editor-background-pattern-black: #ffffff22;
+
+//   // Context Menu
+//   --baklava-context-menu-background: #ffffffcc;
+
+//   // Toolbar
+//   --baklava-toolbar-background: #fff3;
+//   --baklava-toolbar-foreground: black;
+
+//   // Node Palette
+//   --baklava-node-palette-background: #fff3;
+//   --baklava-node-palette-foreground: black;
+// }
+
+.baklava-node-interface[data-interface-type="string"] {
+  --baklava-node-interface-port-color: green;
+}
+
+.baklava-node-interface[data-interface-type="number"] {
+  --baklava-node-interface-port-color: red;
+}
+
+.baklava-node-interface[data-interface-type="boolean"] {
+  --baklava-node-interface-port-color: purple;
+}
+
+.baklava-node-interface[data-interface-type="nestNodeCollection"] {
+  --baklava-node-interface-port-color: #ff6633;
+}
+
+.baklava-node-interface[data-interface-type="nestSynapseCollection"] {
+  --baklava-node-interface-port-color: purple;
+}
+
+.baklava-node[data-node-type^="elephant"] .__title {
+  background-color: #f18619;
+}
+
+.baklava-node[data-node-type^="neo"] .__title {
+  background-color: #008000;
+}
+
+.baklava-node[data-node-type^="nest"] .__title {
+  background-color: #ff6633;
+}
+
+.baklava-node[data-node-type^="norse"] .__title {
+  background-color: #e6007e;
+}
+
+.baklava-node[data-node-type^="numpy"] .__title {
+  background-color: #4d77cf;
+}
+
+.baklava-node[data-node-type^="pandas"] .__title {
+  background-color: #0a7d91;
+}
+
+.baklava-node[data-node-type^="plotly"] .__title {
+  background-color: #6d5fe4;
+}
+
+.baklava-node[data-node-type^="pynn"] .__title {
+  background-color: #0f9959;
+}
+
+.baklava-node[data-node-type^="torch"] .__title {
+  background-color: #ee4c2c;
+}
