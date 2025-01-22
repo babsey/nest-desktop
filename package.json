@@ -33,7 +33,9 @@
     "@codemirror/theme-one-dark": "~6.1",
     "@codemirror/view": "~6.36",
     "@mdi/font": "~7.4",
+    "@vueuse/core": "^12.4.0",
     "axios": "~1.8",
+    "baklavajs": "^2.6.0",
     "codemirror": "~6.0",
     "d3": "~7.9",
     "detect-browser": "~5.3",
@@ -53,6 +55,7 @@
     "vue": "~3.5",
     "vue-codemirror": "~6.1",
     "vue-router": "~4.5",
+    "vuedraggable": "^4.1.0",
     "vuetify": "~3.7",
     "vuetify3-dialog": "~1.5",
     "webfontloader": "~1.6"

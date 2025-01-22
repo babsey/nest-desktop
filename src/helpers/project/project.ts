@@ -1,14 +1,10 @@
 // project.ts
 
-<<<<<<< HEAD
-import { TActivityGraph, TStore, TCode } from "@/types";
-=======
 import { AxiosResponse } from "axios";
 import { nextTick } from "vue";
 
 import { IAxiosResponseData } from "@/stores/defineBackendStore";
-import { TActivityGraph, TStore, TProject, TCode } from "@/types";
->>>>>>> 97982526 (Add files for code graph)
+import { TActivityGraph, TStore, TCode } from "@/types";
 import { truncate } from "@/utils/truncate";
 import { useModelDBStore } from "@/stores/model/modelDBStore";
 
