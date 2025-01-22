@@ -42,7 +42,7 @@ export class NetworkProject extends BaseProject {
     this._simulation = new this.Simulation(this, projectProps.simulation);
 
     // Initialize components.
-    nextTick(() => this.init());
+    // nextTick(() => this.init());
   }
 
   override get Activities() {
@@ -109,7 +109,7 @@ export class NetworkProject extends BaseProject {
 
     this.activities.checkRecorders();
 
-    this.generateCode();
+    // this.initCode();
 
     this.networkRevision.commit();
 
@@ -130,7 +130,7 @@ export class NetworkProject extends BaseProject {
     this.network.clean();
 
     // Generate simulation code.
-    this.generateCode();
+    this.initCode();
 
     const appStore = useAppStore();
     const projectViewStore = appStore.currentWorkspace.views.project;
@@ -161,8 +161,8 @@ export class NetworkProject extends BaseProject {
     // Initialize simulation.
     this.simulation.init();
 
-    // Generate code.
-    this.generateCode();
+    // Initialize code.
+    this.code.init();
 
     // Initialize activities.
     this.activities.init();
@@ -199,10 +199,17 @@ export class NetworkProject extends BaseProject {
 
         if (response == null || response.status !== 200 || response.data == null || !response.data.data) return;
 
-        const vistoc = Date.now();
-        // Update activities.
-        this.activities.update(response.data.data);
-        this.state.state.stopwatch.visualization = Date.now() - vistoc;
+        if (response.data.data.plotly) {
+          const plotly_json = response.data.data.plotly;
+          const vistoc = Date.now();
+          this.activityGraph.activityChartGraph.react(plotly_json.data, plotly_json.layout);
+          this.state.state.stopwatch.visualization = Date.now() - vistoc;
+        } else {
+          const vistoc = Date.now();
+          // Update activities.
+          this.activities.update(response.data.data);
+          this.state.state.stopwatch.visualization = Date.now() - vistoc;
+        }
 
         // Commit network for the history (with activity).
         this.networkRevision.commit(true);

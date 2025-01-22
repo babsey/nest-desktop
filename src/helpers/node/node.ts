@@ -1,7 +1,8 @@
 // node.ts
 
-import { TConnection, TModel, TNetwork, TNode, TNodeGroup, TNodes, TProject } from "@/types";
+import { TConnection, TModel, TNetwork, TNetworkProject, TNode, TNodeGroup, TNodes, TSimulation } from "@/types";
 
+import { AbstractCodeNode } from "../codeGraph/codeNode";
 import { BaseModel, IModelStateProps, TElementType } from "../model/model";
 import { BaseNodes } from "./nodes";
 import { BaseObj } from "../common/base";
@@ -30,6 +31,7 @@ export interface INodeProps {
 export class BaseNode extends BaseObj {
   private _activity?: NodeSpikeActivity | NodeAnalogSignalActivity | NodeActivity | undefined;
   private _annotations: string[] = [];
+  private _codeNode: AbstractCodeNode;
   private _props: INodeProps; // raw data of props
   private _params: Record<string, NodeParameter> = {};
   private _paramsVisible: string[] = [];
@@ -64,6 +66,14 @@ export class BaseNode extends BaseObj {
 
   get annotations(): string[] {
     return this._annotations;
+  }
+
+  get codeNode(): AbstractCodeNode {
+    return this._codeNode;
+  }
+
+  set codeNode(value: AbstractCodeNode) {
+    this._codeNode = value;
   }
 
   get connectedNodes(): TNode[] {
@@ -263,8 +273,8 @@ export class BaseNode extends BaseObj {
     return this._nodes;
   }
 
-  get project(): TProject {
-    return this._nodes.network.project as TProject;
+  get project(): TNetworkProject {
+    return this.nodes.network.project as TNetworkProject;
   }
 
   get recordables(): NodeRecord[] {
@@ -294,6 +304,10 @@ export class BaseNode extends BaseObj {
 
   get show(): boolean {
     return this._nodes.showNode(this);
+  }
+
+  get simulation(): TSimulation {
+    return this.project.simulation;
   }
 
   get size(): number {
@@ -634,7 +648,7 @@ export class BaseNode extends BaseObj {
    * Select this node as source for connection.
    */
   selectForConnection(): void {
-    this._nodes.network.connections.state.selectedNode = this;
+    this.nodes.network.connections.state.selectedNode = this;
   }
 
   /**
@@ -689,8 +703,22 @@ export class BaseNode extends BaseObj {
    */
   update(): void {
     this.clean();
-
+    this.updateCodeNode();
     this.updateHash();
+  }
+
+  /**
+   * Update code node.
+   */
+  updateCodeNode(): void {
+    if (!this.codeNode) return;
+    this.codeNode.inputs.model.value = this.modelId;
+    this.codeNode.inputs.size.value = this.size;
+    this.paramsVisible.forEach((paramKey: string) => {
+      if (this.codeNode.inputs[paramKey]) {
+        this.codeNode.inputs[paramKey].value = this.params[paramKey].value;
+      }
+    });
   }
 
   /**

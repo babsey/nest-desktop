@@ -62,9 +62,9 @@ export default [
       },
       {
         path: "edit",
-        name: "nestNetworkEditor",
+        name: "nestGraphEditor",
         components: {
-          project: () => import("../views/ProjectNetworkEditor.vue"),
+          project: () => import("../views/ProjectGraphEditor.vue"),
         },
         props: true,
         beforeEnter: nestProjectBeforeEnter,

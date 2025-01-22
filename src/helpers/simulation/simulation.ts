@@ -7,6 +7,7 @@ import { IAxiosResponseData, IResponseData } from "@/stores/defineBackendStore";
 import { TNetworkProject } from "@/types";
 
 import { BaseObj } from "../common/base";
+import { AbstractCodeNode } from "../codeGraph/codeNode";
 
 export interface ISimulationProps {
   time?: number;
@@ -19,6 +20,7 @@ interface ISimulationState {
 }
 
 export class BaseSimulation extends BaseObj {
+  private _codeNode: AbstractCodeNode;
   private _state: UnwrapRef<ISimulationState>;
   private _time: number; // simulation time
 
@@ -46,6 +48,14 @@ export class BaseSimulation extends BaseObj {
         stepSize: 1,
       },
     });
+  }
+
+  get codeNode(): AbstractCodeNode {
+    return this._codeNode;
+  }
+
+  set codeNode(value: AbstractCodeNode) {
+    this._codeNode = value;
   }
 
   get project(): TNetworkProject {
@@ -133,7 +143,7 @@ export class BaseSimulation extends BaseObj {
 
     this._state.running = true;
     return this.project.code
-      .runSimulation()
+      .exec()
       .then((response: AxiosResponse<IAxiosResponseData>) => {
         let data: IResponseData;
 
@@ -162,6 +172,23 @@ export class BaseSimulation extends BaseObj {
     };
 
     return simulationProps;
+  }
+
+  /**
+   * Update simulation.
+   */
+  update(): void {
+    this.updateCodeNode();
+    this.updateHash();
+  }
+
+  /**
+   * Update code node.
+   */
+  updateCodeNode(): void {
+    if (!this.codeNode) return;
+
+    this.codeNode.inputs.time.value = this._time;
   }
 
   /**

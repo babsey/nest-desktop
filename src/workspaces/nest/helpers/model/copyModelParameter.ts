@@ -54,23 +54,31 @@ export class NESTCopyModelParameter extends BaseParameter {
   override toJSON(): IParamProps {
     const paramProps: IParamProps = {
       id: this.id,
-      component: this.component,
-      label: this.label,
-      unit: this.unit,
       value: this.value,
-      // visible: this.visible as boolean,
     };
 
-    if (this.component === "valueSlider") {
-      paramProps.min = this.min;
-      paramProps.max = this.max;
-      paramProps.step = this.step;
-    } else if (this.component === "tickSlider") {
-      paramProps.ticks = this.ticks;
-    }
+    // if (this.component === "valueSlider") {
+    //   paramProps.min = this.min;
+    //   paramProps.max = this.max;
+    //   paramProps.step = this.step;
+    // } else if (this.component === "tickSlider") {
+    //   paramProps.ticks = this.ticks;
+    // }
+
+    // // Add rules for validation if existed.
+    // if (this.rules.length > 0) paramProps.rules = this.rules;
+
+    // Add label if existed.
+    if (this.label) paramProps.label = this.label;
+
+    // Add value factors if existed.
+    if (this.factors.length > 0) paramProps.factors = this.factors;
 
     // Add rules for validation if existed.
     if (this.rules.length > 0) paramProps.rules = this.rules;
+
+    // Add param type if not constant.
+    if (!this.isConstant) paramProps.type = this.typeToJSON();
 
     return paramProps;
   }

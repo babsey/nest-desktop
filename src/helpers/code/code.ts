@@ -1,14 +1,16 @@
 // code.ts
 
-// @ts-expect-error Mustache has no default export.
+// // @ts-expect-error Mustache has no default export.
 import Mustache from "mustache";
 import axios, { AxiosHeaders, AxiosResponse } from "axios";
+import { IGraphState } from "baklavajs";
 import { UnwrapRef, nextTick, reactive } from "vue";
 
 import { IAxiosErrorData, IAxiosResponseData } from "@/stores/defineBackendStore";
 import { TProject } from "@/types";
 
 import { BaseObj } from "../common/base";
+import { CodeGraph } from "../codeGraph/codeGraph";
 import { download } from "../../utils/download";
 
 export interface IResponseProps {
@@ -21,6 +23,7 @@ export interface IResponseProps {
 }
 
 export interface ICodeProps {
+  graph?: IGraphState;
   templateFilename?: string;
 }
 
@@ -31,9 +34,8 @@ interface ICodeState {
   templateFilename: string;
 }
 
-const codeBlocks: string[] = ["importModules"];
-
 export class BaseCode extends BaseObj {
+  private _graph: CodeGraph;
   private _state: UnwrapRef<ICodeState>;
   public _project: TProject; // parent
 
@@ -46,13 +48,23 @@ export class BaseCode extends BaseObj {
         lineNumber: -1,
         message: "",
       },
-      templateFilename: codeProps?.templateFilename || "code",
-      template: "",
       script: "",
+      template: "",
+      templateFilename: "code",
     });
 
+    if (codeProps) {
+      this._state.templateFilename = codeProps?.templateFilename ?? "code";
+    }
+
     if (this._state.templateFilename) this.loadTemplate();
+
+    this._graph = new CodeGraph(this); //, codeProps?.graph);
     this.clean();
+  }
+
+  get graph(): CodeGraph {
+    return this._graph;
   }
 
   get project(): TProject {
@@ -83,7 +95,7 @@ export class BaseCode extends BaseObj {
    * Execute code.
    * @remarks It sends request to the backend to execute the code.
    */
-  async exec(): Promise<void | AxiosResponse<IAxiosResponseData>> {
+  async exec(): Promise<AxiosResponse<IAxiosResponseData>> {
     this.logger.trace("exec code");
 
     const axiosInstance = axios.create();
@@ -144,8 +156,10 @@ export class BaseCode extends BaseObj {
   generate(): void {
     this.logger.trace("generate");
 
-    if (this._state.template) {
-      this.script = Mustache.render(this._state.template || "", this.project);
+    this.graph.renderCodes();
+
+    if (this.state.template) {
+      this.renderCode();
       this.updateHash();
     } else {
       this.loadTemplate().then(() => nextTick(() => this.generate()));
@@ -169,7 +183,16 @@ export class BaseCode extends BaseObj {
   init(): void {
     this.logger.trace("init");
 
+    this.initGraph();
     this.generate();
+  }
+
+  initGraph(): void {
+    this.logger.trace("init graph");
+
+    this.graph.unsubscribe();
+    this.graph.init();
+    this.graph.subscribe();
   }
 
   /**
@@ -181,6 +204,10 @@ export class BaseCode extends BaseObj {
     return this.importTemplate().then((template: { default: string }) => {
       this._state.template = template.default;
     });
+  }
+
+  renderCode(): void {
+    this.script = Mustache.render(this.state.template || "", this.graph);
   }
 
   /**
@@ -198,8 +225,13 @@ export class BaseCode extends BaseObj {
    * @return code props
    */
   toJSON(): ICodeProps {
-    return {};
+    return { graph: this.graph.state.graph };
   }
+
+  /**
+   * Update code.
+   */
+  update(): void {}
 
   /**
    * Update hash.
