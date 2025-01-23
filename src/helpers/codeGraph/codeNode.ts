@@ -32,6 +32,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
     return "n" + (this.indexOfNodeType + 1);
   }
 
+  get idx(): number {
+    return this.graph?.nodes.indexOf(this) || -1;
+  }
+
   get indexOfNodeType(): number {
     const nodeIds = this.graph?.nodes.filter((node) => node.type === this.type).map((node) => node.id);
     if (nodeIds) return nodeIds.indexOf(this.id);
@@ -42,44 +46,50 @@ export abstract class AbstractCodeNode extends AbstractNode {
     return this._script;
   }
 
-  get preNode(): AbstractCodeNode | undefined {
-    return this.getSourceNode("pre");
-  }
-
-  get postNode(): AbstractCodeNode | undefined {
-    return this.getSourceNode("post");
-  }
-
-  // get sourceNodes(): AbstractCodeNode[] | undefined {
-  //   const connections = this.graph?.connections.filter((c) => c.to.nodeId === this.id);
-  //   return connections.map((c) => this.graph?.findNodeById(c.from.nodeId));
-  // }
-
-  // get sourceNode(): AbstractCodeNode | undefined {
-  //   return this.graph.findNodeById(this.graph.connection.from.nodeId);
-  // }
-
-  // findConnectionById(id: string): Connection | undefined {
-  //   return this.graph.connections.find((c) => c.id === id);
-  // }
-
-  getSourceNode(nodeInterface: string): AbstractCodeNode | undefined {
-    let nodeId: string | undefined;
-    if (nodeInterface in this.inputs) {
-      const connection = this.graph?.connections.find(
-        (c) => c.to.id === this.inputs[nodeInterface].id || c.from.id === this.inputs[nodeInterface].id,
-      );
-      if (connection) nodeId = connection.from.nodeId;
-    } else if (nodeInterface in this.outputs) {
-      const connection = this.graph?.connections.find(
-        (c) => c.from.id === this.outputs[nodeInterface].id || c.from.id === this.outputs[nodeInterface].id,
-      );
-      if (connection) nodeId = connection.to.nodeId;
+  /**
+   * Get connected nodes to the node.
+   */
+  getConnectedNodes(mode?: string): AbstractCodeNode[] {
+    let nodeIds: string[] = [];
+    if (mode != "outputs") {
+      const sources = this.graph?.connections.filter((c) => c.to.nodeId === this.id).map((c) => c.from.nodeId);
+      if (sources) nodeIds = nodeIds.concat(sources);
     }
-    if (!nodeId) return;
-    return this.graph?.findNodeById(nodeId) as AbstractCodeNode;
+    if (mode != "inputs") {
+      const targets = this.graph?.connections.filter((c) => c.from.nodeId === this.id).map((c) => c.to.nodeId);
+      if (targets) nodeIds = nodeIds.concat(targets);
+    }
+
+    if (!nodeIds || nodeIds.length == 0) return [];
+    return nodeIds.map((nodeId) => this.graph?.findNodeById(nodeId)) as AbstractCodeNode[];
   }
 
+  /**
+   * Get connected node to the node interface.
+   * @param nodeInterface string
+   * @returns code node instance
+   */
+  getConnectedNodesByInterface(nodeInterface: string): AbstractCodeNode[] {
+    let nodeIds: string[] = [];
+    if (nodeInterface in this.inputs) {
+      const sources = this.graph?.connections
+        .filter((c) => c.to.id === this.inputs[nodeInterface].id || c.from.id === this.inputs[nodeInterface].id)
+        .map((c) => c.from.nodeId);
+      if (sources) nodeIds = nodeIds.concat(sources);
+    } else if (nodeInterface in this.outputs) {
+      const targets = this.graph?.connections
+        .filter((c) => c.from.id === this.outputs[nodeInterface].id || c.from.id === this.outputs[nodeInterface].id)
+        .map((c) => c.to.nodeId);
+      if (targets) nodeIds = nodeIds.concat(targets);
+    }
+
+    if (!nodeIds || nodeIds.length == 0) return [];
+    return nodeIds.map((nodeId) => this.graph?.findNodeById(nodeId)) as AbstractCodeNode[];
+  }
+
+  /**
+   * Render code of this node.
+   */
   renderCode(): void {
     this._script = Mustache.render(this.codeTemplate(this), this);
   }

@@ -12,9 +12,7 @@
 
     <div :title="node.type" class="__title" @pointerdown.self.stop="startDrag" @contextmenu.prevent="openContextMenu">
       <template v-if="!renaming">
-        <div class="__title-label">
-          {{ node.title }}
-        </div>
+        <div class="__title-label">{{ node.idx + 1 }} - {{ node.title }}</div>
         <div class="__menu">
           <v-icon icon="mdi:mdi-eye" class="mx-1 --clickable" size="xsmall" />
           <v-icon icon="mdi:mdi-pencil" class="mx-1 --clickable" size="xsmall" @click="openSidebar" />

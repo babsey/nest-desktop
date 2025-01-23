@@ -23,6 +23,7 @@ import { useNESTModelDBStore } from "./stores/model/modelDBStore";
 import { useNESTModelStore } from "./stores/model/modelStore";
 import { useNESTProjectDBStore } from "./stores/project/projectDBStore";
 import { useNESTProjectStore } from "./stores/project/projectStore";
+import { registerNorseNodeTypes } from "../norse/helpers/codeNodeTypes";
 
 const logger = mainLogger.getSubLogger({
   minLevel: 3,
@@ -98,6 +99,7 @@ export const nest: IWorkspaceProps = {
 
     const codeGraphStore = useCodeGraphStore();
     registerNESTNodeTypes(codeGraphStore.state.editor as Editor);
+    registerNorseNodeTypes(codeGraphStore.state.editor as Editor);
   },
   route,
   stores: {},

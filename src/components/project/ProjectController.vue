@@ -69,8 +69,9 @@
 
         <template v-if="appStore.state.devMode && projectViewStore.state.views.controller === 'data'">
           <v-tabs v-model="tab" density="compact">
-            <v-tab value="doc"> DB doc </v-tab>
-            <v-tab value="json"> json </v-tab>
+            <v-tab value="doc">db doc</v-tab>
+            <v-tab value="json">json</v-tab>
+            <v-tab value="editor">editor</v-tab>
           </v-tabs>
 
           <v-window v-model="tab">
@@ -91,12 +92,22 @@
                 style="font-size: 0.75rem; width: 100%"
               />
             </v-window-item>
+
+            <v-window-item reverse-transition="no-transition" transition="no-transition" value="editor">
+              <codemirror
+                :extensions="extensions"
+                :model-value="codeGraphEditor"
+                disabled
+                style="font-size: 0.75rem; width: 100%"
+              />
+            </v-window-item>
           </v-window>
         </template>
       </slot>
 
       <template v-if="projectViewStore.state.views.controller === 'code'">
         <slot name="codeEditor">
+          <CodeTreeview :code="project.code" />
           <CodeEditor :code="project.code" />
         </slot>
       </template>
@@ -138,6 +149,7 @@ import ActivityChartController from "../activityChart/ActivityChartController.vu
 // import ActivityStats from "../activityStats/ActivityStats.vue";
 import CodeEditor from "../code/CodeEditor.vue";
 import CodeMirror from "../code/CodeMirror.vue";
+import CodeTreeview from "@/components/codeGraph/CodeTreeview.vue";
 import NetworkSpecEditor from "../network/NetworkSpecEditor.vue";
 import SimulationKernelEditor from "../simulation/SimulationKernelEditor.vue";
 // import { Activities } from "@/helpers/activity/activities";
@@ -158,8 +170,8 @@ const project = computed(() => projectStore.value.state.project);
 const projectViewStore = computed(() => appStore.currentWorkspace.views.project);
 
 const projectDoc = computed(() => JSON.stringify(project.value.doc, null, 2));
-
 const projectJSON = computed(() => JSON.stringify(project.value.toJSON(), null, 2));
+const codeGraphEditor = computed(() => JSON.stringify(project.value.code.graph.state.editor, null, 2));
 
 const tab = ref("doc");
 

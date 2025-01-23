@@ -18,7 +18,7 @@ import { useElephantProjectStore } from "./stores/project/projectStore";
 export const elephant: IWorkspaceProps = {
   backends: {},
   configNames: ["ElephantModel"],
-  databases: ["PYNN_MODEL_STORE", "PYNN_PROJECT_STORE"],
+  databases: ["ELEPHANT_MODEL_STORE", "ELEPHANT_PROJECT_STORE"],
   iconSet,
   id: "elephant",
   init: () => {
@@ -47,7 +47,7 @@ export const elephant: IWorkspaceProps = {
         workspace: "elephant",
         views: {
           controller: "",
-          main: "explore",
+          main: "edit",
         },
       })(),
       model: defineViewStore({

@@ -17,11 +17,11 @@
   <!-- <v-treeview :items density="compact" open-all></v-treeview> -->
 
   <v-list density="compact" style="font-size: 12px; font-family: monospace">
-    <draggable v-model="code.graph.nodes" group="people" item-key="id" @start="drag = true" @end="drag = false">
+    <draggable v-model="code.graph.nodes" group="people" item-key="id" @start="drag = true" @end="dragEnd()">
       <template #item="{ element }">
         <v-list-item style="height: 1.4em; min-height: auto; line-height: 16.8px">
           <v-btn icon="mdi:mdi-drag" variant="text" size="xsmall" />
-          nest.{{ element.title }}
+          {{ element.idx + 1 }} - {{ element.title }}
         </v-list-item>
       </template>
     </draggable>
@@ -35,8 +35,13 @@ import draggable from "vuedraggable";
 import { BaseCode } from "@/helpers/code/code";
 
 const props = defineProps<{ code: BaseCode }>();
-const code = computed(() => props.code);
+const code = computed(() => props.code as BaseCode);
 const drag = ref(false);
+
+const dragEnd = () => {
+  drag.value = false;
+  code.value.generate();
+};
 
 // interface IItem {
 //   title: string;

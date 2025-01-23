@@ -133,10 +133,6 @@
     </ProjectBar>
 
     <ProjectController>
-      <!-- <template #graph>
-        <CodeTreeview :code="project.code" />
-      </template> -->
-
       <template #activityController>
         <ActivityChartController
           v-if="projectViewStore.state.views.activity === 'abstract'"
@@ -256,7 +252,6 @@
 import { computed, onMounted, ref } from "vue";
 
 import ActivityChartController from "@/components/activityChart/ActivityChartController.vue";
-// import CodeTreeview from "@/components/code/CodeTreeview.vue";
 import ConnectionEditor from "@/components/connection/ConnectionEditor.vue";
 import Menu from "@/components/common/Menu.vue";
 import NodeEditor from "@/components/node/NodeEditor.vue";

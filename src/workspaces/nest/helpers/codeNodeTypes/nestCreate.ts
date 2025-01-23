@@ -20,17 +20,19 @@ export default defineDynamicCodeNode({
   },
   codeTemplate: (node) => {
     if (!node) return "";
-    return `${node.label} = nest.Create("{{ inputs.model.value }}", {{ inputs.size.value }})`;
+    const args = ['"{{ inputs.model.value }}"'];
+    if (node.inputs.size.value > 1) args.push("{{ inputs.size.value }}");
+
+    const nodes = node.getConnectedNodes("outputs");
+    return (nodes.length > 0 ? `${node.label} = ` : "") + `nest.Create(${args.join(", ")})`;
   },
   onUpdate({ model }) {
-    if (model.includes("recorder") || model.includes("meter")) {
-      return {
-        outputs: {
-          events: () => new NodeInterface("events", ""),
-        },
-      };
-    } else {
-      return {};
-    }
+    const inputs: Record<string, () => NodeInterface> = {};
+    const outputs: Record<string, () => NodeInterface> = {};
+
+    if (model.includes("recorder") || model.includes("meter"))
+      outputs["events"] = () => new NodeInterface("events", "");
+
+    return { inputs, outputs };
   },
 });

@@ -13,7 +13,6 @@ import { useAppStore } from "../appStore";
 import { useProjectDBStore } from "./projectDBStore";
 
 interface IProjectStoreState<TProject extends BaseProject = BaseProject> {
-  code: string;
   project: TProject | null;
   projectId: string;
 }
@@ -31,13 +30,12 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
   },
 ) {
   const logger = mainLogger.getSubLogger({
-    minLevel: props.loggerMinLevel || 3,
+    minLevel: props.loggerMinLevel || 1,
     name: props.workspace + " project store",
   });
 
   return defineStore(props.workspace + "-project", () => {
     const state = reactive<IProjectStoreState<TProject | BaseProject>>({
-      code: "print('hello world!')",
       project: null,
       projectId: "",
     });
@@ -107,6 +105,8 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
       // activityGraphStore.init(state.project as Project);
       // activityGraphStore.update();
       // const projectViewStore = useProjectViewStore();
+
+      if (state.project && state.project.code.graph.state.editor.graph) state.project.code.graph.loadEditorState();
 
       const appStore = useAppStore();
       const projectViewStore = appStore.currentWorkspace.views.project;

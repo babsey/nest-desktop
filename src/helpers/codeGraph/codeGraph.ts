@@ -1,84 +1,120 @@
 // codeGraph.ts
 
-import { IBaklavaViewModel, useBaklava } from "baklavajs";
+import { Connection, Editor, Graph, IBaklavaViewModel, IEditorState, NodeInterface, useBaklava } from "baklavajs";
+import { reactive, UnwrapRef } from "vue";
 
-import { addBaseTypes, setSettings } from "@/plugins/baklava";
-import { TProject } from "@/types";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import { AbstractCodeNode } from "./codeNode";
 import { BaseCode } from "../code/code";
 import { BaseObj } from "../common/base";
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+
+interface ICodeGraphState {
+  editor: IEditorState | Record<string, any>;
+}
 
 export class CodeGraph extends BaseObj {
-  private _nodes: AbstractCodeNode[] = [];
-  private _viewModel: IBaklavaViewModel;
-  public _project: TProject;
+  public _code: BaseCode;
+  public _modelView: IBaklavaViewModel;
+  private _state: UnwrapRef<ICodeGraphState>;
 
-  constructor(project: TProject) {
+  constructor(code: BaseCode) {
     super();
-    this._project = project;
+    this._code = code;
 
     const codeGraphStore = useCodeGraphStore();
-    this._viewModel = useBaklava(codeGraphStore.state.editor);
+    this._modelView = useBaklava(codeGraphStore.state.editor as Editor);
+    this._state = reactive({
+      editor: {},
+    });
 
-    this.viewModel.editor.graphEvents.addNode.subscribe(Symbol(), () => this.code.generate());
-    this.viewModel.editor.graphEvents.addConnection.subscribe(Symbol(), () => this.code.generate());
-    this.viewModel.editor.graphEvents.removeNode.subscribe(Symbol(), () => this.code.generate());
-    this.viewModel.editor.graphEvents.removeConnection.subscribe(Symbol(), () => this.code.generate());
+    this.subscribe();
   }
 
   get code(): BaseCode {
-    return this.project.code;
+    return this._code;
+  }
+
+  get connections(): Connection[] {
+    return this.graph._connections as Connection[];
+  }
+
+  set connections(values: Connection[]) {
+    this.graph._connections = values as Connection[];
+  }
+
+  get graph(): Graph {
+    return this._modelView.displayedGraph;
+  }
+
+  get modelView(): IBaklavaViewModel {
+    return this._modelView;
   }
 
   get nodes(): AbstractCodeNode[] {
-    return this.viewModel.displayedGraph.nodes as AbstractCodeNode[];
+    return this.graph._nodes as AbstractCodeNode[];
   }
 
-  get viewModel(): IBaklavaViewModel {
-    return this._viewModel;
+  set nodes(values: AbstractCodeNode[]) {
+    this.graph._nodes = values;
   }
 
-  get project(): TProject {
-    return this._project;
+  get state(): UnwrapRef<ICodeGraphState> {
+    return this._state;
+  }
+
+  addConnection(from: NodeInterface, to: NodeInterface): void {
+    this.graph.addConnection(from, to);
+  }
+
+  addNode(node: AbstractCodeNode): void {
+    this.graph.addNode(node);
   }
 
   addNodeWithCoordinates(nodeType: new () => AbstractCodeNode, x: number, y: number) {
-    const n = new nodeType();
-    this._nodes.push(n);
-    this.viewModel.displayedGraph.addNode(n);
-    n.position.x = x;
-    n.position.y = y;
-    return n;
+    const node = new nodeType();
+    this.addNode(node);
+    if (node.position) {
+      node.position.x = x;
+      node.position.y = y;
+    }
+    return node;
   }
 
-  // addNodes(): void {}
-
-  // addNode(title: string, args?: any): void {
-  //   const node = this.createNode(title);
-
-  //   const nodeType = this.nodeTypes[title];
-  //   node.codeTemplate = nodeType.codeTemplate;
-
-  //   if (nodeType && nodeType.init) nodeType.init(node, args);
-
-  //   // console.log(node);
-  //   node.renderCode = function () {
-  //     node.script = Mustache.render(node.codeTemplate, node.properties);
-  //   };
-
-  //   this.graph.add(node);
-  // }
-
-  // createNode(title: string): void {
-  //   return new CodeNode(this, title);
-  // }
+  clear(): void {
+    this.nodes = [];
+    this.connections = [];
+  }
 
   init(): void {
-    this.viewModel.displayedGraph._nodes = [];
-    this.viewModel.displayedGraph._connections = [];
-    addBaseTypes(this.viewModel);
-    setSettings(this.viewModel);
+    this.clear();
   }
+
+  loadEditorState(): void {
+    this._modelView.editor.load(this._state.editor as IEditorState);
+  }
+
+  onUpdate = () => {
+    this.code.generate();
+    this.saveEditorState();
+  };
+
+  renderCodes(): void {
+    if (this.nodes.length > 0) {
+      this.nodes.forEach((node: AbstractCodeNode) => (node.renderCode ? node.renderCode() : null));
+    }
+  }
+
+  saveEditorState(): void {
+    this._state.editor = this._modelView.editor.save();
+  }
+
+  subscribe = () => {
+    const editor = this.modelView.editor;
+    editor.graphEvents.addNode.subscribe(Symbol(), () => this.onUpdate());
+    editor.graphEvents.addConnection.subscribe(Symbol(), () => this.onUpdate());
+    editor.graphEvents.removeNode.subscribe(Symbol(), () => this.onUpdate());
+    editor.graphEvents.removeConnection.subscribe(Symbol(), () => this.onUpdate());
+    editor.nodeEvents.update.subscribe(Symbol(), () => this.onUpdate());
+  };
 }

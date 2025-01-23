@@ -10,9 +10,7 @@ import { TProject } from "@/types";
 
 import { BaseObj } from "../common/base";
 import { CodeGraph } from "../codeGraph/codeGraph";
-// import { IBaseNodeType } from "../../plugins/litegraph/LNodeType";
 import { download } from "../../utils/download";
-import { AbstractCodeNode } from "../codeGraph/codeNode";
 
 export interface IResponseProps {
   data: object | string;
@@ -64,7 +62,8 @@ export class BaseCode extends BaseObj {
 
     if (this._state.templateFilename) this.loadTemplate();
 
-    this._graph = new CodeGraph(project);
+    this._graph = new CodeGraph(this);
+
     this.clean();
   }
 
@@ -165,12 +164,10 @@ export class BaseCode extends BaseObj {
   generate(): void {
     this.logger.trace("generate");
 
-    if (this.graph.nodes.length > 0) {
-      this.graph.nodes.forEach((node: AbstractCodeNode) => node.renderCode());
-    }
+    this.graph.renderCodes();
 
     if (this.state.template) {
-      this.script = Mustache.render(this.state.template || "", this.graph);
+      this.renderCode();
       this.updateHash();
     } else {
       this.loadTemplate().then(() => nextTick(() => this.generate()));
@@ -194,8 +191,13 @@ export class BaseCode extends BaseObj {
   init(): void {
     this.logger.trace("init");
 
-    this.graph.init();
+    this.initGraph();
     this.generate();
+  }
+
+  initGraph(): void {
+    this.logger.trace("init graph");
+    this.graph.init();
   }
 
   /**
@@ -207,6 +209,10 @@ export class BaseCode extends BaseObj {
     return this.importTemplate().then((template: { default: string }) => {
       this._state.template = template.default;
     });
+  }
+
+  renderCode(): void {
+    this.script = Mustache.render(this.state.template || "", this.graph);
   }
 
   /**

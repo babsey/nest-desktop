@@ -47,18 +47,12 @@ export class NESTCode extends BaseCode {
     // return this.doRunSimulationInsite ? this.execWithInsite() : nest.exec(this.script);
   }
 
-  override init(): void {
-    this.logger.trace("init");
+  override initGraph(): void {
+    this.logger.trace("init graph");
 
     this.graph.init();
-
     this.updateCodeGraphfromNetwork();
-
-    // const node = nodeTypes["nest.Create"];
-
-    // this.graph.graph.displayedGraph.addNode('nest.ResetKernel')
-
-    this.generate();
+    this.graph.saveEditorState();
   }
 
   // /**
@@ -96,7 +90,11 @@ export class NESTCode extends BaseCode {
   //     });
   // }
 
+  /**
+   * Update code craph from network.
+   */
   updateCodeGraphfromNetwork(): void {
+    this.logger.trace("update graph from network");
     const left = 300;
     const width = 350;
     const space = 70;
@@ -118,15 +116,9 @@ export class NESTCode extends BaseCode {
       const codeNode = this.graph.addNodeWithCoordinates(nestConnect, left + 2 * (width + space), 100 + 200 * idx);
       codeNode.twoColumn = true;
 
-      this.graph.viewModel.displayedGraph.addConnection(
-        codeNode.inputs.pre,
-        nodes[connection.sourceIdx].outputs.node_collection,
-      );
+      this.graph.addConnection(codeNode.inputs.pre, nodes[connection.sourceIdx].outputs.node_collection);
 
-      this.graph.viewModel.displayedGraph.addConnection(
-        nodes[connection.targetIdx].outputs.node_collection,
-        codeNode.inputs.post,
-      );
+      this.graph.addConnection(nodes[connection.targetIdx].outputs.node_collection, codeNode.inputs.post);
     });
 
     this.graph.addNodeWithCoordinates(nestSimulate, left, 300);

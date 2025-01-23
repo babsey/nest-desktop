@@ -1,13 +1,5 @@
 <template>
-  <!--
-      By default, the editor completely fills its parent HTML element.
-      If you directly use the editor in the <body> element, make sure to use
-      a wrapper <div> with specified width and height properties:
-      <div style="width: 90vw; height: 90vh">
-          <BaklavaEditor :view-model="baklava" />
-      </div>
-  -->
-  <BaklavaEditor :view-model>
+  <BaklavaEditor :view-model="modelView">
     <template #palette>
       <NodePalette />
     </template>
@@ -19,10 +11,14 @@
 </template>
 
 <script setup lang="ts">
-import { BaklavaEditor, IBaklavaViewModel } from "@baklavajs/renderer-vue";
+import { computed } from "vue";
+import { BaklavaEditor, IBaklavaViewModel, useBaklava } from "@baklavajs/renderer-vue";
+
+import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import NodePalette from "./NodePalette.vue";
 import CodeGraphNode from "./CodeGraphNode.vue";
 
-defineProps<{ viewModel: IBaklavaViewModel }>();
+defineProps<{ modelView: IBaklavaViewModel }>();
 </script>

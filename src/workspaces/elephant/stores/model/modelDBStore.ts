@@ -5,12 +5,11 @@ import { defineModelDBStore } from "@/stores/model/defineModelDBStore";
 import { ElephantModel } from "../../helpers/model/model";
 import { ElephantModelDB } from "../../helpers/model/modelDB";
 
-// const modelAssets = ["dummyRasterPlot"];
-// const modelAssets = ["timeHistogram", "ISIBar", "CVISIBar", "crossCorrelationImshow"];
+const modelAssets: string[] = [];
 
 export const useElephantModelDBStore = defineModelDBStore<ElephantModel>({
   Model: ElephantModel,
   ModelDB: ElephantModelDB,
-  // modelAssets,
+  modelAssets,
   workspace: "elephant",
 });

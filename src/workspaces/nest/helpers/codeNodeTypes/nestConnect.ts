@@ -30,21 +30,24 @@ export default defineDynamicCodeNode({
         .setPort(false),
     syn_spec: () => new TextInputInterface("syn_spec", "static_synapse").use(displayInSidebar, true).setHidden(true),
   },
-  onUpdate({ conn_spec }) {
-    if (conn_spec === "pairwise_bernoulli") {
-      return {
-        inputs: {
-          p: () => new NumberInterface("p", 0.1, 0.01, 1).use(displayInSidebar, true).setHidden(true),
-        },
-      };
-    }
-    return {};
-  },
   codeTemplate: (node) => {
     if (!node) return "";
-    const preNode = node.getSourceNode("pre");
-    const postNode = node.getSourceNode("post");
-    if (!preNode || !postNode) return "";
-    return `nest.Connect(${preNode.label}, ${postNode.label})`;
+    const preNodes = node.getConnectedNodesByInterface("pre");
+    const postNodes = node.getConnectedNodesByInterface("post");
+    if (preNodes.length === 0 || postNodes.length === 0) return "nest.Connect";
+    const preLabels = preNodes.map((node) => node.label);
+    preLabels.sort();
+    const postLabels = postNodes.map((node) => node.label);
+    postLabels.sort();
+    return `nest.Connect(${preLabels.join("+")}, ${postLabels.join("+")})`;
+  },
+  onUpdate({ conn_spec }) {
+    const inputs: Record<string, () => NodeInterface> = {};
+    const outputs: Record<string, () => NodeInterface> = {};
+
+    if (conn_spec === "pairwise_bernoulli")
+      inputs["p"] = () => new NumberInterface("p", 0.1, 0.01, 1).use(displayInSidebar, true).setHidden(true);
+
+    return { inputs, outputs };
   },
 });

@@ -39,7 +39,7 @@
 
     <CodeGraphEditor
       v-if="projectViewStore.state.views.graph === 'code'"
-      :view-model="currentProject.code.graph.viewModel"
+      :model-view="currentProject.code.graph.modelView"
     />
   </v-layout>
 </template>
