@@ -71,6 +71,7 @@
           <v-tabs v-model="tab" density="compact">
             <v-tab value="doc">db doc</v-tab>
             <v-tab value="json">json</v-tab>
+            <v-tab value="codeGraph">code graph</v-tab>
             <v-tab value="editor">editor</v-tab>
           </v-tabs>
 
@@ -78,7 +79,7 @@
             <v-window-item reverse-transition="no-transition" transition="no-transition" value="doc">
               <codemirror
                 :extensions="extensions"
-                :model-value="projectDoc"
+                :model-value="projectDocJSON"
                 disabled
                 style="font-size: 0.75rem; width: 100%"
               />
@@ -93,10 +94,19 @@
               />
             </v-window-item>
 
+            <v-window-item reverse-transition="no-transition" transition="no-transition" value="codeGraph">
+              <codemirror
+                :extensions="extensions"
+                :model-value="codeGraphJSON"
+                disabled
+                style="font-size: 0.75rem; width: 100%"
+              />
+            </v-window-item>
+
             <v-window-item reverse-transition="no-transition" transition="no-transition" value="editor">
               <codemirror
                 :extensions="extensions"
-                :model-value="codeGraphEditor"
+                :model-value="codeGraphEditorJSON"
                 disabled
                 style="font-size: 0.75rem; width: 100%"
               />
@@ -165,13 +175,17 @@ const appStore = useAppStore();
 import { useNavStore } from "@/stores/navStore";
 const navStore = useNavStore();
 
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+const codeGraphStore = useCodeGraphStore();
+
 const projectStore = computed(() => appStore.currentWorkspace.stores.projectStore);
 const project = computed(() => projectStore.value.state.project);
 const projectViewStore = computed(() => appStore.currentWorkspace.views.project);
 
-const projectDoc = computed(() => JSON.stringify(project.value.doc, null, 2));
+const projectDocJSON = computed(() => JSON.stringify(project.value.doc, null, 2));
 const projectJSON = computed(() => JSON.stringify(project.value.toJSON(), null, 2));
-const codeGraphEditor = computed(() => JSON.stringify(project.value.code.graph.state.editor, null, 2));
+const codeGraphJSON = computed(() => JSON.stringify(project.value.code.graph.state.graph, null, 2));
+const codeGraphEditorJSON = computed(() => JSON.stringify(codeGraphStore.viewModel.editor.save(), null, 2));
 
 const tab = ref("doc");
 

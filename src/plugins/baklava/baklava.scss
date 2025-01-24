@@ -1,36 +1,3 @@
-// :root {
-//   // Controls
-//   --baklava-control-color-background: #d3d3d3;
-//   --baklava-control-color-foreground: black;
-
-//   // Nodes
-//   --baklava-node-color-background: #c0c0c0cc;
-//   --baklava-node-color-foreground: black;
-//   --baklava-node-title-color-foreground: black;
-
-//   --baklava-group-node-title-color-foreground: black;
-//   --baklava-node-interface-port-color: black;
-
-//   // Connections
-//   --baklava-color-connection-default: black;
-
-//   // Background pattern
-//   --baklava-editor-background-pattern-default: #dcdcdc;
-//   --baklava-editor-background-pattern-line: #ececec;
-//   --baklava-editor-background-pattern-black: #ffffff22;
-
-//   // Context Menu
-//   --baklava-context-menu-background: #ffffffcc;
-
-//   // Toolbar
-//   --baklava-toolbar-background: #fff3;
-//   --baklava-toolbar-foreground: black;
-
-//   // Node Palette
-//   --baklava-node-palette-background: #fff3;
-//   --baklava-node-palette-foreground: black;
-// }
-
 .baklava-node-interface[data-interface-type="string"] {
   --baklava-node-interface-port-color: green;
 }
@@ -49,6 +16,14 @@
 
 .baklava-node-interface[data-interface-type="nestSynapseCollection"] {
   --baklava-node-interface-port-color: purple;
+}
+
+.baklava-node.--hidden {
+  opacity: 0.5;
+
+  .__title {
+    background-color: var(--baklava-node-color-background) !important;
+  }
 }
 
 .baklava-node[data-node-type^="elephant"] .__title {

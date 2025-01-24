@@ -1,34 +1,28 @@
 // codeGraph.ts
 
-import { Connection, Editor, Graph, IBaklavaViewModel, IEditorState, NodeInterface, useBaklava } from "baklavajs";
+import { Connection, Editor, Graph, IGraphState, NodeInterface } from "baklavajs";
 import { reactive, UnwrapRef } from "vue";
-
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import { AbstractCodeNode } from "./codeNode";
 import { BaseCode } from "../code/code";
 import { BaseObj } from "../common/base";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 interface ICodeGraphState {
-  editor: IEditorState | Record<string, any>;
+  graph: IGraphState;
 }
 
 export class CodeGraph extends BaseObj {
   public _code: BaseCode;
-  public _modelView: IBaklavaViewModel;
   private _state: UnwrapRef<ICodeGraphState>;
 
-  constructor(code: BaseCode) {
+  constructor(code: BaseCode, graphState: IGraphState = new Graph(new Editor()).save()) {
     super();
     this._code = code;
 
-    const codeGraphStore = useCodeGraphStore();
-    this._modelView = useBaklava(codeGraphStore.state.editor as Editor);
     this._state = reactive({
-      editor: {},
+      graph: graphState,
     });
-
-    this.subscribe();
   }
 
   get code(): BaseCode {
@@ -36,7 +30,7 @@ export class CodeGraph extends BaseObj {
   }
 
   get connections(): Connection[] {
-    return this.graph._connections as Connection[];
+    return this.graph.connections as Connection[];
   }
 
   set connections(values: Connection[]) {
@@ -44,15 +38,19 @@ export class CodeGraph extends BaseObj {
   }
 
   get graph(): Graph {
-    return this._modelView.displayedGraph;
+    const codeGraphStore = useCodeGraphStore();
+    return codeGraphStore.viewModel.editor.graph as Graph;
   }
 
-  get modelView(): IBaklavaViewModel {
-    return this._modelView;
+  get modules(): string[] {
+    const codeGraphStore = useCodeGraphStore();
+    const categories = Array.from(new Set(this.nodes.map((node: AbstractCodeNode) => node.type.split(".")[0])));
+    categories.sort();
+    return categories.map((category: string) => codeGraphStore.state.modules[category]);
   }
 
   get nodes(): AbstractCodeNode[] {
-    return this.graph._nodes as AbstractCodeNode[];
+    return this.graph.nodes as AbstractCodeNode[];
   }
 
   set nodes(values: AbstractCodeNode[]) {
@@ -72,12 +70,18 @@ export class CodeGraph extends BaseObj {
   }
 
   addNodeWithCoordinates(nodeType: new () => AbstractCodeNode, x: number, y: number) {
-    const node = new nodeType();
+    const node = this.createNode(nodeType);
     this.addNode(node);
     if (node.position) {
       node.position.x = x;
       node.position.y = y;
     }
+    return node;
+  }
+
+  createNode(nodeType: new () => AbstractCodeNode) {
+    const node = new nodeType();
+    node.code = this.code;
     return node;
   }
 
@@ -90,31 +94,34 @@ export class CodeGraph extends BaseObj {
     this.clear();
   }
 
-  loadEditorState(): void {
-    this._modelView.editor.load(this._state.editor as IEditorState);
+  load(): void {
+    if (this.graph.id === this.state.graph.id) return;
+    this.unsubscribe();
+    this.graph.load(this.state.graph);
+    this.subscribe();
   }
 
   onUpdate = () => {
     this.code.generate();
-    this.saveEditorState();
+    this.save();
   };
 
   renderCodes(): void {
-    if (this.nodes.length > 0) {
-      this.nodes.forEach((node: AbstractCodeNode) => (node.renderCode ? node.renderCode() : null));
-    }
+    if (this.nodes.length === 0) return;
+    this.nodes.forEach((node: AbstractCodeNode) => (node.renderCode ? node.renderCode() : null));
   }
 
-  saveEditorState(): void {
-    this._state.editor = this._modelView.editor.save();
+  save(): void {
+    this.state.graph = this.graph.save();
   }
 
-  subscribe = () => {
-    const editor = this.modelView.editor;
-    editor.graphEvents.addNode.subscribe(Symbol(), () => this.onUpdate());
-    editor.graphEvents.addConnection.subscribe(Symbol(), () => this.onUpdate());
-    editor.graphEvents.removeNode.subscribe(Symbol(), () => this.onUpdate());
-    editor.graphEvents.removeConnection.subscribe(Symbol(), () => this.onUpdate());
-    editor.nodeEvents.update.subscribe(Symbol(), () => this.onUpdate());
-  };
+  subscribe(): void {
+    const codeGraphStore = useCodeGraphStore();
+    codeGraphStore.subscribe(this.onUpdate);
+  }
+
+  unsubscribe(): void {
+    const codeGraphStore = useCodeGraphStore();
+    codeGraphStore.unsubscribe();
+  }
 }

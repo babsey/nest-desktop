@@ -41,6 +41,10 @@ export default defineDynamicCodeNode({
     postLabels.sort();
     return `nest.Connect(${preLabels.join("+")}, ${postLabels.join("+")})`;
   },
+  onPlaced() {
+    if (!this.code) return;
+    this.networkItem = this.code.project.network.connections.all[this.indexOfNodeType];
+  },
   onUpdate({ conn_spec }) {
     const inputs: Record<string, () => NodeInterface> = {};
     const outputs: Record<string, () => NodeInterface> = {};

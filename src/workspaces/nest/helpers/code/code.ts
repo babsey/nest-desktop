@@ -50,9 +50,10 @@ export class NESTCode extends BaseCode {
   override initGraph(): void {
     this.logger.trace("init graph");
 
+    this.graph.unsubscribe();
     this.graph.init();
     this.updateCodeGraphfromNetwork();
-    this.graph.saveEditorState();
+    this.graph.subscribe();
   }
 
   // /**
@@ -98,12 +99,19 @@ export class NESTCode extends BaseCode {
     const left = 300;
     const width = 350;
     const space = 70;
+    let codeNode;
 
+    // nest.ResetKernel
     this.graph.addNodeWithCoordinates(nestResetKernel, left, 100);
-    this.graph.addNodeWithCoordinates(nestSetKernelStatus, left, 200);
 
+    // nest.SetKernelStatus
+    codeNode = this.graph.addNodeWithCoordinates(nestSetKernelStatus, left, 200);
+    codeNode.inputs.local_num_threads.value = this.project.simulation.kernel.localNumThreads;
+    codeNode.inputs.resolution.value = this.project.simulation.kernel.resolution;
+    codeNode.inputs.rng_seed.value = this.project.simulation.kernel.rngSeed;
+
+    // nest.Create
     const nodes: AbstractCodeNode[] = [];
-
     this.project.network.nodes.nodeItems.forEach((node: NESTNode, idx: number) => {
       const codeNode = this.graph.addNodeWithCoordinates(nestCreate, left + width + space, 100 + 200 * idx);
       codeNode.inputs.model.value = node.modelId;
@@ -112,15 +120,18 @@ export class NESTCode extends BaseCode {
       nodes.push(codeNode);
     });
 
+    // nest.Connect
     this.project.network.connections.all.forEach((connection: NESTConnection, idx: number) => {
       const codeNode = this.graph.addNodeWithCoordinates(nestConnect, left + 2 * (width + space), 100 + 200 * idx);
       codeNode.twoColumn = true;
-
       this.graph.addConnection(codeNode.inputs.pre, nodes[connection.sourceIdx].outputs.node_collection);
-
       this.graph.addConnection(nodes[connection.targetIdx].outputs.node_collection, codeNode.inputs.post);
     });
 
-    this.graph.addNodeWithCoordinates(nestSimulate, left, 300);
+    // nest.Simulate
+    codeNode = this.graph.addNodeWithCoordinates(nestSimulate, left, 300);
+    codeNode.inputs.time.value = this.project.simulation.time;
+
+    this.graph.save();
   }
 }

@@ -1,6 +1,6 @@
-// codeNodeTypes/index.ts
+// nest/codeNodeTypes
 
-import { Editor } from "baklavajs";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import nestConnect from "./nestConnect";
 import nestCopyModel from "./nestCopyModel";
@@ -9,7 +9,11 @@ import nestResetKernel from "./nestResetKernel";
 import nestSetKernelStatus from "./nestSetKernelStatus";
 import nestSimulate from "./nestSimulate";
 
-export const registerNESTNodeTypes = (editor: Editor) => {
+export const registerNESTNodeTypes = () => {
+  const codeGraphStore = useCodeGraphStore();
+  codeGraphStore.state.modules["nest"] = "import nest";
+
+  const editor = codeGraphStore.viewModel.editor;
   editor.registerNodeType(nestConnect, { category: "nest" });
   editor.registerNodeType(nestCopyModel, { category: "nest" });
   editor.registerNodeType(nestCreate, { category: "nest" });

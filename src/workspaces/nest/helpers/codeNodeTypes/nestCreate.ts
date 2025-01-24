@@ -1,7 +1,8 @@
 // nestCreate.ts
 
-import { displayInSidebar, IntegerInterface, NodeInterface, setType, TextInputInterface } from "baklavajs";
+import { IntegerInterface, NodeInterface, TextInputInterface, displayInSidebar, setType } from "baklavajs";
 
+import { NodeParameter } from "@/helpers/node/nodeParameter";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 import { numberType, stringType } from "@/helpers/codeNodeTypes/interfaceTypes";
 
@@ -23,8 +24,20 @@ export default defineDynamicCodeNode({
     const args = ['"{{ inputs.model.value }}"'];
     if (node.inputs.size.value > 1) args.push("{{ inputs.size.value }}");
 
+    const params: string[] = [];
+    node.networkItem?.paramsVisible.forEach((paramKey: string) => {
+      const param = node.inputs[paramKey];
+      if (param) params.push(`"${paramKey}": ${param.value}`);
+    });
+
+    if (params.length > 0) args.push(`params={\n\t${params.join(",\n\t")}\n}`);
+
     const nodes = node.getConnectedNodes("outputs");
     return (nodes.length > 0 ? `${node.label} = ` : "") + `nest.Create(${args.join(", ")})`;
+  },
+  onPlaced() {
+    if (!this.code) return;
+    this.networkItem = this.code.project.network.nodes.nodeItems[this.indexOfNodeType];
   },
   onUpdate({ model }) {
     const inputs: Record<string, () => NodeInterface> = {};
@@ -32,6 +45,12 @@ export default defineDynamicCodeNode({
 
     if (model.includes("recorder") || model.includes("meter"))
       outputs["events"] = () => new NodeInterface("events", "");
+
+    if (this.networkItem && this.networkItem.paramsVisible.length > 0) {
+      this.networkItem.filteredParams.forEach((param: NodeParameter) => {
+        inputs[param.id] = () => new TextInputInterface(param.id, param.value).use(displayInSidebar, true);
+      });
+    }
 
     return { inputs, outputs };
   },

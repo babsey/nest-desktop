@@ -14,7 +14,12 @@
       <template v-if="!renaming">
         <div class="__title-label">{{ node.idx + 1 }} - {{ node.title }}</div>
         <div class="__menu">
-          <v-icon icon="mdi:mdi-eye" class="mx-1 --clickable" size="xsmall" />
+          <v-icon
+            :icon="node.hidden ? 'mdi:mdi-eye-off-outline' : 'mdi:mdi-eye'"
+            class="mx-1 --clickable"
+            size="xsmall"
+            @click="toggleHidden"
+          />
           <v-icon icon="mdi:mdi-pencil" class="mx-1 --clickable" size="xsmall" @click="openSidebar" />
           <v-icon icon="mdi:mdi-dots-vertical" class="--clickable" size="xsmall" @click="openContextMenu" />
           <context-menu v-model="showContextMenu" :x="0" :y="0" :items="contextMenuItems" @click="onContextMenuClick" />
@@ -72,9 +77,12 @@ const props = withDefaults(
   { selected: false },
 );
 
+const node = computed(() => props.node);
+
 const emit = defineEmits<{
   (e: "select"): void;
   (e: "start-drag", ev: PointerEvent): void;
+  (e: "update"): void;
 }>();
 
 const { viewModel } = useViewModel();
@@ -106,6 +114,7 @@ const classes = computed(() => ({
   "--selected": props.selected,
   "--dragging": props.dragging,
   "--two-column": !!props.node.twoColumn,
+  "--hidden": props.node.hidden,
 }));
 
 const classesContent = computed(() => ({
@@ -177,6 +186,11 @@ const startResize = (ev: MouseEvent) => {
   resizeStartWidth = props.node.width;
   resizeStartMouseX = ev.clientX;
   ev.preventDefault();
+};
+
+const toggleHidden = (ev: MouseEvent) => {
+  node.value.hidden = !node.value.hidden;
+  emit("update");
 };
 
 const doResize = (ev: MouseEvent) => {

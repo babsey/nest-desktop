@@ -37,10 +37,7 @@
       </template>
     </NetworkGraph>
 
-    <CodeGraphEditor
-      v-if="projectViewStore.state.views.graph === 'code'"
-      :model-view="currentProject.code.graph.modelView"
-    />
+    <CodeGraphEditor v-if="projectViewStore.state.views.graph === 'code'" :graph="currentProject.code.graph" />
   </v-layout>
 </template>
 

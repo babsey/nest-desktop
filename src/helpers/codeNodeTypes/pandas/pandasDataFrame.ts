@@ -12,5 +12,5 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeInterface("out", ""),
   },
-  codeTemplate: () => "pandas.DataFrame({{ inputs.data.value }})",
+  codeTemplate: () => "pd.DataFrame({{ inputs.data.value }})",
 });

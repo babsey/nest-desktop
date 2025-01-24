@@ -30,7 +30,7 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
   },
 ) {
   const logger = mainLogger.getSubLogger({
-    minLevel: props.loggerMinLevel || 1,
+    minLevel: props.loggerMinLevel || 3,
     name: props.workspace + " project store",
   });
 
@@ -106,7 +106,7 @@ export function defineProjectStore<TProject extends BaseProject = BaseProject>(
       // activityGraphStore.update();
       // const projectViewStore = useProjectViewStore();
 
-      if (state.project && state.project.code.graph.state.editor.graph) state.project.code.graph.loadEditorState();
+      if (state.project) state.project.code.graph.load();
 
       const appStore = useAppStore();
       const projectViewStore = appStore.currentWorkspace.views.project;

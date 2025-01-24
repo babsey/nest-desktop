@@ -42,7 +42,7 @@ export class NetworkProject extends BaseProject {
     this._simulation = new this.Simulation(this, projectProps.simulation);
 
     // Initialize components.
-    nextTick(() => this.init());
+    // nextTick(() => this.init());
   }
 
   override get Activities() {

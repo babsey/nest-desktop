@@ -1,6 +1,6 @@
-// codeNodeTypes/index.ts
+// norse/codeNodeTypes
 
-import { Editor } from "baklavajs";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import norseIAFCell from "./norseIAFCell";
 import norseSequentialState from "./norseSequentialState";
@@ -9,10 +9,20 @@ import torchLinear from "./torchLinear";
 import torchMaxPool2d from "./torchMaxPool2d";
 import torchRandn from "./torchRandn";
 
-export const registerNorseNodeTypes = (editor: Editor) => {
+export const registerNorseNodeTypes = () => {
+  const codeGraphStore = useCodeGraphStore();
+  codeGraphStore.state.modules["norse"] = "import norse";
+
+  const editor = codeGraphStore.viewModel.editor;
   editor.registerNodeType(norseIAFCell, { category: "norse" });
   editor.registerNodeType(norseSequentialState, { category: "norse" });
+};
 
+export const registerTorchNodeTypes = () => {
+  const codeGraphStore = useCodeGraphStore();
+  codeGraphStore.state.modules["torch"] = "import torch";
+
+  const editor = codeGraphStore.viewModel.editor;
   editor.registerNodeType(torchConv2d, { category: "torch" });
   editor.registerNodeType(torchLinear, { category: "torch" });
   editor.registerNodeType(torchMaxPool2d, { category: "torch" });

@@ -5,14 +5,17 @@ import Mustache from "mustache";
 
 import { AbstractNode, INodeState, NodeInterface, NodeInterfaceDefinition } from "baklavajs";
 import { BaseCode } from "../code/code";
+import { TConnection, TNode } from "@/types";
 
 export abstract class AbstractCodeNode extends AbstractNode {
   abstract inputs: Record<string, NodeInterface<any>>;
   abstract outputs: Record<string, NodeInterface<any>>;
 
   private _code: BaseCode | undefined;
-  public _codeTemplate: () => string = () => "";
+  private _codeTemplate: () => string = () => "";
+  private _hidden: boolean = false;
   private _script: string = "";
+  private _networkItem: TNode | TConnection | undefined;
 
   constructor() {
     super();
@@ -24,22 +27,50 @@ export abstract class AbstractCodeNode extends AbstractNode {
     return this._code;
   }
 
+  set code(value: BaseCode) {
+    this._code = value;
+  }
+
   get codeTemplate(): (node?: AbstractCodeNode) => string {
     return this._codeTemplate;
   }
 
-  get label(): string {
-    return "n" + (this.indexOfNodeType + 1);
+  get hidden(): boolean {
+    return this._hidden;
+  }
+
+  set hidden(value: boolean) {
+    this._hidden = value;
   }
 
   get idx(): number {
-    return this.graph?.nodes.indexOf(this) || -1;
+    return this.graph?.nodes.indexOf(this) ?? -1;
   }
 
   get indexOfNodeType(): number {
     const nodeIds = this.graph?.nodes.filter((node) => node.type === this.type).map((node) => node.id);
     if (nodeIds) return nodeIds.indexOf(this.id);
     return -1;
+  }
+
+  get label(): string {
+    return "n" + (this.indexOfNodeType + 1);
+  }
+
+  get networkConnection(): TConnection | undefined {
+    return this._networkItem as TConnection;
+  }
+
+  get networkNode(): TNode | undefined {
+    return this._networkItem as TNode;
+  }
+
+  get networkItem(): TNode | TConnection | undefined {
+    return this._networkItem;
+  }
+
+  set networkItem(value: TNode | TConnection) {
+    this._networkItem = value;
   }
 
   get script(): string {
@@ -92,6 +123,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
    */
   renderCode(): void {
     this._script = Mustache.render(this.codeTemplate(this), this);
+    if (this.hidden) {
+      this._script = "# " + this._script;
+      this._script = this._script.replaceAll("\n", "\n# ");
+    }
   }
 
   // public abstract calculate?: CalculateFunction<any, any>;

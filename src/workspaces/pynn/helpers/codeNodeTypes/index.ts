@@ -1,9 +1,14 @@
-// codeNodeTypes/index.ts
+// pynn/codeNodeTypes
 
-import { Editor } from "baklavajs";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import pynnRun from "./pynnRun";
 
-export const registerPyNNNodeTypes = (editor: Editor) => {
+export const registerPyNNNodeTypes = () => {
+  const codeGraphStore = useCodeGraphStore();
+  codeGraphStore.state.modules["pynn"] = "import pynn";
+
+  const editor = codeGraphStore.viewModel.editor;
+
   editor.registerNodeType(pynnRun, { category: "pynn" });
 };

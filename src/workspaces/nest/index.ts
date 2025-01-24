@@ -1,10 +1,7 @@
 // nest/index.ts
 
-import { Editor } from "baklavajs";
-
 import { defineViewStore } from "@/stores/defineViewStore";
 import { logger as mainLogger } from "@/utils/logger";
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import { IWorkspaceProps } from "../";
 import {
@@ -23,7 +20,8 @@ import { useNESTModelDBStore } from "./stores/model/modelDBStore";
 import { useNESTModelStore } from "./stores/model/modelStore";
 import { useNESTProjectDBStore } from "./stores/project/projectDBStore";
 import { useNESTProjectStore } from "./stores/project/projectStore";
-import { registerNorseNodeTypes } from "../norse/helpers/codeNodeTypes";
+import { registerNorseNodeTypes, registerTorchNodeTypes } from "../norse/helpers/codeNodeTypes";
+import { registerElephantNodeTypes, registerNeoNodeTypes } from "../elephant/helpers/codeNodeTypes";
 
 const logger = mainLogger.getSubLogger({
   minLevel: 3,
@@ -97,9 +95,11 @@ export const nest: IWorkspaceProps = {
       })(),
     };
 
-    const codeGraphStore = useCodeGraphStore();
-    registerNESTNodeTypes(codeGraphStore.state.editor as Editor);
-    registerNorseNodeTypes(codeGraphStore.state.editor as Editor);
+    registerNESTNodeTypes();
+    registerNorseNodeTypes();
+    registerTorchNodeTypes();
+    registerElephantNodeTypes();
+    registerNeoNodeTypes();
   },
   route,
   stores: {},

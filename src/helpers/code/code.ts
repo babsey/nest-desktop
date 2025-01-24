@@ -11,6 +11,7 @@ import { TProject } from "@/types";
 import { BaseObj } from "../common/base";
 import { CodeGraph } from "../codeGraph/codeGraph";
 import { download } from "../../utils/download";
+import { IGraphState } from "baklavajs";
 
 export interface IResponseProps {
   data: object | string;
@@ -23,6 +24,7 @@ export interface IResponseProps {
 
 export interface ICodeProps {
   templateFilename?: string;
+  graph?: IGraphState;
 }
 
 interface ICodeState {
@@ -62,8 +64,7 @@ export class BaseCode extends BaseObj {
 
     if (this._state.templateFilename) this.loadTemplate();
 
-    this._graph = new CodeGraph(this);
-
+    this._graph = new CodeGraph(this); //, codeProps?.graph);
     this.clean();
   }
 
@@ -197,7 +198,10 @@ export class BaseCode extends BaseObj {
 
   initGraph(): void {
     this.logger.trace("init graph");
+
+    this.graph.unsubscribe();
     this.graph.init();
+    this.graph.subscribe();
   }
 
   /**
@@ -230,7 +234,7 @@ export class BaseCode extends BaseObj {
    * @return code props
    */
   toJSON(): ICodeProps {
-    return {};
+    return { graph: this.graph.state.graph };
   }
 
   /**

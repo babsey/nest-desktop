@@ -1,10 +1,12 @@
 // baklava/index.ts
 
 import { Editor } from "baklavajs";
-import { IBaklavaViewModel, useBaklava } from "@baklavajs/renderer-vue";
+import { IBaklavaViewModel } from "@baklavajs/renderer-vue";
 import { BaklavaInterfaceTypes } from "@baklavajs/interface-types";
 
-import { registerPythonNodeTypes } from "@/helpers/codeNodeTypes";
+import { registerNumpyNodeTypes } from "@/helpers/codeNodeTypes/numpy";
+import { registerPandasNodeTypes } from "@/helpers/codeNodeTypes/pandas";
+import { registerPlotlyNodeTypes } from "@/helpers/codeNodeTypes/plotly";
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 import { stringType, numberType, booleanType } from "../../helpers/codeNodeTypes/interfaceTypes";
 
@@ -15,12 +17,11 @@ import "./baklava.scss";
 export const baklavajs = {
   async install() {
     const codeGraphStore = useCodeGraphStore();
-    const editor = codeGraphStore.state.editor as Editor;
-
-    const modelView = useBaklava(editor);
-    addBaseTypes(modelView);
-    setViewSettings(modelView);
-    registerPythonNodeTypes(editor);
+    addBaseTypes(codeGraphStore.viewModel as IBaklavaViewModel);
+    setViewSettings(codeGraphStore.viewModel as IBaklavaViewModel);
+    registerNumpyNodeTypes(codeGraphStore.viewModel.editor as Editor);
+    registerPandasNodeTypes(codeGraphStore.viewModel.editor as Editor);
+    registerPlotlyNodeTypes(codeGraphStore.viewModel.editor as Editor);
   },
 };
 

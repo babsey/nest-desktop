@@ -314,5 +314,7 @@ const getPopItems = (node: NESTNode) => [
   },
 ];
 
-onMounted(() => mountProjectLayout({ route, router }));
+onMounted(() => {
+  mountProjectLayout({ route, router });
+});
 </script>
