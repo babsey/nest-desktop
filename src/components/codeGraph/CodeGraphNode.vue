@@ -42,7 +42,7 @@
       <div class="__outputs">
         <template v-for="output in displayedOutputs" :key="output.id">
           <slot name="nodeInterface" type="output" :node="node" :intf="output">
-            <NodeInterface :node="node" :intf="output" />
+            <NodeInterface :node="node" :intf="output" :data-interface-type="output.type ?? ''" />
           </slot>
         </template>
       </div>
@@ -51,7 +51,7 @@
       <div class="__inputs">
         <template v-for="input in displayedInputs" :key="input.id">
           <slot name="nodeInterface" type="input" :node="node" :intf="input">
-            <NodeInterface :node="node" :intf="input" />
+            <NodeInterface :node="node" :intf="input" :data-interface-type="input.type ?? ''" />
           </slot>
         </template>
       </div>
@@ -63,6 +63,7 @@
 import { ref, computed, nextTick, onUpdated, onMounted, onBeforeUnmount } from "vue";
 import { AbstractNode, GRAPH_NODE_TYPE_PREFIX, IGraphNode } from "@baklavajs/core";
 import { Components, useGraph, useViewModel } from "@baklavajs/renderer-vue";
+import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 
 const ContextMenu = Components.ContextMenu;
 const NodeInterface = Components.NodeInterface;
@@ -77,7 +78,7 @@ const props = withDefaults(
   { selected: false },
 );
 
-const node = computed(() => props.node);
+const node = computed(() => props.node as AbstractCodeNode);
 
 const emit = defineEmits<{
   (e: "select"): void;
@@ -114,7 +115,7 @@ const classes = computed(() => ({
   "--selected": props.selected,
   "--dragging": props.dragging,
   "--two-column": !!props.node.twoColumn,
-  "--hidden": props.node.hidden,
+  "--hidden": node.value.hidden,
 }));
 
 const classesContent = computed(() => ({

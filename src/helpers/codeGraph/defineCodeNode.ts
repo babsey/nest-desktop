@@ -4,6 +4,7 @@
 import { Node, NodeInterface, NodeInterfaceDefinition, INodeDefinition } from "baklavajs";
 
 import { AbstractCodeNode, CodeNode } from "./codeNode";
+import { BaseCode } from "../code/code";
 
 export type NodeConstructor<I, O> = new () => Node<I, O>;
 export type NodeInstanceOf<T> = T extends new () => Node<infer A, infer B> ? Node<A, B> : never;
@@ -14,7 +15,9 @@ export type InterfaceFactory<T> = {
 };
 
 export interface ICodeNodeDefinition<I, O> extends INodeDefinition<I, O> {
+  code?: BaseCode;
   codeTemplate?: (node?: AbstractCodeNode) => string;
+  variableName?: string;
 }
 
 export function defineCodeNode<I, O>(definition: ICodeNodeDefinition<I, O>): new () => CodeNode<I, O> {
@@ -26,7 +29,8 @@ export function defineCodeNode<I, O>(definition: ICodeNodeDefinition<I, O>): new
     constructor() {
       super();
       this._title = definition.title ?? definition.type;
-      if (definition.codeTemplate) this._codeTemplate = definition.codeTemplate;
+      this.variableName = definition.variableName ?? "x";
+      if (definition.codeTemplate) this.codeTemplate = definition.codeTemplate;
       this.executeFactory("input", definition.inputs);
       this.executeFactory("output", definition.outputs);
       definition.onCreate?.call(this);

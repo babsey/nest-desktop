@@ -1,16 +1,18 @@
 // pandasDataFrame.ts
 
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeInterface } from "baklavajs";
+import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { IPandasDataFrame } from "./interfaceTypes";
 
 export default defineCodeNode({
   type: "pandas.DataFrame",
-  title: "Data Frame",
+  title: "data frame",
   inputs: {
-    data: () => new NodeInterface("data", ""),
+    data: () => new NodeInputInterface("data"),
   },
   outputs: {
-    out: () => new NodeInterface("out", ""),
+    out: () => new NodeOutputInterface<IPandasDataFrame>(),
   },
-  codeTemplate: () => "pd.DataFrame({{ inputs.data.value }})",
+  codeTemplate: (node) => (node ? `pd.DataFrame(${node.inputs.data.value})` : "pd.DataFrame({{ inputs.data.value }})"),
 });

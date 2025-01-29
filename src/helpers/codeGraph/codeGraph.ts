@@ -44,7 +44,13 @@ export class CodeGraph extends BaseObj {
 
   get modules(): string[] {
     const codeGraphStore = useCodeGraphStore();
-    const categories = Array.from(new Set(this.nodes.map((node: AbstractCodeNode) => node.type.split(".")[0])));
+    const categories = Array.from(
+      new Set(
+        this.nodes
+          .filter((node: AbstractCodeNode) => node.type.includes("."))
+          .map((node: AbstractCodeNode) => node.type.split(".")[0]),
+      ),
+    );
     categories.sort();
     return categories.map((category: string) => codeGraphStore.state.modules[category]);
   }

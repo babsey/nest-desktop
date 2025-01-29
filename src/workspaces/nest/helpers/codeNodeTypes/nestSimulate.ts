@@ -3,14 +3,15 @@
 import { displayInSidebar, IntegerInterface } from "baklavajs";
 import { setType } from "@baklavajs/interface-types";
 
-import { numberType } from "@/helpers/codeNodeTypes/interfaceTypes";
+import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
   type: "nest.Simulate",
-  title: "Simulate",
+  title: "simulate",
   inputs: {
-    time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true).setPort(false),
+    time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true),
   },
-  codeTemplate: () => "nest.Simulate({{ inputs.time.value }})",
+  codeTemplate: (node) =>
+    node ? `nest.Simulate(${node.inputs.time.value})` : "nest.Simulate({{ inputs.time.value }})",
 });

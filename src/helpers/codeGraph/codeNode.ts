@@ -12,6 +12,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
   abstract outputs: Record<string, NodeInterface<any>>;
 
   private _code: BaseCode | undefined;
+  private _variableName: string = "x";
   private _codeTemplate: () => string = () => "";
   private _hidden: boolean = false;
   private _script: string = "";
@@ -35,6 +36,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
     return this._codeTemplate;
   }
 
+  set codeTemplate(value: (node?: AbstractCodeNode) => string) {
+    this._codeTemplate = value;
+  }
+
   get hidden(): boolean {
     return this._hidden;
   }
@@ -54,7 +59,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
   }
 
   get label(): string {
-    return "n" + (this.indexOfNodeType + 1);
+    return this._variableName + (this.indexOfNodeType + 1);
   }
 
   get networkConnection(): TConnection | undefined {
@@ -75,6 +80,14 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   get script(): string {
     return this._script;
+  }
+
+  get variableName(): string {
+    return this._variableName;
+  }
+
+  set variableName(value: string) {
+    this._variableName = value;
   }
 
   /**
@@ -123,6 +136,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
    */
   renderCode(): void {
     this._script = Mustache.render(this.codeTemplate(this), this);
+    if (this.getConnectedNodesByInterface("out").length > 0) {
+      this._script = `${this.label} = ${this._script}`;
+    }
+
     if (this.hidden) {
       this._script = "# " + this._script;
       this._script = this._script.replaceAll("\n", "\n# ");

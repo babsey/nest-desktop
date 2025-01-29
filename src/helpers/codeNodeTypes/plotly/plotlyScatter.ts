@@ -1,14 +1,19 @@
 // plotlyScatter.ts
 
-import { NodeInterface } from "baklavajs";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Scatter",
-  title: "Scatter",
+  title: "scatter",
   inputs: {
-    x: () => new NodeInterface("x", null),
-    y: () => new NodeInterface("y", null),
+    x: () => new NodeInputInterface("x"),
+    y: () => new NodeInputInterface("y"),
   },
-  codeTemplate: () => "go.Scatter({{ inputs.x.value }}, {{ inputs.y.value }})",
+  outputs: {
+    out: () => new NodeOutputInterface(),
+  },
+  variableName: "scatter",
+  codeTemplate: () => 'go.Scatter(x={{ inputs.x.value }}, y={{ inputs.y.value }}, mode="markers")',
 });

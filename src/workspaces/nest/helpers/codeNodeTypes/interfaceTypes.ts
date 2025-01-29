@@ -3,8 +3,7 @@
 import { NodeInterfaceType } from "@baklavajs/interface-types";
 
 export interface INESTNodeCollection {}
+export const nestNodeCollectionType = new NodeInterfaceType<INESTNodeCollection>("nestNodeCollection");
 
 export interface INESTSynapseCollection {}
-
-export const nestNodeCollectionType = new NodeInterfaceType<INESTNodeCollection>("nestNodeCollection");
 export const nestSynapseCollectionType = new NodeInterfaceType<INESTSynapseCollection>("nestSynapseCollection");

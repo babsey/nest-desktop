@@ -39,7 +39,7 @@ times = np.concatenate([st.times for st in spiketrains])
 senders = np.concatenate([np.full(ts.size,idx+1) for idx,ts in enumerate(spiketrains)])
 
 # Plot spikes as raster plot
-spikes = go.Scattergl(mode="markers", x=times, y=senders, marker=marker_style)
+spikes = go.Scattergl(x=times, y=senders, mode="markers", marker=marker_style)
 fig.add_trace(spikes, 1, 1)
 
 # Binned time histogram

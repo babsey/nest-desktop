@@ -2,25 +2,28 @@
 
 import { IntegerInterface, NodeInterface, TextInputInterface, displayInSidebar, setType } from "baklavajs";
 
+import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { NodeParameter } from "@/helpers/node/nodeParameter";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
-import { numberType, stringType } from "@/helpers/codeNodeTypes/interfaceTypes";
+import { numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 import { INESTNodeCollection, nestNodeCollectionType } from "./interfaceTypes";
 
 export default defineDynamicCodeNode({
   type: "nest.Create",
-  title: "Create node",
+  title: "create node",
+  variableName: "node",
   inputs: {
-    model: () => new TextInputInterface("model", "iaf_psc_alpha").use(setType, stringType).setPort(false),
-    size: () => new IntegerInterface("Size", 1, 1).use(setType, numberType).use(displayInSidebar, true).setHidden(true),
+    model: () => new TextInputInterface("model", "iaf_psc_alpha").use(setType, stringType),
+    size: () => new IntegerInterface("size", 1, 1).use(setType, numberType).use(displayInSidebar, true),
+    // params: () => new NodeInterface("params", null),
+    // positions: () => new NodeInterface("positions", null),
   },
   outputs: {
-    node_collection: () =>
-      new NodeInterface<INESTNodeCollection>("node collection", "").use(setType, nestNodeCollectionType),
+    out: () => new NodeOutputInterface<INESTNodeCollection>().use(setType, nestNodeCollectionType),
   },
   codeTemplate: (node) => {
-    if (!node) return "";
+    if (!node) return "nest.Create()";
     const args = ['"{{ inputs.model.value }}"'];
     if (node.inputs.size.value > 1) args.push("{{ inputs.size.value }}");
 
@@ -32,8 +35,7 @@ export default defineDynamicCodeNode({
 
     if (params.length > 0) args.push(`params={\n\t${params.join(",\n\t")}\n}`);
 
-    const nodes = node.getConnectedNodes("outputs");
-    return (nodes.length > 0 ? `${node.label} = ` : "") + `nest.Create(${args.join(", ")})`;
+    return `nest.Create(${args.join(", ")})`;
   },
   onPlaced() {
     if (!this.code) return;
@@ -48,7 +50,8 @@ export default defineDynamicCodeNode({
 
     if (this.networkItem && this.networkItem.paramsVisible.length > 0) {
       this.networkItem.filteredParams.forEach((param: NodeParameter) => {
-        inputs[param.id] = () => new TextInputInterface(param.id, param.value).use(displayInSidebar, true);
+        inputs[param.id] = () =>
+          new TextInputInterface(param.id, param.value).use(displayInSidebar, true).setHidden(true);
       });
     }
 

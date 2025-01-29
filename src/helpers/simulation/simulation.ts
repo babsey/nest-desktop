@@ -133,7 +133,7 @@ export class BaseSimulation extends BaseObj {
 
     this._state.running = true;
     return this.project.code
-      .runSimulation()
+      .exec()
       .then((response: AxiosResponse<IAxiosResponseData>) => {
         let data: IResponseData;
 

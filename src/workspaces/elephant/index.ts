@@ -1,15 +1,12 @@
 // elephant/index.ts
 
-import { Editor } from "baklavajs";
-
 import { defineViewStore } from "@/stores/defineViewStore";
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
 
-import { IWorkspaceProps } from "../";
 import iconSet from "./components/iconSet";
 import route from "./routes";
+import { IWorkspaceProps } from "../";
 import { elephantServerInit } from "./stores/backends/elephantServerStore";
-import { registerElephantNodeTypes } from "./helpers/codeNodeTypes";
 import { useElephantModelDBStore } from "./stores/model/modelDBStore";
 import { useElephantModelStore } from "./stores/model/modelStore";
 import { useElephantProjectDBStore } from "./stores/project/projectDBStore";
@@ -60,8 +57,7 @@ export const elephant: IWorkspaceProps = {
       })(),
     };
 
-    const codeGraphStore = useCodeGraphStore();
-    registerElephantNodeTypes(codeGraphStore.state.editor as Editor);
+    registerCodeNodeTypes(["elephant", "neo"]);
   },
   route,
   stores: {},

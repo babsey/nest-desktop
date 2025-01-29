@@ -2,7 +2,10 @@
 
 import { defineViewStore } from "@/stores/defineViewStore";
 import { logger as mainLogger } from "@/utils/logger";
+import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
 
+import nestIconSet from "./components/iconSet";
+import route from "./routes";
 import { IWorkspaceProps } from "../";
 import {
   nestCompletions,
@@ -10,18 +13,13 @@ import {
   nestSpatialCompletions,
   nestSpatialDistributionsCompletions,
 } from "./codemirror";
-import nestIconSet from "./components/iconSet";
-import route from "./routes";
 // import { insiteAccessInit } from "./stores/backends/insiteAccessStore";
-import { registerNESTNodeTypes } from "./helpers/codeNodeTypes";
 import { nestSimulatorInit } from "./stores/backends/nestSimulatorStore";
 import { nestmlServerInit } from "./stores/backends/nestmlServerStore";
 import { useNESTModelDBStore } from "./stores/model/modelDBStore";
 import { useNESTModelStore } from "./stores/model/modelStore";
 import { useNESTProjectDBStore } from "./stores/project/projectDBStore";
 import { useNESTProjectStore } from "./stores/project/projectStore";
-import { registerNorseNodeTypes, registerTorchNodeTypes } from "../norse/helpers/codeNodeTypes";
-import { registerElephantNodeTypes, registerNeoNodeTypes } from "../elephant/helpers/codeNodeTypes";
 
 const logger = mainLogger.getSubLogger({
   minLevel: 3,
@@ -95,11 +93,7 @@ export const nest: IWorkspaceProps = {
       })(),
     };
 
-    registerNESTNodeTypes();
-    registerNorseNodeTypes();
-    registerTorchNodeTypes();
-    registerElephantNodeTypes();
-    registerNeoNodeTypes();
+    registerCodeNodeTypes(["elephant", "nest", "neo", "norse", "torch"]);
   },
   route,
   stores: {},

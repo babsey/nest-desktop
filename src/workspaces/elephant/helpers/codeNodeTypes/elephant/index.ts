@@ -9,7 +9,6 @@ import elephantISI from "./elephantISI";
 import elephantInstantaneousRate from "./elephantInstantaneousRate";
 import elephantMeanFiringRate from "./elephantMeanFiringRate";
 import elephantTimeHistogram from "./elephantTimeHistogram";
-import neoSpikeTrain from "./neoSpikeTrain";
 
 export const registerElephantNodeTypes = () => {
   const codeGraphStore = useCodeGraphStore();
@@ -23,12 +22,4 @@ export const registerElephantNodeTypes = () => {
   editor.registerNodeType(elephantInstantaneousRate, { category: "elephant" });
   editor.registerNodeType(elephantMeanFiringRate, { category: "elephant" });
   editor.registerNodeType(elephantTimeHistogram, { category: "elephant" });
-};
-
-export const registerNeoNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  codeGraphStore.state.modules["neo"] = "import neo";
-
-  const editor = codeGraphStore.viewModel.editor;
-  editor.registerNodeType(neoSpikeTrain, { category: "neo" });
 };

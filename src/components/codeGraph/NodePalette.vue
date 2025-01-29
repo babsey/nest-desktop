@@ -1,18 +1,14 @@
 <template>
   <div class="baklava-node-palette pa-0">
-    <v-expansion-panels elevation="0" color="transparent" density="compact" multiple rounded="0" variant="accordion">
+    <v-expansion-panels elevation="0" density="compact" multiple rounded="0" variant="accordion">
       <v-expansion-panel v-for="c in categories" :key="c.name">
-        <v-expansion-panel-title style="min-height: 48px !important">{{ c.name }}</v-expansion-panel-title>
-        <v-expansion-panel-text style="background-color: transparent">
+        <v-expansion-panel-title :node-category="c.name" class="baklava-category" style="min-height: 48px !important">
+          {{ c.name }}
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
           <v-list density="compact" style="background-color: transparent">
             <v-list-item v-for="(ni, nt) in c.nodeTypes" :key="nt" style="padding: 1px 2px" @click="() => {}">
-              <PaletteEntry
-                :title="ni.title"
-                :type="nt"
-                class="pa-0 ma-0"
-                style="background: transparent; box-shadow: none"
-                @pointerdown="onDragStart(nt, ni)"
-              />
+              <PaletteEntry :title="ni.title" :type="nt" class="pa-0 ma-0" @pointerdown="onDragStart(nt, ni)" />
             </v-list-item>
           </v-list>
         </v-expansion-panel-text>

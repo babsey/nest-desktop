@@ -9,6 +9,7 @@ import {
 } from "baklavajs";
 
 import { AbstractCodeNode, CodeNode } from "./codeNode";
+import { BaseCode } from "../code/code";
 
 type Dynamic<T> = T & Record<string, any>;
 
@@ -41,7 +42,9 @@ export interface DynamicNodeUpdateResult {
 }
 
 export interface IDynamicCodeNodeDefinition<I, O> extends IDynamicNodeDefinition<I, O> {
+  code?: BaseCode;
   codeTemplate?: (node?: AbstractCodeNode) => string;
+  variableName?: string;
 }
 
 export function defineDynamicCodeNode<I, O>(
@@ -60,7 +63,8 @@ export function defineDynamicCodeNode<I, O>(
     constructor() {
       super();
       this._title = definition.title ?? definition.type;
-      if (definition.codeTemplate) this._codeTemplate = definition.codeTemplate;
+      this.variableName = definition.variableName ?? "x";
+      if (definition.codeTemplate) this.codeTemplate = definition.codeTemplate;
       this.executeFactory("input", definition.inputs);
       this.executeFactory("output", definition.outputs);
 

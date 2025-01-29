@@ -36,7 +36,7 @@
                 @click.="() => (projectViewStore.state.views.graph = 'code')"
                 prepend-icon="graph:flowchart"
               >
-                code
+                code (beta)
               </v-list-item>
               <v-list-item
                 :active="projectViewStore.state.views.graph == 'network'"

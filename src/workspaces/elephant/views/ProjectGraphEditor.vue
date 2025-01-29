@@ -4,7 +4,7 @@
   </v-layout>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import CodeGraphEditor from "@/components/codeGraph/CodeGraphEditor.vue";
 
 import { currentProject } from "../stores/project/projectStore";

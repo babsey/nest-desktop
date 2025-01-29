@@ -1,19 +1,25 @@
 // numpyRandomNormal.ts
 
-import { IntegerInterface, NodeInterface } from "baklavajs";
+import { IntegerInterface, setType } from "baklavajs";
 
+import { INumpyArray } from "./interfaceTypes";
+import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { numberType } from "../base/interfaceTypes";
 
 export default defineCodeNode({
   type: "numpy.random.normal",
-  title: "Random normal distribution",
+  title: "random normal distribution",
   inputs: {
-    loc: () => new IntegerInterface("loc", 0),
-    scale: () => new IntegerInterface("scale", 1),
-    size: () => new IntegerInterface("size", 1),
+    loc: () => new IntegerInterface("loc", 0).use(setType, numberType),
+    scale: () => new IntegerInterface("scale", 1).use(setType, numberType),
+    size: () => new IntegerInterface("size", 1).use(setType, numberType),
   },
   outputs: {
-    out: () => new NodeInterface("out", ""),
+    out: () => new NodeOutputInterface<INumpyArray>(),
   },
-  codeTemplate: () => "np.random.normal()",
+  codeTemplate: (node) =>
+    node
+      ? `np.random.normal(${node.inputs.loc.value}, ${node.inputs.scale.value}, ${node.inputs.size.value})`
+      : "np.random.normal({{ inputs.loc.value }}, {{ inputs.scale.value }}, {{ inputs.size.value }})",
 });

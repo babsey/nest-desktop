@@ -2,15 +2,15 @@
 
 import { setType, TextInputInterface } from "baklavajs";
 
-import { stringType } from "@/helpers/codeNodeTypes/interfaceTypes";
+import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
   type: "nest.CopyModel",
-  title: "Copy model",
+  title: "copy model",
   inputs: {
-    existing: () => new TextInputInterface("existing", "iaf_psc_alpha").use(setType, stringType).setPort(false),
-    new: () => new TextInputInterface("new", "new").use(setType, stringType).setPort(false),
+    existing: () => new TextInputInterface("existing", "iaf_psc_alpha").use(setType, stringType),
+    new: () => new TextInputInterface("new", "new").use(setType, stringType),
   },
-  codeTemplate: () => "nest.CopyModel",
+  codeTemplate: (node) => (node ? "nest.CopyModel()" : "nest.CopyModel()"),
 });

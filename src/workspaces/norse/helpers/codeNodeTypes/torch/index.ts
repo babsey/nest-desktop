@@ -1,22 +1,11 @@
-// norse/codeNodeTypes
+// codeNodeTypes/torch
 
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
-import norseIAFCell from "./norseIAFCell";
-import norseSequentialState from "./norseSequentialState";
 import torchConv2d from "./torchConv2d";
 import torchLinear from "./torchLinear";
 import torchMaxPool2d from "./torchMaxPool2d";
 import torchRandn from "./torchRandn";
-
-export const registerNorseNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  codeGraphStore.state.modules["norse"] = "import norse";
-
-  const editor = codeGraphStore.viewModel.editor;
-  editor.registerNodeType(norseIAFCell, { category: "norse" });
-  editor.registerNodeType(norseSequentialState, { category: "norse" });
-};
 
 export const registerTorchNodeTypes = () => {
   const codeGraphStore = useCodeGraphStore();

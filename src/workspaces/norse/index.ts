@@ -1,16 +1,13 @@
 // norse/index.ts
 
-import { Editor } from "baklavajs";
-
 import { defineViewStore } from "@/stores/defineViewStore";
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
 
-import { IWorkspaceProps } from "../";
-import { norseTorchCompletions } from "./codemirror/norseTorchCompletion";
 import iconSet from "./components/iconSet";
 import route from "./routes";
+import { IWorkspaceProps } from "../";
 import { norseSimulatorInit } from "./stores/backends/norseSimulatorStore";
-import { registerNorseNodeTypes } from "./helpers/codeNodeTypes";
+import { norseTorchCompletions } from "./codemirror/norseTorchCompletion";
 import { useNorseModelDBStore } from "./stores/model/modelDBStore";
 import { useNorseModelStore } from "./stores/model/modelStore";
 import { useNorseProjectDBStore } from "./stores/project/projectDBStore";
@@ -62,8 +59,7 @@ export const norse: IWorkspaceProps = {
       })(),
     };
 
-    const codeGraphStore = useCodeGraphStore();
-    registerNorseNodeTypes(codeGraphStore.state.editor as Editor);
+    registerCodeNodeTypes(["norse", "torch"]);
   },
   route,
   stores: {},

@@ -5,26 +5,26 @@
     </template>
 
     <template #node="nodeProps">
-      <CodeGraphNode v-bind="nodeProps" @update="onUpdate(nodeProps.node)" />
+      <CodeGraphNode v-bind="nodeProps" @update="onUpdate(nodeProps.node as AbstractCodeNode)" />
     </template>
   </BaklavaEditor>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { Editor } from "baklavajs";
 import { BaklavaEditor, useBaklava } from "@baklavajs/renderer-vue";
 
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import NodePalette from "./NodePalette.vue";
 import CodeGraphNode from "./CodeGraphNode.vue";
 
-const props = defineProps<{ graph: CodeGraph }>();
-const graph = computed(() => props.graph);
+defineProps<{ graph: CodeGraph }>();
 
 const codeGraphStore = useCodeGraphStore();
-const viewModel = useBaklava(codeGraphStore.viewModel.editor);
+const viewModel = useBaklava(codeGraphStore.viewModel.editor as Editor);
 
-const onUpdate = (node: CodeNode) => node.events.update.emit(node);
+const onUpdate = (node: AbstractCodeNode) => node.events.update.emit(null);
 </script>

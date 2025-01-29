@@ -42,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import CodeGraphEditor from "@/components/codeGraph/CodeGraphEditor.vue";
 import ConnectionMenuList from "@/components/connection/ConnectionMenuList.vue";
 import NetworkEditorToolbar from "@/components/network/NetworkEditorToolbar.vue";
 import NetworkGraph from "@/components/network/NetworkGraph.vue";

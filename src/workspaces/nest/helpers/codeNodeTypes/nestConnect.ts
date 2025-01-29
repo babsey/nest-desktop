@@ -16,30 +16,43 @@ import {
   // nestSynapseCollectionType,
 } from "./interfaceTypes";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
+import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 
 export default defineDynamicCodeNode({
   type: "nest.Connect",
-  title: "Connect nodes",
+  title: "connect nodes",
   inputs: {
-    pre: () => new NodeInterface<INESTNodeCollection>("source", "").use(setType, nestNodeCollectionType),
-    post: () => new NodeInterface<INESTNodeCollection>("target", "").use(setType, nestNodeCollectionType),
+    pre: () => new NodeInputInterface<INESTNodeCollection>("pre").use(setType, nestNodeCollectionType),
+    post: () => new NodeInputInterface<INESTNodeCollection>("post").use(setType, nestNodeCollectionType),
     conn_spec: () =>
-      new SelectInterface("conn_spec", "all_to_all", ["all_to_all", "one_to_one", "pairwise_bernoulli"])
+      new SelectInterface("conn_spec", "all_to_all", [
+        "all_to_all",
+        "one_to_one",
+        "fixed_indegree",
+        "fixed_outdegree",
+        "pairwise_bernoulli",
+      ])
         .use(displayInSidebar, true)
         .setHidden(true)
         .setPort(false),
     syn_spec: () => new TextInputInterface("syn_spec", "static_synapse").use(displayInSidebar, true).setHidden(true),
+    weight: () => new NumberInterface("syn_spec", 1).use(displayInSidebar, true).setHidden(true),
   },
   codeTemplate: (node) => {
-    if (!node) return "";
+    if (!node) return "nest.Connect";
     const preNodes = node.getConnectedNodesByInterface("pre");
     const postNodes = node.getConnectedNodesByInterface("post");
-    if (preNodes.length === 0 || postNodes.length === 0) return "nest.Connect";
+    if (preNodes.length === 0 || postNodes.length === 0) return node.type;
     const preLabels = preNodes.map((node) => node.label);
-    preLabels.sort();
     const postLabels = postNodes.map((node) => node.label);
+    preLabels.sort();
     postLabels.sort();
-    return `nest.Connect(${preLabels.join("+")}, ${postLabels.join("+")})`;
+    const args = [preLabels.join("+"), postLabels.join("+")];
+    if (node.inputs.weight.value !== 1) {
+      args.push(`syn_spec={'weight': ${node.inputs.weight.value}}`);
+    }
+
+    return `nest.Connect(${args.join(", ")})`;
   },
   onPlaced() {
     if (!this.code) return;
