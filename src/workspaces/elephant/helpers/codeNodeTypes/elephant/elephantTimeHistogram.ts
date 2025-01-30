@@ -18,8 +18,5 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "ts_hist",
-  codeTemplate: (node) =>
-    node
-      ? `elephant.statistics.time_histogram(${node.inputs.spiketrains.value})`
-      : "elephant.statistics.time_histogram({{ inputs.spiketrains.value }})",
+  codeTemplate: () => "elephant.statistics.time_histogram({{ inputs.spiketrains.value }})",
 });

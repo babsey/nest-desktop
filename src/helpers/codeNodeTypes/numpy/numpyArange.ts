@@ -18,8 +18,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  codeTemplate: (node) =>
-    node
-      ? `np.arange(${node.inputs.start.value}, ${node.inputs.stop.value}, ${node.inputs.step.value})`
-      : "np.arange({{ inputs.start.value }}, {{ inputs.stop.value }}, {{ inputs.step.value }})",
+  variableName: "a",
+  codeTemplate: () => "np.arange({{ inputs.start.value }}, {{ inputs.stop.value }}, {{ inputs.step.value }})",
 });

@@ -86,7 +86,7 @@ export class NESTCode extends BaseCode {
   // }
 
   /**
-   * Update code graph from network.
+   * Update code graph from network props.
    */
   updateCodeGraph(projectProps: INESTProjectProps): void {
     this.logger.trace("update graph from network");
@@ -98,8 +98,10 @@ export class NESTCode extends BaseCode {
     // nest.ResetKernel
     this.graph.addNodeWithCoordinates(nestResetKernel, left, 100);
 
-    // nest.Install
-    codeNode = this.graph.addNodeWithCoordinates(nestInstall, left, 200);
+    if (projectProps.simulation?.modules) {
+      // nest.Install
+      codeNode = this.graph.addNodeWithCoordinates(nestInstall, left, 200);
+    }
 
     // nest.SetKernelStatus
     codeNode = this.graph.addNodeWithCoordinates(nestSetKernelStatus, left, 350);
@@ -112,9 +114,11 @@ export class NESTCode extends BaseCode {
 
     const nodes: AbstractCodeNode[] = [];
     if (projectProps.network) {
-      if (projectProps.network.nodes && projectProps.network.nodes.length > 0) {
+      const networkProps = projectProps.network;
+      if (networkProps.nodes && networkProps.nodes.length > 0) {
         // nest.Create
-        projectProps.network.nodes.forEach((nodeProps: INESTNodeProps, idx: number) => {
+        const nodesProps = networkProps.nodes as INESTNodeProps[];
+        nodesProps.forEach((nodeProps: INESTNodeProps, idx: number) => {
           const codeNode = this.graph.addNodeWithCoordinates(nestCreate, left + width + space, 100 + 200 * idx);
           codeNode.inputs.model.value = nodeProps.model;
           codeNode.inputs.size.value = nodeProps.size ?? 1;
@@ -123,9 +127,9 @@ export class NESTCode extends BaseCode {
         });
       }
 
-      if (projectProps.network.connections && projectProps.network.connections.length > 0) {
+      if (networkProps.connections && networkProps.connections.length > 0) {
         // nest.Connect
-        projectProps.network.connections.forEach((connection: INESTConnectionProps, idx: number) => {
+        networkProps.connections.forEach((connection: INESTConnectionProps, idx: number) => {
           const codeNode = this.graph.addNodeWithCoordinates(nestConnect, left + 2 * (width + space), 100 + 200 * idx);
           if (connection.synapse) {
             connection.synapse.params?.forEach((param: IParamProps) => {

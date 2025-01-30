@@ -10,4 +10,9 @@ export class NodeOutputInterface<T = any> extends CodeNodeInterface<T> {
     super("", null as T);
     this.setComponent(markRaw(NodeOutputComponent));
   }
+
+  get value(): T {
+    if (this.node) return this.node.label as T;
+    return this._value as T;
+  }
 }

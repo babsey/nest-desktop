@@ -12,6 +12,5 @@ export default defineCodeNode({
   inputs: {
     time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true),
   },
-  codeTemplate: (node) =>
-    node ? `nest.Simulate(${node.inputs.time.value})` : "nest.Simulate({{ inputs.time.value }})",
+  codeTemplate: () => "nest.Simulate({{ inputs.time.value }})",
 });

@@ -18,10 +18,10 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
   variableName: "concat",
-  codeTemplate: (node) => {
-    if (!node) return 'np.concatenate({{ inputs.a.value }}")';
-    const aNodes = node.getConnectedNodesByInterface("a");
-    if (aNodes.length === 0) return node.type;
+  codeTemplate() {
+    if (!this.node) return 'np.concatenate({{ inputs.a.value }}")';
+    const aNodes = this.node.getConnectedNodesByInterface("a");
+    if (aNodes.length === 0) return this.node.type;
     const aLabels = aNodes.map((node) => node.label);
     return `np.concatenate(${aLabels.join(", ")})`;
   },

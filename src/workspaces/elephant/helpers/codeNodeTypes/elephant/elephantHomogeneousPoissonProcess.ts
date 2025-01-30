@@ -18,8 +18,6 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "st_pp",
-  codeTemplate: (node) =>
-    node
-      ? `elephant.spike_train_generation.homogeneous_poisson_process(rate=${node.inputs.rate.value}*pq.Hz, t_start=${node.inputs.t_start.value}*pq.ms, t_stop=${node.inputs.t_stop.value}*pq.ms)`
-      : "elephant.spike_train_generation.homogeneous_poisson_process(rate={{ inputs.rate.value }}*pq.Hz, t_start={{ inputs.t_start.value }}*pq.ms, t_stop={{ inputs.t_stop.value }}*pq.ms)",
+  codeTemplate: () =>
+    "elephant.spike_train_generation.homogeneous_poisson_process(rate={{ inputs.rate.value }}*pq.Hz, t_start={{ inputs.t_start.value }}*pq.ms, t_stop={{ inputs.t_stop.value }}*pq.ms)",
 });

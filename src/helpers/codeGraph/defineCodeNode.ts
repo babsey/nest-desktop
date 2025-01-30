@@ -1,7 +1,7 @@
 // defineCodeNode.ts
 // Adapted from https://github.com/newcat/baklavajs/blob/987018200389bd86c48544ac4afa7a393fe1e9bc/packages/core/src/defineNode.ts
 
-import { Node, NodeInterface, NodeInterfaceDefinition, INodeDefinition } from "baklavajs";
+import { Node, NodeInterface, NodeInterfaceDefinition, INodeDefinition, INodeState } from "baklavajs";
 
 import { AbstractCodeNode, CodeNode } from "./codeNode";
 import { BaseCode } from "../code/code";
@@ -18,6 +18,7 @@ export interface ICodeNodeDefinition<I, O> extends INodeDefinition<I, O> {
   code?: BaseCode;
   codeTemplate?: (node?: AbstractCodeNode) => string;
   modules?: string[];
+  node?: AbstractCodeNode;
   variableName?: string;
 }
 
@@ -32,7 +33,6 @@ export function defineCodeNode<I, O>(definition: ICodeNodeDefinition<I, O>): new
       this._title = definition.title ?? definition.type;
       if (definition.variableName) this.variableName = definition.variableName;
       if (definition.modules) this.modules = definition.modules;
-      if (definition.codeTemplate) this.codeTemplate = definition.codeTemplate;
       this.executeFactory("input", definition.inputs);
       this.executeFactory("output", definition.outputs);
       definition.onCreate?.call(this);
@@ -43,6 +43,10 @@ export function defineCodeNode<I, O>(definition: ICodeNodeDefinition<I, O>): new
           return definition.calculate!.call(this, inputs, globalValues);
         }
       : undefined;
+
+    override get codeTemplate(): string {
+      return definition.codeTemplate ? (definition.codeTemplate?.call(this) as string) : "";
+    }
 
     public onPlaced() {
       definition.onPlaced?.call(this);

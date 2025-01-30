@@ -10,11 +10,11 @@ export default defineCodeNode({
   type: "text",
   title: "text",
   inputs: {
-    text: () => new TextInputInterface("text", "").setPort(false),
+    text: () => new TextInputInterface("text", "").use(setType, stringType).setPort(false),
   },
   outputs: {
     out: () => new NodeOutputInterface<string>().use(setType, stringType),
   },
   variableName: "t",
-  codeTemplate: (node) => (node ? `"${node.inputs.text.value}"` : '"{{ inputs.text.value }}"'),
+  codeTemplate: () => '"{{ inputs.text.value }}"',
 });

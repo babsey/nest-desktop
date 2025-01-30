@@ -12,5 +12,5 @@ export default defineCodeNode({
   inputs: {
     time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true).setPort(false),
   },
-  codeTemplate: (node) => (node ? `pynn.run(${node.inputs.time.value})` : "pynn.run({{ inputs.time.value }})"),
+  codeTemplate: () => "pynn.run({{ inputs.time.value }})",
 });

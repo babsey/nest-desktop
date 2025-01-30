@@ -14,14 +14,12 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeInterface("out", ""),
   },
-  codeTemplate: (node) => {
-    if (!node) return "[]";
-    const expressions = node?.getConnectedNodesByInterface("expression");
-    const lists = node?.getConnectedNodesByInterface("list");
-    if (lists.length > 0) {
-      if (expressions.length === 0) return `[i for i in ${lists[0].codeTemplate(lists[0])}]`;
-      return `[${expressions[0].codeTemplate(expressions[0])} for i in ${lists[0].codeTemplate(lists[0])}]`;
-    }
-    return "[]";
+  codeTemplate() {
+    if (!this.node) return "";
+    const lists = this.node.getConnectedNodesByInterface("list");
+    if (lists.length == 0) return "[]";
+    const expressions = this.node.getConnectedNodesByInterface("expression");
+    if (expressions.length === 0) return `[i for i in ${lists[0].codeTemplate}]`;
+    return `[${expressions[0].codeTemplate} for i in ${lists[0].codeTemplate}]`;
   },
 });

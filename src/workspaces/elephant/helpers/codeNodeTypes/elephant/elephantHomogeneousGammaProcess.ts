@@ -20,8 +20,6 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "st_gp",
-  codeTemplate: (node) =>
-    node
-      ? `elephant.spike_train_generation.homogeneous_gamma_process(a=${node.inputs.a.value}, b=${node.inputs.b.value}*pq.Hz, t_start=${node.inputs.t_start.value}*pq.ms, t_stop=${node.inputs.t_stop.value}*pq.ms)`
-      : "elephant.spike_train_generation.homogeneous_gamma_process(a={{ inputs.a.value }}, b={{ inputs.b.value }}*pq.Hz, t_start={{ inputs.t_start.value }}*pq.ms, t_stop={{ inputs.t_stop.value }}*pq.ms)",
+  codeTemplate: () =>
+    "elephant.spike_train_generation.homogeneous_gamma_process(a={{ inputs.a.value }}, b={{ inputs.b.value }}*pq.Hz, t_start={{ inputs.t_start.value }}*pq.ms, t_stop={{ inputs.t_stop.value }}*pq.ms)",
 });

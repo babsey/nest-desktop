@@ -10,4 +10,10 @@ export class NodeInputInterface<T = any> extends CodeNodeInterface<T> {
     super(name, null as T);
     this.setComponent(markRaw(NodeInputComponent));
   }
+
+  get value(): T {
+    const nodes = this.node?.getConnectedNodesByInterface(this.name);
+    if (nodes) return nodes.map((node) => node.label).join(", ") as T;
+    return this._value;
+  }
 }

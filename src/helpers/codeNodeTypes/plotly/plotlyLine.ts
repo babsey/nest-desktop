@@ -16,5 +16,5 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "line",
-  codeTemplate: () => "px.Line({{ inputs.x.value }}, {{ inputs.y.value }})",
+  codeTemplate: () => "go.Line({{ inputs.x.value }}, {{ inputs.y.value }})",
 });

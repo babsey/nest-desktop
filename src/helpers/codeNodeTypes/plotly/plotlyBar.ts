@@ -16,11 +16,11 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "bar",
-  codeTemplate: (node) => {
-    if (!node) return "px.Bar({{ inputs.x.value }}, {{ inputs.y.value }})";
-    const xNodes = node.getConnectedNodesByInterface("x");
-    if (xNodes.length === 0) return node.type;
+  codeTemplate() {
+    if (!this.node) return "go.Bar({{ inputs.x.value }}, {{ inputs.y.value }})";
+    const xNodes = this.node.getConnectedNodesByInterface("x");
+    if (xNodes.length === 0) return this.node.type;
     const xLabels = xNodes.map((xNode) => xNode.label);
-    return `px.Bar(${xLabels.join(", ")})`;
+    return `go.Bar(${xLabels.join(", ")})`;
   },
 });

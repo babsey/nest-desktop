@@ -20,11 +20,11 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
   variableName: "corr",
-  codeTemplate: (node) => {
-    if (!node) return 'np.correlate({{ inputs.a.value }}, {{ inputs.v.value }}, "{{ inputs.mode.value }}")';
-    const aNodes = node.getConnectedNodesByInterface("a");
-    const vNodes = node.getConnectedNodesByInterface("v");
-    if (aNodes.length === 0 || vNodes.length === 0) return node.type;
+  codeTemplate() {
+    if (!this.node) return 'np.correlate({{ inputs.a.value }}, {{ inputs.v.value }}, "{{ inputs.mode.value }}")';
+    const aNodes = this.node.getConnectedNodesByInterface("a");
+    const vNodes = this.node.getConnectedNodesByInterface("v");
+    if (aNodes.length === 0 || vNodes.length === 0) return this.node.type;
     const aLabels = aNodes.map((node) => node.label);
     const vLabels = vNodes.map((node) => node.label);
     return `np.correlate(${aLabels.join("+")}, ${vLabels.join("+")}, "{{ inputs.mode.value }}")`;

@@ -38,20 +38,17 @@ export default defineDynamicCodeNode({
     syn_spec: () => new TextInputInterface("syn_spec", "static_synapse").use(displayInSidebar, true).setHidden(true),
     weight: () => new NumberInterface("syn_spec", 1).use(displayInSidebar, true).setHidden(true),
   },
-  codeTemplate: (node) => {
-    if (!node) return "nest.Connect";
-    const preNodes = node.getConnectedNodesByInterface("pre");
-    const postNodes = node.getConnectedNodesByInterface("post");
-    if (preNodes.length === 0 || postNodes.length === 0) return node.type;
-    const preLabels = preNodes.map((node) => node.label);
-    const postLabels = postNodes.map((node) => node.label);
-    preLabels.sort();
-    postLabels.sort();
-    const args = [preLabels.join("+"), postLabels.join("+")];
-    if (node.inputs.weight.value !== 1) {
-      args.push(`syn_spec={'weight': ${node.inputs.weight.value}}`);
-    }
-
+  codeTemplate() {
+    if (!this.node) return this.type;
+    // const preNodes = this.node.getConnectedNodesByInterface("pre");
+    // const postNodes = this.node.getConnectedNodesByInterface("post");
+    // if (preNodes.length === 0 || postNodes.length === 0) return this.type;
+    // const preLabels = preNodes.map((preNode) => preNode.label);
+    // const postLabels = postNodes.map((postNode) => postNode.label);
+    // preLabels.sort();
+    // postLabels.sort();
+    const args = ["{{ inputs.pre.value }}", "{{ inputs.post.value }}"];
+    if (this.node.inputs.weight.value !== 1) args.push(`syn_spec={'weight': ${this.node.inputs.weight.value}}`);
     return `nest.Connect(${args.join(", ")})`;
   },
   onPlaced() {

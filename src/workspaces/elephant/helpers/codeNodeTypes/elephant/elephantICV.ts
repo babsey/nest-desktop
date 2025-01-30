@@ -14,8 +14,5 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "cv",
-  codeTemplate: (node) =>
-    node
-      ? `elephant.statistics.cv(${node.inputs.spiketrains.label})`
-      : "elephant.statistics.cv({{ inputs.spiketrains.label }})",
+  codeTemplate: () => "elephant.statistics.cv({{ inputs.spiketrains.label }})",
 });

@@ -18,8 +18,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  codeTemplate: (node) =>
-    node
-      ? `np.random.uniform(${node.inputs.low.value}, ${node.inputs.high.value}, ${node.inputs.size.value})`
-      : "np.random.uniform({{ inputs.low.value }}, {{ inputs.high.value }}, {{ inputs.size.value }})",
+  variableName: "uniform",
+  codeTemplate: () => "np.random.uniform({{ inputs.low.value }}, {{ inputs.high.value }}, {{ inputs.size.value }})",
 });

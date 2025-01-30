@@ -13,6 +13,5 @@ export default defineCodeNode({
     module_name: () =>
       new TextInputInterface("module name", "nestmlmodule").use(setType, stringType).use(displayInSidebar, true),
   },
-  codeTemplate: (node) =>
-    node ? `nest.Install("${node.inputs.module_name.value}")` : 'nest.Install("{{ inputs.module_name.value }}")',
+  codeTemplate: () => 'nest.Install("{{inputs.module_name.value}}")',
 });

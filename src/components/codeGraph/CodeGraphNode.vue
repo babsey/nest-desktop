@@ -22,7 +22,7 @@
           />
           <v-icon icon="mdi:mdi-pencil" class="mx-1 --clickable" size="xsmall" @click="openSidebar" />
           <v-icon icon="mdi:mdi-dots-vertical" class="--clickable" size="xsmall" @click="openContextMenu" />
-          <context-menu v-model="showContextMenu" :x="0" :y="0" :items="contextMenuItems" @click="onContextMenuClick" />
+          <ContextMenu v-model="showContextMenu" :x="0" :y="0" :items="contextMenuItems" @click="onContextMenuClick" />
         </div>
       </template>
       <input
@@ -37,7 +37,7 @@
       />
     </div>
 
-    <div class="__content" :class="classesContent" @keydown.delete.stop>
+    <div class="__content" :class="classesContent" @keydown.delete.stop @contextmenu.prevent>
       <!-- Outputs -->
       <div class="__outputs">
         <template v-for="output in displayedOutputs" :key="output.id">

@@ -19,11 +19,11 @@ export default defineCodeNode({
     bin_edges: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
   variableName: "hist",
-  codeTemplate: (node) => {
-    if (!node) return "np.histogram({{ inputs.x.value }}, {{ inputs.bins.value }})";
-    const xNodes = node.getConnectedNodesByInterface("x");
-    if (xNodes.length === 0) return node.type;
+  codeTemplate() {
+    if (!this.node) return "np.histogram({{ inputs.x.value }}, {{ inputs.bins.value }})";
+    const xNodes = this.node.getConnectedNodesByInterface("x");
+    if (xNodes.length === 0) return this.node.type;
     const xLabels = xNodes.map((node) => node.label);
-    return `np.histogram(${xLabels.join("+")}, ${node.inputs.bins.value})`;
+    return `np.histogram(${xLabels.join("+")}, ${this.node.inputs.bins.value})`;
   },
 });

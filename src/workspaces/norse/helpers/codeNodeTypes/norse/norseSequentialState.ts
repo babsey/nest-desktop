@@ -14,13 +14,13 @@ export default defineDynamicCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  codeTemplate: (node) => {
-    if (!node) return "norse.torch.SequentialState()";
-    const nodes = node.getConnectedNodes("inputs");
-    if (node.inputs.nModules.value != nodes.length + 1) node.inputs.nModules.value = nodes.length + 1;
+  codeTemplate() {
+    if (!this.node) return "norse.torch.SequentialState";
+    const nodes = this.node.getConnectedNodes("inputs");
+    if (this.node.inputs.nModules.value != nodes.length + 1) this.node.inputs.nModules.value = nodes.length + 1;
     if (nodes.length === 0) return "norse.torch.SequentialState()";
-    const nodesCodeTemplates = nodes.map((node) => node.codeTemplate(node));
-    return `s${node.indexOfNodeType + 1} = norse.torch.SequentialState(\n\t${nodesCodeTemplates.join(",\n\t")}\n)`;
+    const nodeCodeTemplates = nodes.map((node) => node.codeTemplate);
+    return `norse.torch.SequentialState(\n\t${nodeCodeTemplates.join(",\n\t")}\n)`;
   },
   onUpdate() {
     const inputs: Record<string, () => NodeInterface> = {};

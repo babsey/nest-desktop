@@ -16,7 +16,6 @@ export abstract class AbstractCodeNode extends AbstractNode {
   private _script: string = "";
   private _networkItem: TNode | TConnection | undefined;
 
-  public codeTemplate: (node?: AbstractCodeNode) => string = () => "";
   public modules: string[] = [];
   public variableName: string = "x";
 
@@ -32,6 +31,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   set code(value: BaseCode) {
     this._code = value;
+  }
+
+  get codeTemplate(): string {
+    return "";
   }
 
   get hidden(): boolean {
@@ -72,9 +75,15 @@ export abstract class AbstractCodeNode extends AbstractNode {
     this._networkItem = value;
   }
 
+  get node(): AbstractCodeNode {
+    return this;
+  }
+
   get script(): string {
     return this._script;
   }
+
+  // calculate?: CalculateFunction<any, any> | undefined;
 
   /**
    * Get connected nodes to the node.
@@ -121,7 +130,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
    * Render code of this node.
    */
   renderCode(): void {
-    this._script = Mustache.render(this.codeTemplate(this), this);
+    this._script = Mustache.render(this.codeTemplate, this);
     if (this.getConnectedNodesByInterface("out").length > 0) {
       this._script = `${this.label} = ${this._script}`;
     }
@@ -131,8 +140,6 @@ export abstract class AbstractCodeNode extends AbstractNode {
       this._script = this._script.replaceAll("\n", "\n# ");
     }
   }
-
-  // public abstract calculate?: CalculateFunction<any, any>;
 }
 
 export abstract class CodeNode<I, O> extends AbstractCodeNode {
@@ -154,8 +161,6 @@ export abstract class CodeNode<I, O> extends AbstractCodeNode {
    * @return Values for output interfaces
    */
   // public calculate?: CalculateFunction<I, O>;
-
-  // codeTemplate?: string;
 }
 
 export type AbstractCodeNodeConstructor = new () => AbstractCodeNode;

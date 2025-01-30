@@ -16,11 +16,11 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "scatter",
-  codeTemplate: (node) => {
-    if (!node) return 'go.Scatter(x={{ inputs.x.value }}, y={{ inputs.y.value }}, mode="markers")';
-    const xNodes = node.getConnectedNodesByInterface("x");
-    if (xNodes.length === 0) return node.type;
-    const xLabels = xNodes.map((xNode) => xNode.label);
+  codeTemplate() {
+    if (!this.node) return 'go.Scatter(x={{ inputs.x.value }}, y={{ inputs.y.value }}, mode="markers")';
+    const xNodes = this.node.getConnectedNodesByInterface("x");
+    if (xNodes.length === 0) return this.node.type;
+    const xLabels = xNodes.map((node) => node.label);
     return `go.Scatter(x=${xLabels.join(", ")}, mode="markers")`;
   },
 });

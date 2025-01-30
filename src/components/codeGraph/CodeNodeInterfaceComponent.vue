@@ -1,5 +1,5 @@
 <template>
-  <div>{{ props.intf.name }}</div>
+  <div>{{ props.intf.name }} {{ props.intf.value }}</div>
 </template>
 
 <script setup lang="ts">

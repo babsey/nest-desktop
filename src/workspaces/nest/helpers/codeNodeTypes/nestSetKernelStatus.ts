@@ -13,8 +13,7 @@ export default defineCodeNode({
     resolution: () => new NumberInterface("Resolution", 0.1, 0.001, 10).use(displayInSidebar, true).setHidden(true),
     rng_seed: () => new IntegerInterface("RNG Seed", 1, 1).use(displayInSidebar, true).setHidden(true),
   },
-  codeTemplate: (node) => {
-    if (!node) return "nest.SetKernelStatus()";
+  codeTemplate() {
     const status = [
       '"local_num_threads": {{ inputs.local_num_threads.value }}',
       '"resolution": {{ inputs.resolution.value }}',

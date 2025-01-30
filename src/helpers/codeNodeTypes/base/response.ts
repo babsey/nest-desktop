@@ -11,14 +11,16 @@ export default defineCodeNode({
     events: () => new NodeInputInterface("events"),
     plotly: () => new NodeInputInterface("plotly"),
   },
-  codeTemplate: (node) => {
-    if (!node) return "response = {}";
+  codeTemplate() {
+    if (!this.node) return "";
     const responseData = [];
 
-    const events = node.getConnectedNodesByInterface("events").map((node: AbstractCodeNode) => `${node.label}.events`);
+    const events = this.node
+      .getConnectedNodesByInterface("events")
+      .map((node: AbstractCodeNode) => `${node.label}.events`);
     if (events.length > 0) responseData.push(`"events": [${events.join(", ")}]`);
 
-    const plotly = node.getConnectedNodesByInterface("plotly").map((node: AbstractCodeNode) => `${node.label}`);
+    const plotly = this.node.getConnectedNodesByInterface("plotly").map((node: AbstractCodeNode) => `${node.label}`);
     if (plotly.length > 0) responseData.push(`"plotly": ${plotly.join(", ")}.to_plotly_json()`);
 
     return `response = {\n\t${responseData.join(",\n\t")}\n}`;

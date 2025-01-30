@@ -18,8 +18,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  codeTemplate: (node) =>
-    node
-      ? `np.random.normal(${node.inputs.loc.value}, ${node.inputs.scale.value}, ${node.inputs.size.value})`
-      : "np.random.normal({{ inputs.loc.value }}, {{ inputs.scale.value }}, {{ inputs.size.value }})",
+  variableName: "normal",
+  codeTemplate: () => "np.random.normal({{ inputs.loc.value }}, {{ inputs.scale.value }}, {{ inputs.size.value }})",
 });

@@ -44,6 +44,7 @@ export interface DynamicNodeUpdateResult {
 export interface IDynamicCodeNodeDefinition<I, O> extends IDynamicNodeDefinition<I, O> {
   code?: BaseCode;
   codeTemplate?: (node?: AbstractCodeNode) => string;
+  node?: AbstractCodeNode;
   modules?: string[];
   variableName?: string;
 }
@@ -65,7 +66,6 @@ export function defineDynamicCodeNode<I, O>(
       super();
       this._title = definition.title ?? definition.type;
       this.variableName = definition.variableName ?? "x";
-      if (definition.codeTemplate) this.codeTemplate = definition.codeTemplate;
       this.executeFactory("input", definition.inputs);
       this.executeFactory("output", definition.outputs);
 
@@ -75,6 +75,10 @@ export function defineDynamicCodeNode<I, O>(
       }
 
       definition.onCreate?.call(this);
+    }
+
+    override get codeTemplate(): string {
+      return definition.codeTemplate ? (definition.codeTemplate?.call(this) as string) : "";
     }
 
     public onPlaced() {
@@ -100,6 +104,7 @@ export function defineDynamicCodeNode<I, O>(
     }
 
     public load(state: INodeState<Dynamic<I>, Dynamic<O>>): void {
+      console.log("load");
       // prevent automatic updates during loading
       this.preventUpdate = true;
 

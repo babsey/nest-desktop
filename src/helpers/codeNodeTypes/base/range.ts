@@ -16,8 +16,5 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  codeTemplate: (node) => {
-    if (!node) return "range({{ inputs.start.value }}, {{ inputs.stop.value }}, {{ inputs.step.value }})";
-    return `range(${node.inputs.start.value}, ${node.inputs.stop.value}, ${node.inputs.step.value})`;
-  },
+  codeTemplate: () => "range({{ inputs.start.value }}, {{ inputs.stop.value }}, {{ inputs.step.value }})",
 });

@@ -16,11 +16,11 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  variableName: "cc",
-  codeTemplate: (node) => {
-    if (!node) return "np.corrcoef({{ inputs.x.value }})";
-    const xNodes = node.getConnectedNodesByInterface("x");
-    if (xNodes.length === 0) return node.type;
+  variableName: "corrcoef",
+  codeTemplate() {
+    if (!this.node) return "np.corrcoef({{ inputs.x.value }})";
+    const xNodes = this.node.getConnectedNodesByInterface("x");
+    if (xNodes.length === 0) return this.node.type;
     const xLabels = xNodes.map((node) => node.label);
     return `np.corrcoef(${xLabels.join(", ")})`;
   },

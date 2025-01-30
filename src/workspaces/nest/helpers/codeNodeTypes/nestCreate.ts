@@ -3,11 +3,11 @@
 import { IntegerInterface, NodeInterface, TextInputInterface, displayInSidebar, setType } from "baklavajs";
 
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
-import { NodeParameter } from "@/helpers/node/nodeParameter";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 import { numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 import { INESTNodeCollection, nestNodeCollectionType } from "./interfaceTypes";
+import { IParamProps } from "@/helpers/common/parameter";
 
 export default defineDynamicCodeNode({
   type: "nest.Create",
@@ -22,36 +22,37 @@ export default defineDynamicCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INESTNodeCollection>().use(setType, nestNodeCollectionType),
   },
-  codeTemplate: (node) => {
-    if (!node) return "nest.Create()";
+  codeTemplate() {
+    if (!this.node) return this.type;
     const args = ['"{{ inputs.model.value }}"'];
-    if (node.inputs.size.value > 1) args.push("{{ inputs.size.value }}");
+    if (this.node.inputs.size.value > 1) args.push("{{ inputs.size.value }}");
 
-    const params: string[] = [];
-    node.networkItem?.paramsVisible.forEach((paramKey: string) => {
-      const param = node.inputs[paramKey];
-      if (param) params.push(`"${paramKey}": ${param.value}`);
-    });
-
-    if (params.length > 0) args.push(`params={\n\t${params.join(",\n\t")}\n}`);
+    if (this.node.networkItem) {
+      const inputs = this.node.inputs;
+      const params: string[] = [];
+      this.node.networkItem.paramsVisible.forEach((paramKey: string) => {
+        const param = inputs[paramKey];
+        if (param) params.push(`"${paramKey}": ${param.value}`);
+      });
+      if (params.length > 0) args.push(`params={\n\t${params.join(",\n\t")}\n}`);
+    }
 
     return `nest.Create(${args.join(", ")})`;
   },
   onPlaced() {
-    if (!this.code) return;
-    this.networkItem = this.code.project.network.nodes.nodeItems[this.indexOfNodeType];
+    if (!this.node) return;
+    this.node.networkItem = this.node.code.project.network.nodes.nodeItems[this.node.indexOfNodeType];
   },
   onUpdate({ model }) {
     const inputs: Record<string, () => NodeInterface> = {};
     const outputs: Record<string, () => NodeInterface> = {};
 
-    if (model.includes("recorder") || model.includes("meter"))
-      outputs["events"] = () => new NodeInterface("events", "");
+    if (model.includes("recorder") || model.includes("meter")) outputs["events"] = () => new NodeOutputInterface();
 
-    if (this.networkItem && this.networkItem.paramsVisible.length > 0) {
-      this.networkItem.filteredParams.forEach((param: NodeParameter) => {
+    if (this.node?.networkItem && this.node?.networkItem.paramsVisible.length > 0) {
+      this.node?.networkItem.filteredParams.forEach((param: IParamProps) => {
         inputs[param.id] = () =>
-          new TextInputInterface(param.id, param.value).use(displayInSidebar, true).setHidden(true);
+          new TextInputInterface(param.id, param.value as string).use(displayInSidebar, true).setHidden(true);
       });
     }
 

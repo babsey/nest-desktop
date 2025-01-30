@@ -1,7 +1,7 @@
 // baklava/index.ts
 
 import { Editor } from "baklavajs";
-import { IBaklavaViewModel } from "@baklavajs/renderer-vue";
+import { IViewSettings } from "@baklavajs/renderer-vue";
 
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
@@ -13,21 +13,29 @@ import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
 export const baklavajs = {
   async install() {
     const codeGraphStore = useCodeGraphStore();
-    setViewSettings(codeGraphStore.viewModel as IBaklavaViewModel);
+    setViewSettings(codeGraphStore.viewModel.settings);
     registerCodeNodeTypes(["base", "numpy", "pandas", "plotly"]);
   },
 };
 
-export const setViewSettings = (baklavaView: IBaklavaViewModel) => {
-  baklavaView.settings.nodes.defaultWidth = 350;
-  // baklavaView.settings.palette.enabled = false;
+export const setViewSettings = (settings: IViewSettings) => {
+  // console.log("set settings");
 
-  // baklavaView.settings.contextMenu.additionalItems = [{ label: "edit", command: Commands.OPEN_SIDEBAR_COMMAND }];
+  settings.displayValueOnHover = true;
+  settings.enableMinimap = false;
+
+  settings.nodes.defaultWidth = 350;
+  settings.nodes.resizable = true;
+
+  settings.sidebar.resizable = false;
+  // settings.palette.enabled = false;
+
+  // settings.contextMenu.additionalItems = [{ label: "edit", command: Commands.OPEN_SIDEBAR_COMMAND }];
 };
 
-export const subscribe = (editor: Editor, call: () => void) => {
-  editor.graphEvents.addNode.subscribe(Symbol(), () => call());
-  editor.graphEvents.addConnection.subscribe(Symbol(), () => call());
-  editor.graphEvents.removeNode.subscribe(Symbol(), () => call());
-  editor.graphEvents.removeConnection.subscribe(Symbol(), () => call());
+export const subscribe = (editor: Editor, callback: () => void) => {
+  editor.graphEvents.addNode.subscribe(Symbol(), () => callback());
+  editor.graphEvents.addConnection.subscribe(Symbol(), () => callback());
+  editor.graphEvents.removeNode.subscribe(Symbol(), () => callback());
+  editor.graphEvents.removeConnection.subscribe(Symbol(), () => callback());
 };

@@ -14,5 +14,5 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  codeTemplate: () => "dict",
+  codeTemplate: () => "dict({{ inputs.a.value }}, {{ inputs.v.value }})",
 });

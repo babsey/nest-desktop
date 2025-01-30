@@ -8,7 +8,7 @@ import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({
   type: "torch.nn.Conv2d",
-  title: "convolve in 2D",
+  title: "convolve (2D)",
   inputs: {
     in_channel: () =>
       new IntegerInterface("in channel", 1).use(setType, numberType).use(displayInSidebar, true).setHidden(true),
@@ -22,8 +22,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  codeTemplate: (node) =>
-    node
-      ? `torch.nn.Conv2d(${node.inputs.in_channel.value}, ${node.inputs.out_channel.value}, ${node.inputs.kernel_size.value}, ${node.inputs.stride.value})`
-      : "torch.nn.Conv2d({{ inputs.in_channel.value }}, {{ inputs.out_channel.value}}, {{ inputs.kernel_size.value }}, {{ inputs.stride.value }})",
+  codeTemplate: () =>
+    "torch.nn.Conv2d({{ inputs.in_channel.value }}, {{ inputs.out_channel.value}}, {{ inputs.kernel_size.value }}, {{ inputs.stride.value }})",
 });

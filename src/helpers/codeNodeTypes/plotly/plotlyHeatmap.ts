@@ -15,5 +15,5 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "heatmap",
-  codeTemplate: () => "px.Heatmap({{ inputs.x.value }}, {{ inputs.y.value }})",
+  codeTemplate: () => "go.Heatmap({{ inputs.x.value }}, {{ inputs.y.value }})",
 });
