@@ -44,6 +44,7 @@ export interface DynamicNodeUpdateResult {
 export interface IDynamicCodeNodeDefinition<I, O> extends IDynamicNodeDefinition<I, O> {
   code?: BaseCode;
   codeTemplate?: (node?: AbstractCodeNode) => string;
+  modules?: string[];
   variableName?: string;
 }
 

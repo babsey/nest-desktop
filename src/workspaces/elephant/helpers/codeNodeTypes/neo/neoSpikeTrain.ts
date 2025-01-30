@@ -9,7 +9,6 @@ export default defineCodeNode({
   title: "spiketrain",
   inputs: {
     times: () => new NodeInputInterface("times"),
-    // openButton: () => new NodeInterface("Open Sidebar", undefined).setComponent(markRaw(SidebarButton)).setPort(false),
   },
   outputs: {
     out: () => new NodeOutputInterface(),

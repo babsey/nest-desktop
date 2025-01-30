@@ -6,6 +6,7 @@ import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Line",
+  modules: ["plotly.graph_objects"],
   title: "line",
   inputs: {
     x: () => new NodeInputInterface("x"),
@@ -15,5 +16,5 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "line",
-  codeTemplate: () => "go.Line({{ inputs.x.value }}, {{ inputs.y.value }})",
+  codeTemplate: () => "px.Line({{ inputs.x.value }}, {{ inputs.y.value }})",
 });

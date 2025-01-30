@@ -13,6 +13,7 @@ import plotlyScatter from "./plotlyScatter";
 export const registerPlotlyNodeTypes = () => {
   const codeGraphStore = useCodeGraphStore();
   codeGraphStore.state.modules["plotly"] = "import plotly";
+  codeGraphStore.state.modules["plotly.graph_objects"] = "import plotly.graph_objects as go";
 
   const editor = codeGraphStore.viewModel.editor;
   editor.registerNodeType(plotlyBar, { category: "plotly" });

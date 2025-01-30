@@ -6,6 +6,7 @@ import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Scattergl",
+  modules: ["plotly.graph_objects"],
   title: "scatter (gl)",
   inputs: {
     x: () => new NodeInputInterface("x"),

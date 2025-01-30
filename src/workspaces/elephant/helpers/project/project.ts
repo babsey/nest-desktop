@@ -2,8 +2,8 @@
 
 import { BaseProject, IBaseProjectProps } from "@/helpers/project/project";
 
-import { ElephantAnalysisCode } from "../analysis/analysisCode";
-// import { ElephantCode } from "../code/code";
+// import { ElephantAnalysisCode } from "../analysis/analysisCode";
+import { ElephantCode } from "../code/code";
 import { useElephantModelDBStore } from "../../stores/model/modelDBStore";
 
 export class ElephantProject extends BaseProject {
@@ -12,11 +12,11 @@ export class ElephantProject extends BaseProject {
   }
 
   override get Code() {
-    return ElephantAnalysisCode;
+    return ElephantCode;
   }
 
-  override get code(): ElephantAnalysisCode {
-    return this._code as ElephantAnalysisCode;
+  override get code(): ElephantCode {
+    return this._code as ElephantCode;
   }
 
   /**

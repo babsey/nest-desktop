@@ -17,19 +17,21 @@ export type InterfaceFactory<T> = {
 export interface ICodeNodeDefinition<I, O> extends INodeDefinition<I, O> {
   code?: BaseCode;
   codeTemplate?: (node?: AbstractCodeNode) => string;
+  modules?: string[];
   variableName?: string;
 }
 
 export function defineCodeNode<I, O>(definition: ICodeNodeDefinition<I, O>): new () => CodeNode<I, O> {
   return class extends CodeNode<I, O> {
     public readonly type = definition.type;
-    public inputs: NodeInterfaceDefinition<I> = {} as any;
-    public outputs: NodeInterfaceDefinition<O> = {} as any;
+    public inputs: NodeInterfaceDefinition<I> = {} as NodeInterfaceDefinition<I>;
+    public outputs: NodeInterfaceDefinition<O> = {} as NodeInterfaceDefinition<O>;
 
     constructor() {
       super();
       this._title = definition.title ?? definition.type;
-      this.variableName = definition.variableName ?? "x";
+      if (definition.variableName) this.variableName = definition.variableName;
+      if (definition.modules) this.modules = definition.modules;
       if (definition.codeTemplate) this.codeTemplate = definition.codeTemplate;
       this.executeFactory("input", definition.inputs);
       this.executeFactory("output", definition.outputs);

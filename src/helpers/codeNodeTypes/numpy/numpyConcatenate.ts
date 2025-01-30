@@ -1,18 +1,21 @@
 // numpyConcatenate.ts
 
-import { INumpyArray } from "./interfaceTypes";
+import { setType } from "baklavajs";
+
 import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+
+import { arrayType, INumpyArray } from "./interfaceTypes";
 
 export default defineCodeNode({
   type: "numpy.concatenate",
   title: "concatenate",
   inputs: {
-    a: () => new NodeInputInterface<INumpyArray>("a"),
+    a: () => new NodeInputInterface<INumpyArray>("a").use(setType, arrayType),
   },
   outputs: {
-    out: () => new NodeOutputInterface<INumpyArray>(),
+    out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
   variableName: "concat",
   codeTemplate: (node) => {

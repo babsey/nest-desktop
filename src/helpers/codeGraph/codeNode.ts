@@ -12,11 +12,13 @@ export abstract class AbstractCodeNode extends AbstractNode {
   abstract outputs: Record<string, NodeInterface<any>>;
 
   private _code: BaseCode | undefined;
-  private _variableName: string = "x";
-  private _codeTemplate: () => string = () => "";
   private _hidden: boolean = false;
   private _script: string = "";
   private _networkItem: TNode | TConnection | undefined;
+
+  public codeTemplate: (node?: AbstractCodeNode) => string = () => "";
+  public modules: string[] = [];
+  public variableName: string = "x";
 
   constructor() {
     super();
@@ -30,14 +32,6 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   set code(value: BaseCode) {
     this._code = value;
-  }
-
-  get codeTemplate(): (node?: AbstractCodeNode) => string {
-    return this._codeTemplate;
-  }
-
-  set codeTemplate(value: (node?: AbstractCodeNode) => string) {
-    this._codeTemplate = value;
   }
 
   get hidden(): boolean {
@@ -59,7 +53,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
   }
 
   get label(): string {
-    return this._variableName + (this.indexOfNodeType + 1);
+    return this.variableName + (this.indexOfNodeType + 1);
   }
 
   get networkConnection(): TConnection | undefined {
@@ -80,14 +74,6 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   get script(): string {
     return this._script;
-  }
-
-  get variableName(): string {
-    return this._variableName;
-  }
-
-  set variableName(value: string) {
-    this._variableName = value;
   }
 
   /**

@@ -11,7 +11,7 @@ export class ElephantModel extends BaseModel {
   private _codeTemplate: string = "";
 
   constructor(modelProps: IElephantModelProps) {
-    super(modelProps, { name: "ElephantModel", workspace: "elephant" });
+    super(modelProps);
 
     if (modelProps.codeTemplate) {
       this._codeTemplate = modelProps.codeTemplate;

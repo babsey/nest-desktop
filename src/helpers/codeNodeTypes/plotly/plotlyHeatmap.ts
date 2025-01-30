@@ -6,6 +6,7 @@ import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Heatmap",
+  modules: ["plotly.graph_objects"],
   title: "heatmap",
   inputs: {
     z: () => new NodeInputInterface("z"),
@@ -14,5 +15,5 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "heatmap",
-  codeTemplate: () => "go.Heatmap({{ inputs.x.value }}, {{ inputs.y.value }})",
+  codeTemplate: () => "px.Heatmap({{ inputs.x.value }}, {{ inputs.y.value }})",
 });

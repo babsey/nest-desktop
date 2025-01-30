@@ -1,6 +1,6 @@
 <template>
   <v-layout full-height>
-    <CodeGraphEditor :view-model="currentProject.code.graph.viewModel" />
+    <CodeGraphEditor :graph="currentProject.code.graph" />
   </v-layout>
 </template>
 

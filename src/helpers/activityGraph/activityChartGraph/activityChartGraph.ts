@@ -430,8 +430,6 @@ export class ActivityChartGraph extends BaseObj {
     if (!this._state.ref) return;
     this.logger.trace("react");
 
-    console.log(data, layout);
-
     // @ts-expect-error Cannot find name 'Plotly'.
     Plotly.react(this._state.ref, data || this._plotData, layout || this._plotLayout);
   }

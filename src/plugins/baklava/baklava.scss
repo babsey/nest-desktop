@@ -1,9 +1,22 @@
-.baklava-node.--hidden {
-  opacity: 0.5;
+.baklava-node-interface[data-interface-type="string"] {
+  --baklava-node-interface-port-color: #a11;
+}
 
-  .__title {
-    background-color: var(--baklava-node-color-background) !important;
-  }
+.baklava-node-interface[data-interface-type="number"] {
+  --baklava-node-interface-port-color: #164;
+}
+
+.baklava-node-interface[data-interface-type="boolean"] {
+  // --baklava-node-interface-port-color: #219;
+  --baklava-node-interface-port-color: purple;
+}
+
+.baklava-node-interface[data-interface-type="array"] {
+  --baklava-node-interface-port-color: #4d77cf;
+}
+
+.baklava-node-interface[data-interface-type="nestNodeCollection"] {
+  --baklava-node-interface-port-color: #f63;
 }
 
 // .baklava-category,
@@ -56,22 +69,10 @@
   background-color: #ee4c2c !important;
 }
 
-.baklava-node-interface[data-interface-type="string"] {
-  --baklava-node-interface-port-color: #a11;
-}
+.baklava-node.--hidden {
+  opacity: 0.5;
 
-.baklava-node-interface[data-interface-type="number"] {
-  --baklava-node-interface-port-color: #164;
-}
-
-.baklava-node-interface[data-interface-type="boolean"] {
-  --baklava-node-interface-port-color: #219;
-}
-
-.baklava-node-interface[data-interface-type="nestNodeCollection"] {
-  --baklava-node-interface-port-color: #f63;
-}
-
-.baklava-node-interface[data-interface-type="nestSynapseCollection"] {
-  --baklava-node-interface-port-color: purple;
+  .__title {
+    background-color: var(--baklava-node-color-background) !important;
+  }
 }

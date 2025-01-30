@@ -2,7 +2,7 @@
 
 import { SelectInterface, setType } from "baklavajs";
 
-import { INumpyArray } from "./interfaceTypes";
+import { arrayType, INumpyArray } from "./interfaceTypes";
 import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
@@ -12,12 +12,12 @@ export default defineCodeNode({
   type: "numpy.convolve",
   title: "convolve",
   inputs: {
-    a: () => new NodeInputInterface<INumpyArray>("a"),
-    v: () => new NodeInputInterface<INumpyArray>("v"),
+    a: () => new NodeInputInterface<INumpyArray>("a").use(setType, arrayType),
+    v: () => new NodeInputInterface<INumpyArray>("v").use(setType, arrayType),
     mode: () => new SelectInterface("mode", "valid", ["valid", "same", "full"]).use(setType, stringType),
   },
   outputs: {
-    out: () => new NodeOutputInterface<INumpyArray>(),
+    out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
   variableName: "conv",
   codeTemplate: (node) => {

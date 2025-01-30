@@ -1,4 +1,4 @@
-// numpyArange.ts
+// numpyFull.ts
 
 import { NumberInterface, setType } from "baklavajs";
 
@@ -8,18 +8,17 @@ import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "../base/interfaceTypes";
 
 export default defineCodeNode({
-  type: "numpy.arange",
-  title: "arange",
+  type: "numpy.full",
+  title: "full",
   inputs: {
-    start: () => new NumberInterface("start", 0).use(setType, numberType),
-    stop: () => new NumberInterface("stop", 1).use(setType, numberType),
-    step: () => new NumberInterface("step", 1).use(setType, numberType),
+    shape: () => new NumberInterface("shape", 1).use(setType, numberType),
+    fill_value: () => new NumberInterface("fill_value", 1).use(setType, numberType),
   },
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
   codeTemplate: (node) =>
     node
-      ? `np.arange(${node.inputs.start.value}, ${node.inputs.stop.value}, ${node.inputs.step.value})`
-      : "np.arange({{ inputs.start.value }}, {{ inputs.stop.value }}, {{ inputs.step.value }})",
+      ? `np.full(${node.inputs.shape.value}, ${node.inputs.fill_value.value})`
+      : "np.full({{ inputs.shape.value }}, {{ inputs.fill_value.value }})",
 });

@@ -13,6 +13,7 @@ import elephantTimeHistogram from "./elephantTimeHistogram";
 export const registerElephantNodeTypes = () => {
   const codeGraphStore = useCodeGraphStore();
   codeGraphStore.state.modules["elephant"] = "import elephant";
+  codeGraphStore.state.modules["quantities"] = "import quantities as pq";
 
   const editor = codeGraphStore.viewModel.editor;
   editor.registerNodeType(elephantHomogeneousGammaProcess, { category: "elephant" });

@@ -14,7 +14,6 @@ import { useElephantProjectStore } from "./stores/project/projectStore";
 
 export const elephant: IWorkspaceProps = {
   backends: {},
-  configNames: ["ElephantModel"],
   databases: ["ELEPHANT_MODEL_STORE", "ELEPHANT_PROJECT_STORE"],
   iconSet,
   id: "elephant",

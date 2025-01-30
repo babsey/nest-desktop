@@ -6,6 +6,7 @@ import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Scatter",
+  modules: ["plotly.graph_objects"],
   title: "scatter",
   inputs: {
     x: () => new NodeInputInterface("x"),
@@ -15,5 +16,11 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "scatter",
-  codeTemplate: () => 'go.Scatter(x={{ inputs.x.value }}, y={{ inputs.y.value }}, mode="markers")',
+  codeTemplate: (node) => {
+    if (!node) return 'go.Scatter(x={{ inputs.x.value }}, y={{ inputs.y.value }}, mode="markers")';
+    const xNodes = node.getConnectedNodesByInterface("x");
+    if (xNodes.length === 0) return node.type;
+    const xLabels = xNodes.map((xNode) => xNode.label);
+    return `go.Scatter(x=${xLabels.join(", ")}, mode="markers")`;
+  },
 });

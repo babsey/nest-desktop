@@ -29,7 +29,7 @@ const logger = mainLogger.getSubLogger({
 export interface IWorkspaceProps {
   backends: Record<string, TStore>;
   completionSources?: CompletionSource[];
-  configNames: string[];
+  configNames?: string[];
   databases: string[];
   iconSet: IconSet;
   id: string;
@@ -83,7 +83,7 @@ function initEnabledWorkspace(app: App, workspaceId: string): void {
       const workspaceProps = workspaces[workspaceId];
 
       // Load config files.
-      workspaceProps.configNames.forEach((name: string) => new Config({ name, workspace: workspaceProps.id }));
+      workspaceProps.configNames?.forEach((name: string) => new Config({ name, workspace: workspaceProps.id }));
 
       // Initialize workspace.
       workspaceProps.init();
