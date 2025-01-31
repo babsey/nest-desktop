@@ -9,14 +9,22 @@ import {
   TextInputInterface,
 } from "baklavajs";
 
+import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
+
 import {
   INESTNodeCollection,
   // INESTSynapseCollection,
   nestNodeCollectionType,
   // nestSynapseCollectionType,
 } from "./interfaceTypes";
-import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
+
+const formatLabels = (nodes: AbstractCodeNode[]) => {
+  const labels = nodes.map((node: AbstractCodeNode) => node.label);
+  labels.sort();
+  return labels.join("+");
+};
 
 export default defineDynamicCodeNode({
   type: "nest.Connect",
@@ -40,14 +48,10 @@ export default defineDynamicCodeNode({
   },
   codeTemplate() {
     if (!this.node) return this.type;
-    // const preNodes = this.node.getConnectedNodesByInterface("pre");
-    // const postNodes = this.node.getConnectedNodesByInterface("post");
-    // if (preNodes.length === 0 || postNodes.length === 0) return this.type;
-    // const preLabels = preNodes.map((preNode) => preNode.label);
-    // const postLabels = postNodes.map((postNode) => postNode.label);
-    // preLabels.sort();
-    // postLabels.sort();
-    const args = ["{{ inputs.pre.value }}", "{{ inputs.post.value }}"];
+    const preNodes = this.node.getConnectedNodesByInterface("pre");
+    const postNodes = this.node.getConnectedNodesByInterface("post");
+    if (preNodes.length === 0 || postNodes.length === 0) return this.type;
+    const args = [formatLabels(preNodes), formatLabels(postNodes)];
     if (this.node.inputs.weight.value !== 1) args.push(`syn_spec={'weight': ${this.node.inputs.weight.value}}`);
     return `nest.Connect(${args.join(", ")})`;
   },

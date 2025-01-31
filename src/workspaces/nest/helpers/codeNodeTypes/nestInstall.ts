@@ -1,10 +1,9 @@
 // nestInstall.ts
 
-import { displayInSidebar, TextInputInterface } from "baklavajs";
-import { setType } from "@baklavajs/interface-types";
+import { displayInSidebar, setType, TextInputInterface } from "baklavajs";
 
-import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({
   type: "nest.Install",

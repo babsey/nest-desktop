@@ -2,8 +2,8 @@
 
 import { setType, TextInputInterface } from "baklavajs";
 
-import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({
   type: "nest.CopyModel",

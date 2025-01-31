@@ -11,8 +11,8 @@ export class NodeOutputInterface<T = any> extends CodeNodeInterface<T> {
     this.setComponent(markRaw(NodeOutputComponent));
   }
 
-  get value(): T {
-    if (this.node) return this.node.label as T;
-    return this._value as T;
-  }
+  // get value(): T {
+  //   if (this.node) return this.node.label as T;
+  //   return this._value as T;
+  // }
 }

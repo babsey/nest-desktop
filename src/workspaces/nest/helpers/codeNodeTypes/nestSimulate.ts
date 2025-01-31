@@ -1,7 +1,6 @@
 // nestSimulate.ts
 
-import { displayInSidebar, IntegerInterface } from "baklavajs";
-import { setType } from "@baklavajs/interface-types";
+import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";

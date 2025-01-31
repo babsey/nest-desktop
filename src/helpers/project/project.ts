@@ -58,7 +58,7 @@ export class BaseProject extends BaseObj {
     // Construct components.
     this._state = new ProjectState(this);
 
-    this._code = new this.Code(this, projectProps.code);
+    this._code = new this.Code(this);
     this._activities = new this.Activities(this);
     this._activityGraph = new this.ActivityGraph(this, projectProps.activityGraph);
 

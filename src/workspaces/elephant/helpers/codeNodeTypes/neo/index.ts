@@ -9,5 +9,5 @@ export const registerNeoNodeTypes = () => {
   codeGraphStore.state.modules["neo"] = "import neo";
 
   const editor = codeGraphStore.viewModel.editor;
-  editor.registerNodeType(neoSpikeTrain, { category: "neo" });
+  editor.registerNodeType(neoSpikeTrain, { category: "neo.core" });
 };

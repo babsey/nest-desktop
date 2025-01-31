@@ -2,12 +2,13 @@
 
 import { IntegerInterface, NodeInterface, TextInputInterface, displayInSidebar, setType } from "baklavajs";
 
+import { IParamProps } from "@/helpers/common/parameter";
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 import { numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 import { INESTNodeCollection, nestNodeCollectionType } from "./interfaceTypes";
-import { IParamProps } from "@/helpers/common/parameter";
+import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 
 export default defineDynamicCodeNode({
   type: "nest.Create",
@@ -16,8 +17,8 @@ export default defineDynamicCodeNode({
   inputs: {
     model: () => new TextInputInterface("model", "iaf_psc_alpha").use(setType, stringType),
     size: () => new IntegerInterface("size", 1, 1).use(setType, numberType).use(displayInSidebar, true),
-    // params: () => new NodeInterface("params", null),
-    // positions: () => new NodeInterface("positions", null),
+    params: () => new NodeInputInterface("params"),
+    positions: () => new NodeInputInterface("positions", true),
   },
   outputs: {
     out: () => new NodeOutputInterface<INESTNodeCollection>().use(setType, nestNodeCollectionType),
@@ -35,6 +36,16 @@ export default defineDynamicCodeNode({
         if (param) params.push(`"${paramKey}": ${param.value}`);
       });
       if (params.length > 0) args.push(`params={\n\t${params.join(",\n\t")}\n}`);
+    }
+
+    const positions = this.node.getConnectedNodesByInterface("positions");
+    if (positions.length > 0) {
+      const inputPositions = this.node.inputs?.positions as NodeInputInterface;
+      if (inputPositions.integrated) {
+        args.push(`positions=${positions[0].codeTemplate}`);
+      } else {
+        args.push(`positions=${positions[0].label}`);
+      }
     }
 
     return `nest.Create(${args.join(", ")})`;

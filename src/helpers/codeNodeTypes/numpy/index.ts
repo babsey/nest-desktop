@@ -30,8 +30,8 @@ export const registerNumpyNodeTypes = () => {
   editor.registerNodeType(numpyCorrelate, { category: "numpy" });
   editor.registerNodeType(numpyFull, { category: "numpy" });
   editor.registerNodeType(numpyHistogram, { category: "numpy" });
-  editor.registerNodeType(numpyRandomNormal, { category: "numpy" });
-  editor.registerNodeType(numpyRandomRandint, { category: "numpy" });
-  editor.registerNodeType(numpyRandomSeed, { category: "numpy" });
-  editor.registerNodeType(numpyRandomUniform, { category: "numpy" });
+  editor.registerNodeType(numpyRandomNormal, { category: "numpy.random" });
+  editor.registerNodeType(numpyRandomRandint, { category: "numpy.random" });
+  editor.registerNodeType(numpyRandomSeed, { category: "numpy.random" });
+  editor.registerNodeType(numpyRandomUniform, { category: "numpy.random" });
 };

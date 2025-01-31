@@ -27,6 +27,7 @@ const _elementTypes: { icon: string; id: string; title: string }[] = [
 
 export class BaseNetwork extends BaseObj {
   private _state: NetworkState; // network state
+  private _props: INetworkProps;
 
   public _connections: TConnections;
   public _nodes: TNodes;
@@ -45,6 +46,7 @@ export class BaseNetwork extends BaseObj {
     });
 
     this._project = project;
+    this._props = networkProps;
     this._state = new NetworkState(this);
 
     this._nodes = new this.Nodes(this, networkProps.nodes || []);
@@ -96,6 +98,10 @@ export class BaseNetwork extends BaseObj {
 
   get project(): TProject {
     return this._project;
+  }
+
+  get props(): INetworkProps {
+    return this._props;
   }
 
   get state(): NetworkState {

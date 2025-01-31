@@ -10,6 +10,6 @@ export const registerNorseNodeTypes = () => {
   codeGraphStore.state.modules["norse"] = "import norse";
 
   const editor = codeGraphStore.viewModel.editor;
-  editor.registerNodeType(norseIAFCell, { category: "norse" });
-  editor.registerNodeType(norseSequentialState, { category: "norse" });
+  editor.registerNodeType(norseIAFCell, { category: "norse.torch" });
+  editor.registerNodeType(norseSequentialState, { category: "norse.torch" });
 };

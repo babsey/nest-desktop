@@ -34,21 +34,12 @@ interface ICodeState {
   templateFilename: string;
 }
 
-// interface IItem {
-//   title: string;
-//   id?: number;
-//   children?: IItem[];
-//   value?: unknown;
-// }
-
-const codeBlocks: string[] = ["importModules"];
-
 export class BaseCode extends BaseObj {
   private _graph: CodeGraph;
   private _state: UnwrapRef<ICodeState>;
   public _project: TProject; // parent
 
-  constructor(project: TProject, codeProps?: ICodeProps) {
+  constructor(project: TProject) {
     super({ logger: { settings: { minLevel: 3 } } });
 
     this._project = project;
@@ -59,7 +50,7 @@ export class BaseCode extends BaseObj {
       },
       script: "",
       template: "",
-      templateFilename: codeProps?.templateFilename || "code",
+      templateFilename: "code",
     });
 
     if (this._state.templateFilename) this.loadTemplate();
@@ -71,10 +62,6 @@ export class BaseCode extends BaseObj {
   get graph(): CodeGraph {
     return this._graph;
   }
-
-  // get nodeTypes(): Record<string, IBaseNodeType> {
-  //   return {};
-  // }
 
   get project(): TProject {
     return this._project;

@@ -104,7 +104,6 @@ export function defineDynamicCodeNode<I, O>(
     }
 
     public load(state: INodeState<Dynamic<I>, Dynamic<O>>): void {
-      console.log("load");
       // prevent automatic updates during loading
       this.preventUpdate = true;
 

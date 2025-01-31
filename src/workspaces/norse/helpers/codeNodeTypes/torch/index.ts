@@ -12,8 +12,8 @@ export const registerTorchNodeTypes = () => {
   codeGraphStore.state.modules["torch"] = "import torch";
 
   const editor = codeGraphStore.viewModel.editor;
-  editor.registerNodeType(torchConv2d, { category: "torch" });
-  editor.registerNodeType(torchLinear, { category: "torch" });
-  editor.registerNodeType(torchMaxPool2d, { category: "torch" });
+  editor.registerNodeType(torchConv2d, { category: "torch.nn" });
+  editor.registerNodeType(torchLinear, { category: "torch.nn" });
+  editor.registerNodeType(torchMaxPool2d, { category: "torch.nn" });
   editor.registerNodeType(torchRandn, { category: "torch" });
 };

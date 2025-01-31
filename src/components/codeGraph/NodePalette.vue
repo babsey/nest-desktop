@@ -1,20 +1,30 @@
 <template>
   <div class="baklava-node-palette pa-0">
-    <v-expansion-panels elevation="0" density="compact" multiple rounded="0" variant="accordion">
-      <v-expansion-panel v-for="c in categories" :key="c.name">
-        <v-expansion-panel-title :node-category="c.name" class="baklava-category" style="min-height: 48px !important">
-          {{ c.name }}
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <v-list density="compact" style="background-color: transparent">
-            <v-list-item v-for="(ni, nt) in c.nodeTypes" :key="nt" style="padding: 1px 2px" @click="() => {}">
+    <v-list class="pa-0" density="compact" style="background-color: transparent" theme="dark">
+      <v-list-group v-for="c1 in nestedCategories" :key="c1.name">
+        <template #activator="{ props }">
+          <v-list-item v-bind="props" :title="c1.name" />
+        </template>
+
+        <v-list v-if="c1.categories" class="pa-0" density="compact" style="background-color: transparent">
+          <v-list-group v-for="c2 in c1.categories" :key="c2.name">
+            <template #activator="{ props }">
+              <v-list-item v-bind="props" :title="'.' + c2.name" />
+            </template>
+
+            <v-list-item v-for="(ni, nt) in c2.nodeTypes" :key="nt" style="padding: 1px !important">
               <PaletteEntry :title="ni.title" :type="nt" class="pa-0 ma-0" @pointerdown="onDragStart(nt, ni)" />
             </v-list-item>
-          </v-list>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+          </v-list-group>
+        </v-list>
+
+        <v-list-item v-for="(ni, nt) in c1.nodeTypes" :key="nt" style="padding: 1px !important">
+          <PaletteEntry :title="ni.title" :type="nt" class="pa-0 ma-0" @pointerdown="onDragStart(nt, ni)" />
+        </v-list-item>
+      </v-list-group>
+    </v-list>
   </div>
+
   <transition name="fade">
     <div v-if="draggedNode" class="baklava-dragged-node" :style="draggedNodeStyles">
       <PaletteEntry :type="draggedNode.type" :title="draggedNode.nodeInformation.title" />
@@ -24,7 +34,7 @@
 
 <script setup lang="ts">
 import { AbstractNode, INodeTypeInformation } from "@baklavajs/core";
-import { computed, CSSProperties, inject, Ref, ref, reactive } from "vue";
+import { CSSProperties, Ref, computed, inject, reactive, ref } from "vue";
 import { usePointer } from "@vueuse/core";
 import { useViewModel, useTransform, useNodeCategories } from "@baklavajs/renderer-vue";
 
@@ -40,6 +50,23 @@ const { viewModel } = useViewModel();
 const { x: mouseX, y: mouseY } = usePointer();
 const { transform } = useTransform();
 const categories = useNodeCategories(viewModel);
+
+const nestedCategories = computed(() => {
+  const c1 = categories.value.filter((c) => !c.name.includes("."));
+  const c2 = categories.value.filter((c) => c.name.includes("."));
+  c2.forEach((c2Item) => {
+    const c1Name = c2Item.name.split(".")[0];
+    const c2Name = c2Item.name.split(".")[1];
+    const c1Item = c1.find((c) => c.name === c1Name) || { name: c1Name, nodeTypes: [] };
+    if (!c1.includes(c1Item)) {
+      c1.push(c1Item);
+      c1.sort((a, b) => (a.name > b.name ? 1 : -1));
+    }
+    if (!c1Item.categories) c1Item["categories"] = [];
+    c1Item.categories.push({ ...c2Item, name: c2Name });
+  });
+  return c1;
+});
 
 const editorEl = inject<Ref<HTMLElement | null>>("editorEl");
 
