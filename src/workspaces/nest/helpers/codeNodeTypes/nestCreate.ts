@@ -29,11 +29,9 @@ export default defineDynamicCodeNode({
     if (this.node.inputs.size.value > 1) args.push("{{ inputs.size.value }}");
 
     if (this.node.networkItem) {
-      const inputs = this.node.inputs;
       const params: string[] = [];
-      this.node.networkItem.paramsVisible.forEach((paramKey: string) => {
-        const param = inputs[paramKey];
-        if (param) params.push(`"${paramKey}": ${param.value}`);
+      this.node.networkItem.filteredParams.forEach((param) => {
+        params.push(`"${param.id}": ${JSON.stringify(param.value)}`);
       });
       if (params.length > 0) args.push(`params={\n\t${params.join(",\n\t")}\n}`);
     }
@@ -51,8 +49,8 @@ export default defineDynamicCodeNode({
     return `nest.Create(${args.join(", ")})`;
   },
   onPlaced() {
-    if (!this.node) return;
-    this.node.networkItem = this.node.code.project.network.nodes.nodeItems[this.node.indexOfNodeType];
+    if (!this.code) return;
+    this.networkItem = this.code.project.network.nodes.nodeItems[this.indexOfNodeType];
   },
   onUpdate({ model }) {
     const inputs: Record<string, () => NodeInterface> = {};

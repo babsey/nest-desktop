@@ -128,13 +128,13 @@ export function defineDynamicCodeNode<I, O>(
 
       // load the state for all generated interfaces
       for (const k of Object.keys(state.inputs)) {
-        if (!this.staticInputKeys.includes(k)) {
+        if (!this.staticInputKeys.includes(k) && this.inputs[k]) {
           this.inputs[k].load(state.inputs[k]);
           this.inputs[k].nodeId = this.id;
         }
       }
       for (const k of Object.keys(state.outputs)) {
-        if (!this.staticOutputKeys.includes(k)) {
+        if (!this.staticOutputKeys.includes(k) && this.outputs[k]) {
           this.outputs[k].load(state.outputs[k]);
           this.outputs[k].nodeId = this.id;
         }
