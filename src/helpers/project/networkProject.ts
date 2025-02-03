@@ -109,7 +109,7 @@ export class NetworkProject extends BaseProject {
 
     this.activities.checkRecorders();
 
-    this.initCode();
+    // this.initCode();
 
     this.networkRevision.commit();
 

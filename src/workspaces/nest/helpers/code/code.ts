@@ -45,7 +45,7 @@ export class NESTCode extends BaseCode {
     this.logger.trace("init graph");
 
     this.graph.unsubscribe();
-    this.graph.init();
+    this.graph.clear();
     this.updateCodeGraph();
     this.graph.subscribe();
   }
@@ -98,7 +98,9 @@ export class NESTCode extends BaseCode {
     // nest.ResetKernel
     this.graph.addNodeWithCoordinates(nestResetKernel, left, 100);
 
-    const simulation = this.project.simulation;
+    const projectProps = this.project.doc;
+
+    const simulation = projectProps.simulation;
 
     if (simulation?.modules) {
       // nest.Install
@@ -115,8 +117,7 @@ export class NESTCode extends BaseCode {
 
     const nodes: AbstractCodeNode[] = [];
 
-    const network = this.project.network;
-    const networkProps = network.toJSON();
+    const networkProps = projectProps.network;
     if (networkProps.nodes && networkProps.nodes.length > 0) {
       // nest.Create
       const nodesProps = networkProps.nodes as INESTNodeProps[];
@@ -133,7 +134,7 @@ export class NESTCode extends BaseCode {
         codeNode.inputs.model.value = nodeProps.model;
         codeNode.inputs.size.value = nodeProps.size ?? 1;
 
-        if (nodeProps.spatial) {
+        if (posNode) {
           this.graph.addConnection(posNode.outputs.out, codeNode.inputs.positions);
         }
 

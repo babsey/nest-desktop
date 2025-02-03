@@ -5,7 +5,7 @@ import Mustache from "mustache";
 
 import { AbstractNode, INodeState, NodeInterface, NodeInterfaceDefinition } from "baklavajs";
 import { BaseCode } from "../code/code";
-import { TConnection, TNode } from "@/types";
+import { TConnection, TNode, TSimulation } from "@/types";
 
 export abstract class AbstractCodeNode extends AbstractNode {
   abstract inputs: Record<string, NodeInterface<any>>;
@@ -15,6 +15,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
   private _hidden: boolean = false;
   private _script: string = "";
   private _networkItem: TNode | TConnection | undefined;
+  private _simulationItem: TSimulation | undefined;
 
   public modules: string[] = [];
   public variableName: string = "x";
@@ -81,6 +82,14 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   get script(): string {
     return this._script;
+  }
+
+  get simulationItem(): TSimulation | undefined {
+    return this._simulationItem;
+  }
+
+  set simulationItem(value: TSimulation | TConnection) {
+    this._simulationItem = value;
   }
 
   // calculate?: CalculateFunction<any, any> | undefined;

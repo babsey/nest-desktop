@@ -97,7 +97,7 @@ export class CodeGraph extends BaseObj {
   }
 
   init(): void {
-    this.clear();
+    // this.clear();
   }
 
   load(): void {

@@ -2,6 +2,7 @@
 
 import { TConnection, TConnections, TNetwork, TNode, TNodeGroup, TSynapse } from "@/types";
 
+import { AbstractCodeNode } from "../codeGraph/codeNode";
 import { BaseObj } from "../common/base";
 import { BaseSynapse, ISynapseProps } from "../synapse/synapse";
 import { ConnectionParameter } from "./connectionParameter";
@@ -22,6 +23,7 @@ export interface IConnectionProps {
 export class BaseConnection extends BaseObj {
   private readonly _name = "Connection";
 
+  private _codeNode: AbstractCodeNode;
   private _idx: number; // generative
   private _params: Record<string, ConnectionParameter> = {};
   private _paramsVisible: string[] = [];
@@ -59,6 +61,14 @@ export class BaseConnection extends BaseObj {
 
   get Synapse() {
     return BaseSynapse;
+  }
+
+  get codeNode(): AbstractCodeNode {
+    return this._codeNode;
+  }
+
+  set codeNode(value: AbstractCodeNode) {
+    this._codeNode = value;
   }
 
   get connections(): TConnections {
@@ -370,7 +380,24 @@ export class BaseConnection extends BaseObj {
    */
   update(): void {
     this.clean();
+    this.updateCodeNode();
     this.updateHash();
+  }
+
+  /**
+   * Update code node.
+   */
+  updateCodeNode(): void {
+    if (!this.codeNode) return;
+
+    this.codeNode.inputs.source.value = this.sourceIdx;
+    this.codeNode.inputs.target.value = this.targetIdx;
+
+    this.paramsVisible.forEach((paramKey: string) => {
+      if (this.codeNode.inputs[paramKey]) {
+        this.codeNode.inputs[paramKey].value = this.params[paramKey].value;
+      }
+    });
   }
 
   /**

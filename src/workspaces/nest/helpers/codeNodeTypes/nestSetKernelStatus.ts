@@ -2,6 +2,7 @@
 
 import { displayInSidebar, IntegerInterface, NumberInterface } from "baklavajs";
 
+import { NESTCode } from "../code/code";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
@@ -12,6 +13,12 @@ export default defineCodeNode({
       new IntegerInterface("Local number of threads", 1, 1).use(displayInSidebar, true).setHidden(true),
     resolution: () => new NumberInterface("Resolution", 0.1, 0.001, 10).use(displayInSidebar, true).setHidden(true),
     rng_seed: () => new IntegerInterface("RNG Seed", 1, 1).use(displayInSidebar, true).setHidden(true),
+  },
+  onPlaced() {
+    if (!this.code) return;
+    const code = this.code as NESTCode;
+    this.simulationItem = code.project.simulation.kernel;
+    this.simulationItem.codeNode = this;
   },
   codeTemplate() {
     const status = [

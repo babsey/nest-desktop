@@ -3,6 +3,7 @@
 import { BaseObj } from "@/helpers/common/base";
 
 import { NESTSimulation } from "./simulation";
+import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 
 export interface INESTSimulationKernelProps {
   resolution?: number;
@@ -11,6 +12,7 @@ export interface INESTSimulationKernelProps {
 }
 
 export class NESTSimulationKernel extends BaseObj {
+  private _codeNode: AbstractCodeNode;
   private _localNumThreads: number; // number of threads
   private _resolution: number; // time resolution of simulation steps
   private _simulation: NESTSimulation; // parent
@@ -27,6 +29,14 @@ export class NESTSimulationKernel extends BaseObj {
     this._resolution = kernelProps.resolution || 0.1;
     this._localNumThreads = kernelProps.localNumThreads || 1;
     this._rngSeed = kernelProps.rngSeed || 1;
+  }
+
+  get codeNode(): AbstractCodeNode {
+    return this._codeNode;
+  }
+
+  set codeNode(value: AbstractCodeNode) {
+    this._codeNode = value;
   }
 
   get localNumThreads(): number {
@@ -70,5 +80,16 @@ export class NESTSimulationKernel extends BaseObj {
       resolution: this._resolution,
       rngSeed: this._rngSeed,
     };
+  }
+
+  /**
+   * Update code node.
+   */
+  updateCodeNode(): void {
+    if (!this.codeNode) return;
+
+    this.codeNode.inputs.local_num_threads.value = this._localNumThreads;
+    this.codeNode.inputs.resolution.value = this._resolution;
+    this.codeNode.inputs.rng_seed.value = this._rngSeed;
   }
 }

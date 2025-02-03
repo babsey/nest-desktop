@@ -58,6 +58,7 @@ export default defineDynamicCodeNode({
   onPlaced() {
     if (!this.code) return;
     this.networkItem = this.code.project.network.connections.all[this.indexOfNodeType];
+    this.networkItem.codeNode = this;
   },
   onUpdate({ conn_spec }) {
     const inputs: Record<string, () => NodeInterface> = {};
