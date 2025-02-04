@@ -23,7 +23,7 @@ export default defineCodeNode({
 
     const positions = this.node
       .getConnectedNodesByInterface("positions")
-      .map((node: AbstractCodeNode) => `${node.label}`);
+      .map((node: AbstractCodeNode) => `nest.GetPosition(${node.label})`);
     if (positions.length > 0) responseData.push(`"positions": [${positions.join(", ")}]`);
 
     const plotly = this.node.getConnectedNodesByInterface("plotly").map((node: AbstractCodeNode) => `${node.label}`);
