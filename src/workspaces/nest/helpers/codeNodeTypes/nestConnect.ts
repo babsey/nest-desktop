@@ -21,7 +21,7 @@ import {
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 
 const formatLabels = (nodes: AbstractCodeNode[]) => {
-  const labels = nodes.map((node: AbstractCodeNode) => node.label);
+  const labels = nodes.map((node: AbstractCodeNode) => (node.state.integrated ? node.codeTemplate : node.label));
   labels.sort();
   return labels.join("+");
 };

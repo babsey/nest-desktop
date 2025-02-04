@@ -15,5 +15,8 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "heatmap",
-  codeTemplate: () => "go.Heatmap({{ inputs.x.value }}, {{ inputs.y.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `go.Heatmap(${this.node.inputs.x.value}, ${this.node.inputs.y.value})`;
+  },
 });

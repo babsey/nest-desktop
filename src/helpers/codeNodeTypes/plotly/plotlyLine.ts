@@ -16,5 +16,8 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "line",
-  codeTemplate: () => "go.Line({{ inputs.x.value }}, {{ inputs.y.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `go.Line(${this.node.inputs.x.value}, ${this.node.inputs.y.value})`;
+  },
 });

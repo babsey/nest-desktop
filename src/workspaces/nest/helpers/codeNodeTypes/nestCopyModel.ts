@@ -12,5 +12,8 @@ export default defineCodeNode({
     existing: () => new TextInputInterface("existing", "iaf_psc_alpha").use(setType, stringType),
     new: () => new TextInputInterface("new", "new").use(setType, stringType),
   },
-  codeTemplate: () => "nest.CopyModel({{ inputs.existing.value }}, {{ inputs.new.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `nest.CopyModel(${this.node.inputs.existing.value}, ${this.node.inputs.new.value})`;
+  },
 });

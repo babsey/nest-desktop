@@ -16,5 +16,8 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "randnorm",
-  codeTemplate: () => "nest.random.normal({{ inputs.mean.value }}, {{ inputs.std.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `nest.random.normal(${this.node.inputs.mean.value}, ${this.node.inputs.std.value})`;
+  },
 });

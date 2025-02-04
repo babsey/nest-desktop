@@ -25,8 +25,8 @@ export default defineDynamicCodeNode({
   },
   codeTemplate() {
     if (!this.node) return this.type;
-    const args = ['"{{ inputs.model.value }}"'];
-    if (this.node.inputs.size.value > 1) args.push("{{ inputs.size.value }}");
+    const args = [`"${this.node.inputs.model.value}"`];
+    if (this.node.inputs.size.value > 1) args.push(`${this.node.inputs.size.value}`);
 
     if (this.node.networkItem) {
       const params: string[] = [];

@@ -15,5 +15,8 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "randuniint",
-  codeTemplate: () => "nest.random.uniform_int({{ inputs.max.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `nest.random.uniform_int(${this.node.inputs.max.value})`;
+  },
 });

@@ -17,7 +17,7 @@ export default defineCodeNode({
   },
   variableName: "bar",
   codeTemplate() {
-    if (!this.node) return "go.Bar({{ inputs.x.value }}, {{ inputs.y.value }})";
+    if (!this.node) return this.type;
     const xNodes = this.node.getConnectedNodesByInterface("x");
     if (xNodes.length === 0) return this.node.type;
     const xLabels = xNodes.map((xNode) => xNode.label);

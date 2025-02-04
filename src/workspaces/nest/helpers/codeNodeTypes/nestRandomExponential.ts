@@ -15,5 +15,8 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "randexp",
-  codeTemplate: () => "nest.random.exponential({{ inputs.beta.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `nest.random.exponential(${this.node.inputs.beta.value})`;
+  },
 });

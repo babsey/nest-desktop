@@ -19,5 +19,8 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
   variableName: "randint",
-  codeTemplate: () => "np.random.randint({{ inputs.low.value }}, {{ inputs.high.value }}, {{ inputs.size.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `np.random.randint(${this.node.inputs.low.value}, ${this.node.inputs.high.value}, ${this.node.inputs.size.value})`;
+  },
 });

@@ -16,7 +16,7 @@ export default defineCodeNode({
   },
   variableName: "fig",
   codeTemplate() {
-    if (!this.node) return "go.Figure()";
+    if (!this.node) return this.type;
     const traces = this.node.getConnectedNodesByInterface("trace");
     if (traces.length === 0) return "go.Figure()";
     const traceLabels = traces.map((trace) => trace.label);

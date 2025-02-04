@@ -19,7 +19,7 @@ export default defineCodeNode({
   },
   variableName: "concat",
   codeTemplate() {
-    if (!this.node) return 'np.concatenate({{ inputs.a.value }}")';
+    if (!this.node) return this.type;
     const aNodes = this.node.getConnectedNodesByInterface("a");
     if (aNodes.length === 0) return this.node.type;
     const aLabels = aNodes.map((node) => node.label);

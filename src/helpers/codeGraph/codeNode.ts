@@ -2,20 +2,30 @@
 // Adapted from https://github.com/newcat/baklavajs/blob/987018200389bd86c48544ac4afa7a393fe1e9bc/packages/core/src/node.ts
 
 import Mustache from "mustache";
-
 import { AbstractNode, INodeState, NodeInterface, NodeInterfaceDefinition } from "baklavajs";
+import { reactive, UnwrapRef } from "vue";
+
 import { BaseCode } from "../code/code";
 import { TConnection, TNode, TSimulation } from "@/types";
+
+interface IAbstractCodeNodeState {
+  integrated: boolean;
+  hidden: boolean;
+  script: string;
+}
 
 export abstract class AbstractCodeNode extends AbstractNode {
   abstract inputs: Record<string, NodeInterface<any>>;
   abstract outputs: Record<string, NodeInterface<any>>;
 
   private _code: BaseCode | undefined;
-  private _hidden: boolean = false;
-  private _script: string = "";
   private _networkItem: TNode | TConnection | undefined;
   private _simulationItem: TSimulation | undefined;
+  private _state: UnwrapRef<IAbstractCodeNodeState> = reactive({
+    integrated: false,
+    hidden: false,
+    script: "",
+  });
 
   public modules: string[] = [];
   public variableName: string = "x";
@@ -34,24 +44,16 @@ export abstract class AbstractCodeNode extends AbstractNode {
     this._code = value;
   }
 
-  get codeTemplate(): string {
-    return "";
-  }
-
-  get hidden(): boolean {
-    return this._hidden;
-  }
-
-  set hidden(value: boolean) {
-    this._hidden = value;
-  }
+  abstract get codeTemplate(): string;
 
   get idx(): number {
-    return this.graph?.nodes.indexOf(this) ?? -1;
+    return this.code ? this.code.graph?.segregatedNodes.indexOf(this) ?? -1 : -1;
   }
 
   get indexOfNodeType(): number {
-    const nodeIds = this.graph?.nodes.filter((node) => node.type === this.type).map((node) => node.id);
+    const nodeIds = this.code?.graph.segregatedNodes
+      .filter((node: AbstractCodeNode) => node.type === this.type)
+      .map((node: AbstractCodeNode) => node.id);
     if (nodeIds) return nodeIds.indexOf(this.id);
     return -1;
   }
@@ -76,12 +78,16 @@ export abstract class AbstractCodeNode extends AbstractNode {
     this._networkItem = value;
   }
 
+  get nOutputs(): number {
+    return Object.keys(this.outputs).length;
+  }
+
   get node(): AbstractCodeNode {
     return this;
   }
 
   get script(): string {
-    return this._script;
+    return this._state.script;
   }
 
   get simulationItem(): TSimulation | undefined {
@@ -90,6 +96,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   set simulationItem(value: TSimulation | TConnection) {
     this._simulationItem = value;
+  }
+
+  get state(): UnwrapRef<IAbstractCodeNodeState> {
+    return this._state;
   }
 
   // calculate?: CalculateFunction<any, any> | undefined;
@@ -139,14 +149,14 @@ export abstract class AbstractCodeNode extends AbstractNode {
    * Render code of this node.
    */
   renderCode(): void {
-    this._script = Mustache.render(this.codeTemplate, this);
+    this._state.script = Mustache.render(this.codeTemplate, this);
     if (this.getConnectedNodesByInterface("out").length > 0) {
-      this._script = `${this.label} = ${this._script}`;
+      this._state.script = `${this.label} = ${this._state.script}`;
     }
 
-    if (this.hidden) {
-      this._script = "# " + this._script;
-      this._script = this._script.replaceAll("\n", "\n# ");
+    if (this._state.hidden) {
+      this._state.script = "# " + this._state.script;
+      this._state.script = this._state.script.replaceAll("\n", "\n# ");
     }
   }
 }

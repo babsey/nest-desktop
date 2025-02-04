@@ -21,7 +21,7 @@ export default defineCodeNode({
   },
   variableName: "conv",
   codeTemplate() {
-    if (!this.node) return 'np.convolve({{ inputs.a.value }}, {{ inputs.v.value }}, "{{ inputs.mode.value }}")';
+    if (!this.node) return this.type;
     const aNodes = this.node.getConnectedNodesByInterface("a");
     const vNodes = this.node.getConnectedNodesByInterface("v");
     if (aNodes.length === 0 || vNodes.length === 0) return this.node.type;

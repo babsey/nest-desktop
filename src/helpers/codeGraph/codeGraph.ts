@@ -63,8 +63,16 @@ export class CodeGraph extends BaseObj {
     this.graph._nodes = values;
   }
 
+  get segregatedNodes(): AbstractCodeNode[] {
+    return this.graph.nodes.filter((node: AbstractCodeNode) => !node.state.integrated) as AbstractCodeNode[];
+  }
+
   get state(): UnwrapRef<ICodeGraphState> {
     return this._state;
+  }
+
+  get visibleNodes(): AbstractCodeNode[] {
+    return this.graph.nodes.filter((node: AbstractCodeNode) => !node.state.hidden) as AbstractCodeNode[];
   }
 
   addConnection(from: NodeInterface, to: NodeInterface): void {

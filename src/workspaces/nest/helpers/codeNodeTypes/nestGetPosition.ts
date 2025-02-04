@@ -18,5 +18,5 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "pos",
-  codeTemplate: () => "nest.GetPosition({{ inputs.node.value }})",
+  codeTemplate: () => "nest.GetPosition({{ inputs.node.label }})",
 });

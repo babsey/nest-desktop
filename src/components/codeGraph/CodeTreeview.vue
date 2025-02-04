@@ -20,8 +20,9 @@
     <draggable v-model="code.graph.nodes" group="people" item-key="id" @start="drag = true" @end="dragEnd()">
       <template #item="{ element }">
         <v-list-item style="height: 1.4em; min-height: auto; line-height: 16.8px">
-          <v-btn icon="mdi:mdi-drag" variant="text" size="xsmall" />
-          {{ element.idx + 1 }} - {{ element.title }}
+          <v-btn :disabled="element.state.integrated" icon="mdi:mdi-drag" variant="text" size="xsmall" />
+          <span :class="{ hidden: element.idx === -1 }">{{ element.idx + 1 }} - </span>
+          {{ element.title }}
         </v-list-item>
       </template>
     </draggable>
@@ -69,3 +70,9 @@ const dragEnd = () => {
 
 // onMounted(update);
 </script>
+
+<style lang="scss">
+.hidden {
+  opacity: 0;
+}
+</style>

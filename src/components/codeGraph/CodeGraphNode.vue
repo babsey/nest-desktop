@@ -12,10 +12,19 @@
 
     <div :title="node.type" class="__title" @pointerdown.self.stop="startDrag" @contextmenu.prevent="openContextMenu">
       <template v-if="!renaming">
-        <div class="__title-label">{{ node.idx + 1 }} - {{ node.title }}</div>
+        <div class="__title-label">
+          <span v-if="node.idx > -1">{{ node.idx + 1 }} - </span>{{ node.title }}
+        </div>
         <div class="__menu">
           <v-icon
-            :icon="node.hidden ? 'mdi:mdi-eye-off-outline' : 'mdi:mdi-eye'"
+            :icon="node.state.integrated ? 'mdi:mdi-tray-arrow-down' : 'mdi:mdi-equal'"
+            :disabled="node.nOutputs === 0"
+            class="mx-1 --clickable"
+            size="xsmall"
+            @click="toggleIntegrated"
+          />
+          <v-icon
+            :icon="node.state.hidden ? 'mdi:mdi-eye-off-outline' : 'mdi:mdi-eye'"
             class="mx-1 --clickable"
             size="xsmall"
             @click="toggleHidden"
@@ -115,7 +124,7 @@ const classes = computed(() => ({
   "--selected": props.selected,
   "--dragging": props.dragging,
   "--two-column": !!props.node.twoColumn,
-  "--hidden": node.value.hidden,
+  "--hidden": node.value.state.hidden,
 }));
 
 const classesContent = computed(() => ({
@@ -190,7 +199,12 @@ const startResize = (ev: MouseEvent) => {
 };
 
 const toggleHidden = (ev: MouseEvent) => {
-  node.value.hidden = !node.value.hidden;
+  node.value.state.hidden = !node.value.state.hidden;
+  emit("update");
+};
+
+const toggleIntegrated = (ev: MouseEvent) => {
+  node.value.state.integrated = !node.value.state.integrated;
   emit("update");
 };
 

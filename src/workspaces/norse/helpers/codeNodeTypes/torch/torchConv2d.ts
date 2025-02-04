@@ -22,6 +22,8 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  codeTemplate: () =>
-    "torch.nn.Conv2d({{ inputs.in_channel.value }}, {{ inputs.out_channel.value}}, {{ inputs.kernel_size.value }}, {{ inputs.stride.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `torch.nn.Conv2d(${this.node.inputs.in_channel.value}, ${this.node.inputs.out_channel.value}, ${this.node.inputs.kernel_size.value}, ${this.node.inputs.stride.value})`;
+  },
 });

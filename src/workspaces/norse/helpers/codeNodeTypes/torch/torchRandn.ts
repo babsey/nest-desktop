@@ -19,6 +19,8 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeInterface("out", ""),
   },
-  codeTemplate: () =>
-    "torch.randn({{ inputs.batch.value }}, {{ inputs.channel.value}}, {{ inputs.x.value }}, {{ inputs.y.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `torch.randn(${this.node.inputs.batch.value}, ${this.node.inputs.channel.value}, ${this.node.inputs.x.value}, ${this.node.inputs.y.value})`;
+  },
 });

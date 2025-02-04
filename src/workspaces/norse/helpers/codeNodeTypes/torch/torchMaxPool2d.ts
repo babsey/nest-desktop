@@ -15,5 +15,8 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeInterface("out", ""),
   },
-  codeTemplate: () => "torch.nn.MaxPool2d({{ inputs.kernel_size.value }}, {{ inputs.stride.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `torch.nn.MaxPool2d(${this.node.inputs.kernel_size.value}, ${this.node.inputs.stride.value})`;
+  },
 });

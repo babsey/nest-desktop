@@ -16,5 +16,11 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "scattergl",
-  codeTemplate: () => 'go.Scattergl(x={{ inputs.x.value }}, y={{ inputs.y.value }}, mode="markers")',
+  codeTemplate() {
+    if (!this.node) return this.type;
+    const xNodes = this.node.getConnectedNodesByInterface("x");
+    if (xNodes.length === 0) return this.node.type;
+    const xLabels = xNodes.map((node) => node.label);
+    return `go.Scattergl(x=${xLabels.join(", ")}, mode="markers")`;
+  },
 });

@@ -16,5 +16,8 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  codeTemplate: () => "torch.nn.Linear({{ inputs.in_feature.value }}, {{ inputs.out_feature.value}})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `torch.nn.Linear(${this.node.inputs.in_feature.value}, ${this.node.inputs.out_feature.value})`;
+  },
 });

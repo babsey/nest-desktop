@@ -16,5 +16,8 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<IPandasDataFrame>().use(setType, dataframeType),
   },
-  codeTemplate: () => "pd.DataFrame({{ inputs.data.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    return `pd.DataFrame(${this.node.inputs.data.value})`;
+  },
 });
