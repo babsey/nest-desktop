@@ -37,27 +37,22 @@ export default defineDynamicCodeNode({
     }
 
     const positions = this.node.getConnectedNodesByInterface("positions");
-    if (positions.length > 0) {
-      const inputPositions = this.node.inputs?.positions as NodeInputInterface;
-      if (inputPositions.integrated) {
-        args.push(`positions=${positions[0].codeTemplate}`);
-      } else {
-        args.push(`positions=${positions[0].label}`);
-      }
-    }
+    if (positions.length > 0) args.push(`\n\tpositions=${this.code?.graph.formatLabels(positions).join(", ")}`);
 
     return `nest.Create(${args.join(", ")})`;
   },
   onPlaced() {
     if (!this.code) return;
     this.networkItem = this.code.project.network.nodes.nodeItems[this.indexOfNodeType];
+    if (!this.networkItem) return;
     this.networkItem.codeNode = this;
   },
   onUpdate({ model }) {
     const inputs: Record<string, () => NodeInterface> = {};
     const outputs: Record<string, () => NodeInterface> = {};
 
-    if (model.includes("recorder") || model.includes("meter")) outputs["events"] = () => new NodeOutputInterface();
+    if (model.includes("recorder") || model.includes("meter"))
+      outputs["events"] = () => new NodeOutputInterface("events");
 
     if (this.node?.networkItem && this.node?.networkItem.paramsVisible.length > 0) {
       this.node?.networkItem.filteredParams.forEach((param: IParamProps) => {

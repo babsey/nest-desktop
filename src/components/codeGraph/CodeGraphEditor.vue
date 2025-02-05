@@ -36,12 +36,13 @@ import CodeGraphNode from "./CodeGraphNode.vue";
 
 // const ContextMenu = Components.ContextMenu;
 
-defineProps<{ graph: CodeGraph }>();
+const props = defineProps<{ graph: CodeGraph }>();
 
 const codeGraphStore = useCodeGraphStore();
 const viewModel = useBaklava(codeGraphStore.viewModel.editor as Editor);
 // const contextMenu = useContextMenu(toRef(viewModel));
 window.view = viewModel;
+window.graph = props.graph;
 
 const onUpdate = (node: AbstractCodeNode) => node.events.update.emit(null);
 </script>

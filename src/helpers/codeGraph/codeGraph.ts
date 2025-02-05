@@ -10,6 +10,7 @@ import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 interface ICodeGraphState {
   graph: IGraphState;
+  token: Symbol | null;
 }
 
 export class CodeGraph extends BaseObj {
@@ -22,6 +23,7 @@ export class CodeGraph extends BaseObj {
 
     this._state = reactive({
       graph: graphState,
+      token: null,
     });
   }
 
@@ -109,7 +111,14 @@ export class CodeGraph extends BaseObj {
   }
 
   init(): void {
-    this.onUpdate();
+    if (this.state.token) {
+      this.graph.editor.graphEvents.beforeAddNode.unsubscribe(this.state.token);
+    }
+
+    this.state.token = Symbol("token");
+    this.graph.editor.graphEvents.beforeAddNode.subscribe(this.state.token, (node: AbstractCodeNode) => {
+      node.code = this.code;
+    });
   }
 
   load(): void {
@@ -122,7 +131,6 @@ export class CodeGraph extends BaseObj {
   onUpdate = () => {
     this.sortNodes();
     this.graph.nodes.forEach((node) => (node.code = this.code));
-    this.graph.nodes;
     this.code.generate();
     this.save();
   };

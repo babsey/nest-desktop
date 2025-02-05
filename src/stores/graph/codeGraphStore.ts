@@ -14,7 +14,6 @@ export const useCodeGraphStore = defineStore("code-graph", () => {
   const viewModel = useBaklava();
 
   const mount = (): void => {};
-  window.editor = viewModel.editor;
 
   const subscribe = (call: () => void): void => {
     state.token = Symbol("token");

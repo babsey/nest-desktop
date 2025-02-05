@@ -45,6 +45,7 @@ export class NESTCode extends BaseCode {
     this.logger.trace("init graph");
 
     this.graph.unsubscribe();
+    this.graph.init();
     this.graph.clear();
     this.updateCodeGraph();
     this.graph.onUpdate();

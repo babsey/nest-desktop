@@ -6,8 +6,8 @@ import NodeOutputComponent from "../../components/codeGraph/NodeOutputComponent.
 import { CodeNodeInterface } from "./codeNodeInterface";
 
 export class NodeOutputInterface<T = any> extends CodeNodeInterface<T> {
-  constructor() {
-    super("", null as T);
+  constructor(name: string = "") {
+    super(name, null as T);
     this.setComponent(markRaw(NodeOutputComponent));
   }
 
