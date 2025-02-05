@@ -12,6 +12,9 @@ export default defineCodeNode({
     positions: () => new NodeInputInterface("positions"),
     plotly: () => new NodeInputInterface("plotly"),
   },
+  onCreate() {
+    this.state.position = "bottom";
+  },
   codeTemplate() {
     if (!this.node) return "";
     const responseData = [];

@@ -16,5 +16,8 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface<string>().use(setType, stringType),
   },
   variableName: "t",
-  codeTemplate: () => '"{{ inputs.text.value }}"',
+  codeTemplate() {
+    if (!this.node) return "{{ inputs.text.value }}";
+    return `${this.node.inputs.text.value}`;
+  },
 });

@@ -41,6 +41,7 @@ defineProps<{ graph: CodeGraph }>();
 const codeGraphStore = useCodeGraphStore();
 const viewModel = useBaklava(codeGraphStore.viewModel.editor as Editor);
 // const contextMenu = useContextMenu(toRef(viewModel));
+window.view = viewModel;
 
 const onUpdate = (node: AbstractCodeNode) => node.events.update.emit(null);
 </script>

@@ -2,8 +2,8 @@
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({
@@ -22,6 +22,7 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
+  variableName: "conv",
   codeTemplate() {
     if (!this.node) return this.type;
     return `torch.nn.Conv2d(${this.node.inputs.in_channel.value}, ${this.node.inputs.out_channel.value}, ${this.node.inputs.kernel_size.value}, ${this.node.inputs.stride.value})`;

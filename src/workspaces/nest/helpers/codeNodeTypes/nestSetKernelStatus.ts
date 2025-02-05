@@ -14,6 +14,9 @@ export default defineCodeNode({
     resolution: () => new NumberInterface("Resolution", 0.1, 0.001, 10).use(displayInSidebar, true).setHidden(true),
     rng_seed: () => new IntegerInterface("RNG Seed", 1, 1).use(displayInSidebar, true).setHidden(true),
   },
+  onCreate() {
+    this.state.position = "top";
+  },
   onPlaced() {
     if (!this.code) return;
     const code = this.code as NESTCode;

@@ -4,8 +4,9 @@ import { INetworkProjectProps, NetworkProject } from "@/helpers/project/networkP
 
 import { INorseNetworkProps, NorseNetwork } from "../network/network";
 import { INorseSimulationProps, NorseSimulation } from "../simulation/simulation";
+import { NorseCode } from "../code/code";
 import { NorseNode } from "../node/node";
-import { NorseSimulationCode } from "../simulation/simulationCode";
+// import { NorseSimulationCode } from "../simulation/simulationCode";
 import { useNorseModelDBStore } from "../../stores/model/modelDBStore";
 
 export interface INorseProjectProps extends INetworkProjectProps {
@@ -19,7 +20,7 @@ export class NorseProject extends NetworkProject {
   }
 
   override get Code() {
-    return NorseSimulationCode;
+    return NorseCode;
   }
 
   override get Network() {
@@ -30,8 +31,8 @@ export class NorseProject extends NetworkProject {
     return NorseSimulation;
   }
 
-  override get code(): NorseSimulationCode {
-    return this._code as NorseSimulationCode;
+  override get code(): NorseCode {
+    return this._code as NorseCode;
   }
 
   override get network(): NorseNetwork {

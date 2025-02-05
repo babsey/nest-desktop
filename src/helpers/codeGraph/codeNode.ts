@@ -9,8 +9,9 @@ import { BaseCode } from "../code/code";
 import { TConnection, TNode, TSimulation } from "@/types";
 
 interface IAbstractCodeNodeState {
-  integrated: boolean;
   hidden: boolean;
+  integrated: boolean;
+  position: "auto" | "top" | "bottom";
   script: string;
 }
 
@@ -22,8 +23,9 @@ export abstract class AbstractCodeNode extends AbstractNode {
   private _networkItem: TNode | TConnection | undefined;
   private _simulationItem: TSimulation | undefined;
   private _state: UnwrapRef<IAbstractCodeNodeState> = reactive({
-    integrated: false,
     hidden: false,
+    integrated: false,
+    position: "auto",
     script: "",
   });
 
@@ -47,11 +49,15 @@ export abstract class AbstractCodeNode extends AbstractNode {
   abstract get codeTemplate(): string;
 
   get idx(): number {
-    return this.code ? this.code.graph?.segregatedNodes.indexOf(this) ?? -1 : -1;
+    return this.code?.graph?.nodesSegregated.indexOf(this) ?? -1;
+  }
+
+  get idxByVariableNames(): number {
+    return this.code?.graph?.getNodesBySameVariableNames(this.variableName).indexOf(this) ?? -1;
   }
 
   get indexOfNodeType(): number {
-    const nodeIds = this.code?.graph.segregatedNodes
+    const nodeIds = this.code?.graph.nodesSegregated
       .filter((node: AbstractCodeNode) => node.type === this.type)
       .map((node: AbstractCodeNode) => node.id);
     if (nodeIds) return nodeIds.indexOf(this.id);
@@ -59,7 +65,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
   }
 
   get label(): string {
-    return this.variableName + (this.indexOfNodeType + 1);
+    return this.variableName + (this.idxByVariableNames + 1);
   }
 
   get networkConnection(): TConnection | undefined {

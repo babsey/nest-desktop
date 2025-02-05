@@ -12,6 +12,9 @@ export default defineCodeNode({
     module_name: () =>
       new TextInputInterface("module name", "nestmlmodule").use(setType, stringType).use(displayInSidebar, true),
   },
+  onCreate() {
+    this.state.position = "top";
+  },
   codeTemplate() {
     if (!this.node) return this.type;
     return `nest.Install("${this.node.inputs.module_name.value}")`;

@@ -18,13 +18,6 @@ import {
   nestNodeCollectionType,
   // nestSynapseCollectionType,
 } from "./interfaceTypes";
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-
-const formatLabels = (nodes: AbstractCodeNode[]) => {
-  const labels = nodes.map((node: AbstractCodeNode) => (node.state.integrated ? node.codeTemplate : node.label));
-  labels.sort();
-  return labels.join("+");
-};
 
 export default defineDynamicCodeNode({
   type: "nest.Connect",
@@ -51,7 +44,10 @@ export default defineDynamicCodeNode({
     const preNodes = this.node.getConnectedNodesByInterface("pre");
     const postNodes = this.node.getConnectedNodesByInterface("post");
     if (preNodes.length === 0 || postNodes.length === 0) return this.type;
-    const args = [formatLabels(preNodes), formatLabels(postNodes)];
+    const args = [
+      this.code?.graph.formatLabels(preNodes).join("+"),
+      this.code?.graph.formatLabels(postNodes).join("+"),
+    ];
     if (this.node.inputs.weight.value !== 1) args.push(`syn_spec={'weight': ${this.node.inputs.weight.value}}`);
     return `nest.Connect(${args.join(", ")})`;
   },

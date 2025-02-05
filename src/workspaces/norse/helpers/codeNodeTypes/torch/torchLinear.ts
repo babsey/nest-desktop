@@ -2,8 +2,8 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({
@@ -16,6 +16,7 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
+  variableName: "lin",
   codeTemplate() {
     if (!this.node) return this.type;
     return `torch.nn.Linear(${this.node.inputs.in_feature.value}, ${this.node.inputs.out_feature.value})`;

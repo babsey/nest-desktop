@@ -47,6 +47,7 @@ export class NESTCode extends BaseCode {
     this.graph.unsubscribe();
     this.graph.clear();
     this.updateCodeGraph();
+    this.graph.onUpdate();
     this.graph.subscribe();
   }
 
@@ -93,32 +94,34 @@ export class NESTCode extends BaseCode {
     const left = 300;
     const width = 350;
     const space = 70;
-    let codeNode;
+    let codeNode: AbstractCodeNode;
+    const nodes: AbstractCodeNode[] = [];
 
     // nest.ResetKernel
-    this.graph.addNodeWithCoordinates(nestResetKernel, left, 100);
+    codeNode = this.graph.addNodeWithCoordinates(nestResetKernel, left, 100);
+    codeNode.state.position = "top";
 
     const projectProps = this.project.doc;
 
-    const simulation = projectProps.simulation;
+    const simulationProps = projectProps.simulation;
 
-    if (simulation?.modules) {
+    if (simulationProps?.modules) {
       // nest.Install
       codeNode = this.graph.addNodeWithCoordinates(nestInstall, left, 200);
+      codeNode.state.position = "top";
     }
 
     // nest.SetKernelStatus
     codeNode = this.graph.addNodeWithCoordinates(nestSetKernelStatus, left, 350);
-    if (simulation.kernel) {
-      codeNode.inputs.local_num_threads.value = simulation.kernel.localNumThreads;
-      codeNode.inputs.resolution.value = simulation.kernel.resolution;
-      codeNode.inputs.rng_seed.value = simulation.kernel.rngSeed;
+    codeNode.state.position = "top";
+    if (simulationProps?.kernel) {
+      codeNode.inputs.local_num_threads.value = simulationProps.kernel.localNumThreads;
+      codeNode.inputs.resolution.value = simulationProps.kernel.resolution;
+      codeNode.inputs.rng_seed.value = simulationProps.kernel.rngSeed;
     }
 
-    const nodes: AbstractCodeNode[] = [];
-
     const networkProps = projectProps.network;
-    if (networkProps.nodes && networkProps.nodes.length > 0) {
+    if (networkProps?.nodes && networkProps.nodes.length > 0) {
       // nest.Create
       const nodesProps = networkProps.nodes as INESTNodeProps[];
       nodesProps.forEach((nodeProps: INESTNodeProps, idx: number) => {
@@ -143,7 +146,7 @@ export class NESTCode extends BaseCode {
       });
     }
 
-    if (networkProps.connections && networkProps.connections.length > 0) {
+    if (networkProps?.connections && networkProps.connections.length > 0) {
       // nest.Connect
       networkProps.connections.forEach((connection: INESTConnectionProps, idx: number) => {
         const codeNode = this.graph.addNodeWithCoordinates(nestConnect, left + 2 * (width + space), 100 + 200 * idx);
@@ -160,11 +163,13 @@ export class NESTCode extends BaseCode {
 
     // nest.Simulate
     codeNode = this.graph.addNodeWithCoordinates(nestSimulate, left, 450);
-    codeNode.inputs.time.value = simulation?.time ?? 1000;
+    codeNode.state.position = "bottom";
+    codeNode.inputs.time.value = simulationProps?.time ?? 1000;
 
+    // response
+    const responseNode = this.graph.addNodeWithCoordinates(response, left + 2 * (width + space), 600);
+    codeNode.state.position = "bottom";
     if (nodes.length > 0) {
-      // response
-      const responseNode = this.graph.addNodeWithCoordinates(response, left + 2 * (width + space), 600);
       nodes
         .filter((node: AbstractCodeNode) => node.outputs.events)
         .forEach((node: AbstractCodeNode) => {

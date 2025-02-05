@@ -3,6 +3,7 @@
 // // @ts-expect-error Mustache has no default export.
 import Mustache from "mustache";
 import axios, { AxiosHeaders, AxiosResponse } from "axios";
+import { IGraphState } from "baklavajs";
 import { UnwrapRef, nextTick, reactive } from "vue";
 
 import { IAxiosErrorData, IAxiosResponseData } from "@/stores/defineBackendStore";
@@ -11,7 +12,6 @@ import { TProject } from "@/types";
 import { BaseObj } from "../common/base";
 import { CodeGraph } from "../codeGraph/codeGraph";
 import { download } from "../../utils/download";
-import { IGraphState } from "baklavajs";
 
 export interface IResponseProps {
   data: object | string;
@@ -25,6 +25,7 @@ export interface IResponseProps {
 export interface ICodeProps {
   templateFilename?: string;
   graph?: IGraphState;
+  templateFilename?: string;
 }
 
 interface ICodeState {
@@ -39,7 +40,7 @@ export class BaseCode extends BaseObj {
   private _state: UnwrapRef<ICodeState>;
   public _project: TProject; // parent
 
-  constructor(project: TProject) {
+  constructor(project: TProject, codeProps?: ICodeProps) {
     super({ logger: { settings: { minLevel: 3 } } });
 
     this._project = project;
@@ -52,6 +53,10 @@ export class BaseCode extends BaseObj {
       template: "",
       templateFilename: "code",
     });
+
+    if (codeProps) {
+      this._state.templateFilename = codeProps?.templateFilename ?? "code";
+    }
 
     if (this._state.templateFilename) this.loadTemplate();
 

@@ -12,6 +12,9 @@ export default defineCodeNode({
   inputs: {
     time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true),
   },
+  onCreate() {
+    this.state.position = "bottom";
+  },
   onPlaced() {
     if (!this.code) return;
     const code = this.code as NESTCode;

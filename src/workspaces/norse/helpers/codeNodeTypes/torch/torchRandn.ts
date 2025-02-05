@@ -1,7 +1,8 @@
 // torchRandn.ts
 
-import { displayInSidebar, IntegerInterface, NodeInterface, setType } from "baklavajs";
+import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
+import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
@@ -13,11 +14,9 @@ export default defineCodeNode({
     channel: () => new IntegerInterface("channel", 1).use(setType, numberType).use(displayInSidebar, true),
     x: () => new IntegerInterface("x", 1).use(setType, numberType).use(displayInSidebar, true),
     y: () => new IntegerInterface("y", 1).use(setType, numberType).use(displayInSidebar, true),
-    // events: () => new NodeInterface("events", ""),
-    // openButton: () => new NodeInterface("Open Sidebar", undefined).setComponent(markRaw(SidebarButton)).setPort(false),
   },
   outputs: {
-    out: () => new NodeInterface("out", ""),
+    out: () => new NodeOutputInterface(),
   },
   codeTemplate() {
     if (!this.node) return this.type;

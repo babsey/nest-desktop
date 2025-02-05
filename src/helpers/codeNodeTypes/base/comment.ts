@@ -11,5 +11,8 @@ export default defineCodeNode({
   inputs: {
     text: () => new TextInputInterface("text", "").use(setType, stringType).setPort(false),
   },
-  codeTemplate: () => "# {{ inputs.text.value }}",
+  codeTemplate() {
+    if (!this.node) return "# {{ inputs.text.value }}";
+    return `# ${this.node.inputs.text.value}`;
+  },
 });

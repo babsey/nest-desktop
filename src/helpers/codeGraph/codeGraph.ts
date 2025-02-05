@@ -63,7 +63,7 @@ export class CodeGraph extends BaseObj {
     this.graph._nodes = values;
   }
 
-  get segregatedNodes(): AbstractCodeNode[] {
+  get nodesSegregated(): AbstractCodeNode[] {
     return this.graph.nodes.filter((node: AbstractCodeNode) => !node.state.integrated) as AbstractCodeNode[];
   }
 
@@ -84,7 +84,7 @@ export class CodeGraph extends BaseObj {
   }
 
   addNodeWithCoordinates(nodeType: new () => AbstractCodeNode, x: number, y: number) {
-    const node = this.createNode(nodeType);
+    const node = new nodeType();
     this.addNode(node);
     if (node.position) {
       node.position.x = x;
@@ -93,19 +93,23 @@ export class CodeGraph extends BaseObj {
     return node;
   }
 
-  createNode(nodeType: new () => AbstractCodeNode) {
-    const node = new nodeType();
-    node.code = this.code;
-    return node;
-  }
-
   clear(): void {
     this.nodes = [];
     this.connections = [];
   }
 
+  formatLabels(nodes: AbstractCodeNode[], sorted: boolean = true): string[] {
+    const labels = nodes.map((node: AbstractCodeNode) => (node.state.integrated ? node.codeTemplate : node.label));
+    if (sorted) labels.sort();
+    return labels;
+  }
+
+  getNodesBySameVariableNames(variableName: string): AbstractCodeNode[] {
+    return this.nodes.filter((node: AbstractCodeNode) => node.variableName === variableName) as AbstractCodeNode[];
+  }
+
   init(): void {
-    // this.clear();
+    this.onUpdate();
   }
 
   load(): void {
@@ -116,6 +120,9 @@ export class CodeGraph extends BaseObj {
   }
 
   onUpdate = () => {
+    this.sortNodes();
+    this.graph.nodes.forEach((node) => (node.code = this.code));
+    this.graph.nodes;
     this.code.generate();
     this.save();
   };
@@ -127,6 +134,12 @@ export class CodeGraph extends BaseObj {
 
   save(): void {
     this.state.graph = this.graph.save();
+  }
+
+  sortNodes(): void {
+    const nodes: Record<string, AbstractCodeNode[]> = { top: [], auto: [], bottom: [] };
+    this.graph.nodes.forEach((node) => nodes[node.state.position].push(node));
+    this.graph._nodes = [...nodes.top, ...nodes.auto, ...nodes.bottom];
   }
 
   subscribe(): void {

@@ -3,6 +3,7 @@
 import { IBaklavaViewModel } from "baklavajs";
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
+import apply from "./apply";
 import comment from "./comment";
 import dict from "./dict";
 import listComprehension from "./listComprehension";
@@ -17,6 +18,7 @@ export const registerBaseNodeTypes = () => {
   addBaseTypes(codeGraphStore.viewModel as IBaklavaViewModel);
 
   const editor = codeGraphStore.viewModel.editor;
+  editor.registerNodeType(apply, { category: "base" });
   editor.registerNodeType(comment, { category: "base" });
   editor.registerNodeType(dict, { category: "base" });
   editor.registerNodeType(listComprehension, { category: "base" });

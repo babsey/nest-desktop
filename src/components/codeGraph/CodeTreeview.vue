@@ -21,7 +21,9 @@
       <template #item="{ element }">
         <v-list-item style="height: 1.4em; min-height: auto; line-height: 16.8px">
           <v-btn :disabled="element.state.integrated" icon="mdi:mdi-drag" variant="text" size="xsmall" />
-          <span :class="{ hidden: element.idx === -1 }">{{ element.idx + 1 }} - </span>
+          <span :class="{ hidden: element.idx === -1 }" style="display: inline-block; text-align: right; width: 32px">
+            {{ element.idx + 1 }} -
+          </span>
           {{ element.title }}
         </v-list-item>
       </template>
