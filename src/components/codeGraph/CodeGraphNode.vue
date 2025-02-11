@@ -1,27 +1,48 @@
 <template>
   <div
+    :class="classes"
+    :data-node-type="node.type"
     :id="node.id"
+    :style="styles"
     ref="el"
     class="baklava-node"
-    :class="classes"
-    :style="styles"
-    :data-node-type="node.type"
     @pointerdown="select"
   >
     <div v-if="viewModel.settings.nodes.resizable" class="__resize-handle" @mousedown="startResize" />
 
     <div :title="node.type" class="__title" @pointerdown.self.stop="startDrag" @contextmenu.prevent="openContextMenu">
+      <div v-if="node.state.hidden" class="my-auto" style="flex-grow: 0">
+        <div class="__inputs">
+          <template v-for="input in displayedInputs" :key="input.id">
+            <div
+              :id="input.id"
+              :data-interface-type="input.type ?? ''"
+              class="baklava-node-interface --input --connected"
+              v-if="input.port"
+            >
+              <div class="__port" />
+            </div>
+          </template>
+        </div>
+      </div>
+
       <template v-if="!renaming">
-        <div class="__title-label">
+        <div class="__title-label" style="flex-grow: 1">
           <span v-if="node.idx > -1">{{ node.idx + 1 }} - </span>{{ node.title }}
         </div>
         <div class="__menu">
           <v-icon
-            :icon="node.state.integrated ? 'mdi:mdi-tray-arrow-down' : 'mdi:mdi-equal'"
             :disabled="node.nOutputs === 0"
+            :icon="node.state.integrated ? 'mdi:mdi-tray-arrow-down' : 'mdi:mdi-equal'"
             class="mx-1 --clickable"
             size="xsmall"
             @click="toggleIntegrated"
+          />
+          <v-icon
+            :icon="node.state.commented ? 'mdi:mdi-pound' : 'mdi:mdi-code-tags'"
+            class="mx-1 --clickable"
+            size="xsmall"
+            @click="toggleCommented"
           />
           <v-icon
             :icon="node.state.hidden ? 'mdi:mdi-eye-off-outline' : 'mdi:mdi-eye'"
@@ -36,17 +57,33 @@
       </template>
       <input
         v-else
-        ref="renameInputEl"
         v-model="tempName"
-        type="text"
         class="baklava-input"
         placeholder="Node Name"
+        ref="renameInputEl"
+        style="flex-grow: 1"
+        type="text"
         @blur="doneRenaming"
         @keydown.enter="doneRenaming"
       />
+
+      <div v-if="node.state.hidden" class="my-auto">
+        <div class="__outputs">
+          <template v-for="output in displayedOutputs" :key="output.id">
+            <div
+              :id="output.id"
+              :data-interface-type="output.type ?? ''"
+              class="baklava-node-interface --output --connected"
+              v-if="output.port"
+            >
+              <div class="__port" />
+            </div>
+          </template>
+        </div>
+      </div>
     </div>
 
-    <div class="__content" :class="classesContent" @keydown.delete.stop @contextmenu.prevent>
+    <div class="__content" :class="classesContent" @keydown.delete.stop @contextmenu.prevent v-if="!node.state.hidden">
       <!-- Outputs -->
       <div class="__outputs">
         <template v-for="output in displayedOutputs" :key="output.id">
@@ -196,6 +233,11 @@ const startResize = (ev: MouseEvent) => {
   resizeStartWidth = props.node.width;
   resizeStartMouseX = ev.clientX;
   ev.preventDefault();
+};
+
+const toggleCommented = (ev: MouseEvent) => {
+  node.value.state.commented = !node.value.state.commented;
+  emit("update");
 };
 
 const toggleHidden = (ev: MouseEvent) => {

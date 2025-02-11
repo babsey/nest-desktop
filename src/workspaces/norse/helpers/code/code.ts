@@ -2,13 +2,15 @@
 
 import { AxiosResponse } from "axios";
 
-import response from "@/helpers/codeNodeTypes/base/response";
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 import { BaseCode } from "@/helpers/code/code";
 import { IAxiosResponseData } from "@/stores/defineBackendStore";
 
 import norse from "../../stores/backends/norseSimulatorStore";
+import norseDataResponse from "../codeNodeTypes/norse/norseDataResponse";
+import { INorseNetworkProps } from "../network/network";
 import { NorseProject } from "../project/project";
+
 export class NorseCode extends BaseCode {
   constructor(project: NorseProject) {
     super(project);
@@ -16,6 +18,39 @@ export class NorseCode extends BaseCode {
 
   override get project(): NorseProject {
     return this._project as NorseProject;
+  }
+
+  /**
+   * Add code nodes.
+   */
+  addBaseCodeNodes(): void {
+    this.logger.trace("add base code nodes");
+    this.graph.unsubscribe();
+    const left = 300;
+    const width = 350;
+    const space = 70;
+    let codeNode: AbstractCodeNode;
+
+    // response
+    codeNode = this.graph.addNodeWithCoordinates(norseDataResponse, left + 2 * (width + space), 600);
+    codeNode.state.role = "last";
+    this.graph.subscribe();
+  }
+
+  /**
+   * Add code nodes from network props.
+   */
+  addNetworkCodeNodes(networkProps: INorseNetworkProps): void {
+    this.logger.trace("add network code nodes");
+    this.graph.unsubscribe();
+
+    const left = 300;
+    const width = 350;
+    const space = 70;
+
+    const nodes: AbstractCodeNode[] = [];
+
+    this.graph.subscribe();
   }
 
   /**
@@ -30,12 +65,18 @@ export class NorseCode extends BaseCode {
 
   override initGraph(): void {
     this.logger.trace("init graph");
+    const projectProps = this.project.toJSON();
 
     this.graph.unsubscribe();
+    this.graph.init();
     this.graph.clear();
-    this.updateCodeGraph();
-    this.graph.onUpdate();
     this.graph.subscribe();
+
+    this.addBaseCodeNodes();
+    this.addNetworkCodeNodes(projectProps.network as INorseNetworkProps);
+    // this.sortNodes();
+
+    this.graph.onUpdate();
   }
 
   /**

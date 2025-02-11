@@ -5,8 +5,8 @@ import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 
 export default defineCodeNode({
-  type: "norse.torch.IAF",
-  title: "IAF",
+  type: "norse.torch.LIF",
+  title: "LIF",
   inputs: {
     p: () => new NodeInputInterface("p"),
   },
@@ -14,5 +14,9 @@ export default defineCodeNode({
     out: () => new NodeOutputInterface(),
   },
   variableName: "model",
-  codeTemplate: () => "norse.torch.IAF()",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    const nodes = this.node.getConnectedNodesByInterface("p");
+    return `norse.torch.LIF(${this.code?.graph.formatLabels(nodes).join(", ")})`;
+  },
 });

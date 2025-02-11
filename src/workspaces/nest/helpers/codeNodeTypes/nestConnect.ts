@@ -37,6 +37,7 @@ export default defineDynamicCodeNode({
         .setHidden(true)
         .setPort(false),
     syn_spec: () => new TextInputInterface("syn_spec", "static_synapse").use(displayInSidebar, true).setHidden(true),
+    model: () => new TextInputInterface("model", "static_synapse").use(displayInSidebar, true).setHidden(true),
     weight: () => new NumberInterface("syn_spec", 1).use(displayInSidebar, true).setHidden(true),
   },
   codeTemplate() {
@@ -48,7 +49,13 @@ export default defineDynamicCodeNode({
       this.code?.graph.formatLabels(preNodes).join("+"),
       this.code?.graph.formatLabels(postNodes).join("+"),
     ];
-    if (this.node.inputs.weight.value !== 1) args.push(`syn_spec={'weight': ${this.node.inputs.weight.value}}`);
+
+    const synSpecs = [];
+    if (this.node.inputs.model.value !== "static_synapse")
+      synSpecs.push(`"synapse_model": "${this.node.inputs.model.value}"`);
+    if (this.node.inputs.weight.value !== 1) synSpecs.push(`"weight": ${this.node.inputs.weight.value}`);
+    if (synSpecs.length > 0) args.push(`syn_spec={\n\t${synSpecs.join(",\n\t")}\n}`);
+
     return `nest.Connect(${args.join(", ")})`;
   },
   onPlaced() {

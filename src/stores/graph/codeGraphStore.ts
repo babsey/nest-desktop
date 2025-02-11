@@ -13,8 +13,6 @@ export const useCodeGraphStore = defineStore("code-graph", () => {
 
   const viewModel = useBaklava();
 
-  const mount = (): void => {};
-
   const subscribe = (call: () => void): void => {
     state.token = Symbol("token");
     viewModel.editor.graphEvents.addNode.subscribe(state.token, () => call());
@@ -32,7 +30,5 @@ export const useCodeGraphStore = defineStore("code-graph", () => {
     viewModel.editor.nodeEvents.update.unsubscribe(state.token);
   };
 
-  const unmount = (): void => {};
-
-  return { mount, state, subscribe, unmount, unsubscribe, viewModel };
+  return { state, subscribe, unsubscribe, viewModel };
 });

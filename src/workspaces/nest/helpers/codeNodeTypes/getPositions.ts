@@ -3,14 +3,7 @@
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
-  type: "getPosition",
+  type: "nest/GetPositions",
   title: "get position",
-  codeTemplate: () =>
-    "def getPositions(nodes): \
-    positions = {} \
-    for node in nodes: \
-        position = nest.GetPosition(node) \
-        for idx in range(len(node)): \
-            positions[node[idx].global_id] = position[idx] \
-    return positions",
+  codeTemplate: () => "def pos(n): return dict(zip(n.global_id, nest.GetPosition(n)))",
 });

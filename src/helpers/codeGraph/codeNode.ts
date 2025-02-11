@@ -9,9 +9,10 @@ import { BaseCode } from "../code/code";
 import { TConnection, TNode, TSimulation } from "@/types";
 
 interface IAbstractCodeNodeState {
+  commented: boolean;
   hidden: boolean;
   integrated: boolean;
-  position: "auto" | "top" | "bottom";
+  role: string;
   script: string;
 }
 
@@ -23,9 +24,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
   private _networkItem: TNode | TConnection | undefined;
   private _simulationItem: TSimulation | undefined;
   private _state: UnwrapRef<IAbstractCodeNodeState> = reactive({
+    commented: false,
     hidden: false,
     integrated: false,
-    position: "auto",
+    role: "",
     script: "",
   });
 
@@ -160,7 +162,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
       this._state.script = `${this.label} = ${this._state.script}`;
     }
 
-    if (this._state.hidden) {
+    if (this._state.commented) {
       this._state.script = "# " + this._state.script;
       this._state.script = this._state.script.replaceAll("\n", "\n# ");
     }

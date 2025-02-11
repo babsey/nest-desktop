@@ -2,13 +2,12 @@
 
 import { IntegerInterface, NodeInterface, TextInputInterface, displayInSidebar, setType } from "baklavajs";
 
-import { IParamProps } from "@/helpers/common/parameter";
+import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 import { numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 import { INESTNodeCollection, nestNodeCollectionType } from "./interfaceTypes";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 
 export default defineDynamicCodeNode({
   type: "nest.Create",
@@ -18,7 +17,7 @@ export default defineDynamicCodeNode({
     model: () => new TextInputInterface("model", "iaf_psc_alpha").use(setType, stringType),
     size: () => new IntegerInterface("size", 1, 1).use(setType, numberType).use(displayInSidebar, true),
     params: () => new NodeInputInterface("params"),
-    positions: () => new NodeInputInterface("positions", true),
+    positions: () => new NodeInputInterface("positions"),
   },
   outputs: {
     out: () => new NodeOutputInterface<INESTNodeCollection>().use(setType, nestNodeCollectionType),
@@ -28,13 +27,8 @@ export default defineDynamicCodeNode({
     const args = [`"${this.node.inputs.model.value}"`];
     if (this.node.inputs.size.value > 1) args.push(`${this.node.inputs.size.value}`);
 
-    if (this.node.networkItem) {
-      const params: string[] = [];
-      this.node.networkItem.filteredParams.forEach((param) => {
-        params.push(`"${param.id}": ${JSON.stringify(param.value)}`);
-      });
-      if (params.length > 0) args.push(`params={\n\t${params.join(",\n\t")}\n}`);
-    }
+    const params = this.node.getConnectedNodesByInterface("params");
+    if (params.length > 0) args.push(`params=${this.code?.graph.formatLabels(params).join(", ")}`);
 
     const positions = this.node.getConnectedNodesByInterface("positions");
     if (positions.length > 0) args.push(`\n\tpositions=${this.code?.graph.formatLabels(positions).join(", ")}`);
@@ -54,12 +48,8 @@ export default defineDynamicCodeNode({
     if (model.includes("recorder") || model.includes("meter"))
       outputs["events"] = () => new NodeOutputInterface("events");
 
-    if (this.node?.networkItem && this.node?.networkItem.paramsVisible.length > 0) {
-      this.node?.networkItem.filteredParams.forEach((param: IParamProps) => {
-        inputs[param.id] = () =>
-          new TextInputInterface(param.id, param.value as string).use(displayInSidebar, true).setHidden(true);
-      });
-    }
+    const positions = this.node?.getConnectedNodesByInterface("positions") || [];
+    if (positions.length > 0) outputs["positions"] = () => new NodeOutputInterface("positions");
 
     return { inputs, outputs };
   },

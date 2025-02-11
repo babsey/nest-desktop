@@ -85,6 +85,21 @@ export class CodeGraph extends BaseObj {
     this.graph.addNode(node);
   }
 
+  addNodeAtColumn(nodeType: new () => AbstractCodeNode, col: number = 0, offset: number = 100) {
+    const left = 300;
+    const width = 350;
+    const space = 70;
+
+    const node = new nodeType();
+    this.addNode(node);
+    if (node.position) {
+      node.position.x = left + col * (width + space);
+      node.position.y = offset;
+    }
+
+    return node;
+  }
+
   addNodeWithCoordinates(nodeType: new () => AbstractCodeNode, x: number, y: number) {
     const node = new nodeType();
     this.addNode(node);
@@ -104,6 +119,14 @@ export class CodeGraph extends BaseObj {
     const labels = nodes.map((node: AbstractCodeNode) => (node.state.integrated ? node.codeTemplate : node.label));
     if (sorted) labels.sort();
     return labels;
+  }
+
+  findNodeByType(nodeType: string): AbstractCodeNode | undefined {
+    return this.nodes.find((node: AbstractCodeNode) => node.type === nodeType);
+  }
+
+  getNodesBySameType(type: string): AbstractCodeNode[] {
+    return this.nodes.filter((node: AbstractCodeNode) => node.type === type) as AbstractCodeNode[];
   }
 
   getNodesBySameVariableNames(variableName: string): AbstractCodeNode[] {
@@ -129,7 +152,6 @@ export class CodeGraph extends BaseObj {
   }
 
   onUpdate = () => {
-    this.sortNodes();
     this.graph.nodes.forEach((node) => (node.code = this.code));
     this.code.generate();
     this.save();
@@ -142,12 +164,6 @@ export class CodeGraph extends BaseObj {
 
   save(): void {
     this.state.graph = this.graph.save();
-  }
-
-  sortNodes(): void {
-    const nodes: Record<string, AbstractCodeNode[]> = { top: [], auto: [], bottom: [] };
-    this.graph.nodes.forEach((node) => nodes[node.state.position].push(node));
-    this.graph._nodes = [...nodes.top, ...nodes.auto, ...nodes.bottom];
   }
 
   subscribe(): void {
