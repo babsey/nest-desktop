@@ -128,9 +128,9 @@
         </slot>
       </template>
 
-      <!-- <template v-if="projectViewStore.state.views.controller === 'stats' && project.activities.all.length > 0">
+      <template v-if="projectViewStore.state.views.controller === 'stats' && project.activities.all.length > 0">
         <ActivityStats :activities="(project.activities as Activities)" />
-      </template> -->
+      </template>
     </div>
   </v-navigation-drawer>
 
@@ -156,13 +156,13 @@ import { Extension } from "@codemirror/state";
 import { computed, ref } from "vue";
 
 import ActivityChartController from "../activityChart/ActivityChartController.vue";
-// import ActivityStats from "../activityStats/ActivityStats.vue";
+import ActivityStats from "../activityStats/ActivityStats.vue";
 import CodeEditor from "../code/CodeEditor.vue";
 import CodeMirror from "../code/CodeMirror.vue";
 import CodeTreeview from "@/components/codeGraph/CodeTreeview.vue";
 import NetworkSpecEditor from "../network/NetworkSpecEditor.vue";
 import SimulationKernelEditor from "../simulation/SimulationKernelEditor.vue";
-// import { Activities } from "@/helpers/activity/activities";
+import { Activities } from "@/helpers/activity/activities";
 import { ActivityChartGraph } from "@/helpers/activityGraph/activityChartGraph/activityChartGraph";
 import { BaseNetwork } from "@/helpers/network/network";
 import { BaseSimulation } from "@/helpers/simulation/simulation";
