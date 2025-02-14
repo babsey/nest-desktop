@@ -20,22 +20,6 @@ export class ElephantProject extends BaseProject {
   }
 
   /**
-   * Clone a new project of this current project.
-   *
-   * @remarks
-   * It generates new project id and empties updatedAt variable.
-   */
-  override clone(): ElephantProject {
-    this.logger.trace("clone");
-
-    return new ElephantProject({
-      ...this.toJSON(),
-      id: undefined,
-      updatedAt: "",
-    });
-  }
-
-  /**
    * Initialize model store for Elephant.
    */
   override initModelStore(): void {

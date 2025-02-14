@@ -27,13 +27,6 @@ export class ElephantModel extends BaseModel {
   }
 
   /**
-   * Clone this model object.
-   */
-  override clone(): ElephantModel {
-    return new ElephantModel({ ...this.toJSON() });
-  }
-
-  /**
    * Serialize to JSON.
    * @returns elephant model props
    */
