@@ -23,7 +23,6 @@ export interface IResponseProps {
 }
 
 export interface ICodeProps {
-  templateFilename?: string;
   graph?: IGraphState;
   templateFilename?: string;
 }
