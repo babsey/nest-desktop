@@ -134,6 +134,7 @@ export class NESTCode extends BaseCode {
         // nest.Create
         codeNode = this.graph.addNodeAtColumn(nestCreate, 2, 100 + 290 * idx);
         codeNode.state.role = "network";
+        if (idx === 0) codeNode.state.comments = "Create nodes";
         // codeNode.variableName = nodeProps.model as string;
         codeNode.inputs.model.value = nodeProps.model;
         codeNode.inputs.size.value = nodeProps.size ?? 1;
@@ -197,6 +198,7 @@ export class NESTCode extends BaseCode {
         // nest.Connect
         codeNode = this.graph.addNodeAtColumn(nestConnect, 3, 100 + 200 * idx);
         codeNode.state.role = "network";
+        if (idx === 0) codeNode.state.comments = "Connect nodes";
         if (connection.synapse) {
           if (connection.synapse.model) codeNode.inputs.model.value = connection.synapse.model;
           connection.synapse.params?.forEach((param: IParamProps) => (codeNode.inputs.weight.value = param.value));
@@ -253,15 +255,17 @@ export class NESTCode extends BaseCode {
     // nest.SetKernelStatus
     codeNode = this.graph.addNodeAtColumn(nestSetKernelStatus, 0, 350);
     codeNode.state.role = "before";
+    codeNode.state.comments = "Set simulation kernel";
     if (simulationProps?.kernel) {
       codeNode.inputs.local_num_threads.value = simulationProps.kernel.localNumThreads;
       codeNode.inputs.resolution.value = simulationProps.kernel.resolution;
       codeNode.inputs.rng_seed.value = simulationProps.kernel.rngSeed;
     }
 
-    // nest.Simulate/
+    // nest.Simulate
     codeNode = this.graph.addNodeAtColumn(nestSimulate, 0, 450);
     codeNode.state.role = "after";
+    codeNode.state.comments = "Run simulation";
     codeNode.inputs.time.value = simulationProps?.time ?? 1000;
 
     this.graph.subscribe();

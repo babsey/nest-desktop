@@ -10,6 +10,7 @@ import { TConnection, TNode, TSimulation } from "@/types";
 
 interface IAbstractCodeNodeState {
   commented: boolean;
+  comments: string;
   hidden: boolean;
   integrated: boolean;
   role: string;
@@ -25,6 +26,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
   private _simulationItem: TSimulation | undefined;
   private _state: UnwrapRef<IAbstractCodeNodeState> = reactive({
     commented: false,
+    comments: "",
     hidden: false,
     integrated: false,
     role: "",
@@ -163,8 +165,12 @@ export abstract class AbstractCodeNode extends AbstractNode {
     }
 
     if (this._state.commented) {
-      this._state.script = "# " + this._state.script;
+      this._state.script = `# ${this._state.script}`;
       this._state.script = this._state.script.replaceAll("\n", "\n# ");
+    }
+
+    if (this._state.comments) {
+      this._state.script = `\n# ${this._state.comments}\n${this._state.script}`;
     }
   }
 }
