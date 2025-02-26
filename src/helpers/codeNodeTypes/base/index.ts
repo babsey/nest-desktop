@@ -7,6 +7,7 @@ import apply from "./apply";
 import comment from "./comment";
 import dict from "./dict";
 import listComprehension from "./listComprehension";
+import modifyListElement from "./modifyListElement";
 import number from "./number";
 import range from "./range";
 import response from "./response";
@@ -22,6 +23,7 @@ export const registerBaseNodeTypes = () => {
   editor.registerNodeType(comment, { category: "base" });
   editor.registerNodeType(dict, { category: "base" });
   editor.registerNodeType(listComprehension, { category: "base" });
+  editor.registerNodeType(modifyListElement, { category: "base" });
   editor.registerNodeType(number, { category: "base" });
   editor.registerNodeType(range, { category: "base" });
   editor.registerNodeType(response, { category: "base" });
