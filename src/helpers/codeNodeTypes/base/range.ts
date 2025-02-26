@@ -16,5 +16,24 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  codeTemplate: () => "range({{ inputs.start.value }}, {{ inputs.stop.value }}, {{ inputs.step.value }})",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    const args = [];
+    let keyword = "";
+
+    const start = this.node.getConnectedNodesByInterface("start");
+    if (start.length > 0) args.push(`${this.code?.graph.formatLabels(start).join(", ")}`);
+    else if (this.node.inputs.start.value > 0) args.push(`${this.node.inputs.start.value}`);
+
+    const stop = this.node.getConnectedNodesByInterface("stop");
+    if (stop.length > 0) args.push(`${this.code?.graph.formatLabels(stop).join(", ")}`);
+    else args.push(`${this.node.inputs.stop.value}`);
+
+    keyword = args.length === 1 ? "step=" : "";
+    const step = this.node.getConnectedNodesByInterface("step");
+    if (step.length > 0) args.push(`${keyword}${this.code?.graph.formatLabels(step).join(", ")}`);
+    else if (this.node.inputs.step.value > 1) args.push(`${keyword}${this.node.inputs.step.value}`);
+
+    return `range(${args.join(",")})`;
+  },
 });

@@ -73,6 +73,7 @@ export class NorseCode extends BaseCode {
     this.graph.subscribe();
 
     this.addBaseCodeNodes();
+    console.log(projectProps.network, this.project.network);
     this.addNetworkCodeNodes(projectProps.network as INorseNetworkProps);
     // this.sortNodes();
 

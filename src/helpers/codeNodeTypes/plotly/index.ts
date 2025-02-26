@@ -3,10 +3,10 @@
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import plotlyBar from "./plotlyBar";
+import plotlyDataResponse from "./plotlyDataResponse";
 import plotlyFigure from "./plotlyFigure";
 import plotlyFigureAddTrace from "./plotlyFigureAddTrace";
 import plotlyHeatmap from "./plotlyHeatmap";
-import plotlyLine from "./plotlyLine";
 import plotlyMakeSubplots from "./plotlyMakeSubplots";
 import plotlyScatter from "./plotlyScatter";
 
@@ -18,10 +18,10 @@ export const registerPlotlyNodeTypes = () => {
 
   const editor = codeGraphStore.viewModel.editor;
   editor.registerNodeType(plotlyBar, { category: "plotly.graph_objects" });
+  editor.registerNodeType(plotlyDataResponse, { category: "plotly" });
   editor.registerNodeType(plotlyFigure, { category: "plotly.graph_objects" });
   editor.registerNodeType(plotlyFigureAddTrace, { category: "plotly" });
   editor.registerNodeType(plotlyHeatmap, { category: "plotly.graph_objects" });
-  editor.registerNodeType(plotlyLine, { category: "plotly.graph_objects" });
   editor.registerNodeType(plotlyMakeSubplots, { category: "plotly.subplots" });
   editor.registerNodeType(plotlyScatter, { category: "plotly.graph_objects" });
 };

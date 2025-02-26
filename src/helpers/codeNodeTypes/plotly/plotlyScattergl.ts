@@ -7,10 +7,11 @@ import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 export default defineCodeNode({
   type: "plotly.graph_objects.Scattergl",
   modules: ["plotly.graph_objects"],
-  title: "scatter (gl)",
+  title: "Scatter (gl)",
   inputs: {
     x: () => new NodeInputInterface("x"),
     y: () => new NodeInputInterface("y"),
+    mode: () => new SelectInterface("mode", "markers", ["lines", "lines+markers", "markers"]),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
@@ -18,9 +19,16 @@ export default defineCodeNode({
   variableName: "scattergl",
   codeTemplate() {
     if (!this.node) return this.type;
-    const xNodes = this.node.getConnectedNodesByInterface("x");
-    if (xNodes.length === 0) return this.node.type;
-    const xLabels = xNodes.map((node) => node.label);
-    return `go.Scattergl(x=${xLabels.join(", ")}, mode="markers")`;
+    const args = [];
+
+    const x = this.node.getConnectedNodesByInterface("x");
+    if (x.length > 0) args.push(`x=${this.code?.graph.formatLabels(x).join(", ")}`);
+
+    const y = this.node.getConnectedNodesByInterface("y");
+    if (y.length > 0) args.push(`y=${this.code?.graph.formatLabels(y).join(", ")}`);
+
+    if (this.node.inputs.mode.value) args.push(`mode="${this.node.inputs.mode.value}"`);
+
+    return `go.Scattergl(${args.join(", ")})`;
   },
 });

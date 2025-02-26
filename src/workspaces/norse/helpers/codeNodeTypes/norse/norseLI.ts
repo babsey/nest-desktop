@@ -1,4 +1,4 @@
-// norseLIF.ts
+// norseLI.ts
 
 import { CheckboxInterface } from "baklavajs";
 
@@ -7,8 +7,8 @@ import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
-  type: "norse.torch.LIF",
-  title: "LIF",
+  type: "norse.torch.LI",
+  title: "LI",
   inputs: {
     p: () => new NodeInputInterface("p"),
     record_states: () => new CheckboxInterface("record_states", false),
@@ -23,6 +23,6 @@ export default defineCodeNode({
     const nodes = this.node.getConnectedNodesByInterface("p");
     if (nodes.length > 0) args.push(`p=${this.code?.graph.formatLabels(nodes).join(", ")}`);
     if (this.node.inputs.record_states.value) args.push(`record_states=True`);
-    return `norse.torch.LIF(${args.join(", ")})`;
+    return `norse.torch.LI(${args.join(", ")})`;
   },
 });

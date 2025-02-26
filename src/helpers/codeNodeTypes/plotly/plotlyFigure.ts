@@ -7,7 +7,7 @@ import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 export default defineCodeNode({
   type: "plotly.graph_objects.Figure",
   modules: ["plotly.graph_objects"],
-  title: "figure",
+  title: "Figure",
   inputs: {
     trace: () => new NodeInputInterface("trace"),
   },
@@ -17,9 +17,12 @@ export default defineCodeNode({
   variableName: "fig",
   codeTemplate() {
     if (!this.node) return this.type;
-    const traces = this.node.getConnectedNodesByInterface("trace");
-    if (traces.length === 0) return "go.Figure()";
-    const traceLabels = traces.map((trace) => trace.label);
-    return `go.Figure([${traceLabels.join(", ")}])`;
+    const args = [];
+
+    const trace = this.node.getConnectedNodesByInterface("trace");
+    if (trace.length === 1) args.push(`data=${this.code?.graph.formatLabels(trace).join(", ")}`);
+    else if (trace.length > 1) args.push(`data=[${this.code?.graph.formatLabels(trace).join(", ")}]`);
+
+    return `go.Figure(${args.join(", ")})`;
   },
 });

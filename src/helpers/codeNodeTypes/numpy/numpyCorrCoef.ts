@@ -19,9 +19,11 @@ export default defineCodeNode({
   variableName: "corrcoef",
   codeTemplate() {
     if (!this.node) return this.type;
-    const xNodes = this.node.getConnectedNodesByInterface("x");
-    if (xNodes.length === 0) return this.node.type;
-    const xLabels = xNodes.map((node) => node.label);
-    return `np.corrcoef(${xLabels.join(", ")})`;
+    const args: string[] = [];
+
+    const x = this.node.getConnectedNodesByInterface("x");
+    if (x.length > 0) args.push(`x=${this.code?.graph.formatLabels(x).join(", ")}`);
+
+    return `np.corrcoef(${args.join(", ")})`;
   },
 });

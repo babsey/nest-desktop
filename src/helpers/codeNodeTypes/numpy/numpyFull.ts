@@ -19,6 +19,16 @@ export default defineCodeNode({
   },
   codeTemplate() {
     if (!this.node) return this.type;
-    return `np.full(${this.node.inputs.shape.value}, ${this.node.inputs.fill_value.value})`;
+    const args: string[] = [];
+
+    const shape = this.node.getConnectedNodesByInterface("shape");
+    if (shape.length > 0) args.push(`shape=${this.code?.graph.formatLabels(shape).join(", ")}`);
+    else args.push(`shape=${this.node.inputs.shape.value}`);
+
+    const fill_value = this.node.getConnectedNodesByInterface("fill_value");
+    if (fill_value.length > 0) args.push(`fill_value=${this.code?.graph.formatLabels(fill_value).join(", ")}`);
+    else args.push(`fill_value=${this.node.inputs.fill_value.value}`);
+
+    return `np.full(${args.join(", ")})`;
   },
 });

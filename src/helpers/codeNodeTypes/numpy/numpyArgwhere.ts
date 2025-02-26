@@ -18,8 +18,11 @@ export default defineCodeNode({
   },
   codeTemplate() {
     if (!this.node) return this.type;
-    const aNodes = this.node.getConnectedNodesByInterface("a");
-    if (aNodes.length === 0) return this.type;
-    return `np.argwhere(${this.code?.graph.formatLabels(aNodes).join(", ")})`;
+    const args: string[] = [];
+
+    const a = this.node.getConnectedNodesByInterface("a");
+    if (a.length > 0 && this.code) args.push(this.code.graph.formatLabels(a).join(", "));
+
+    return `np.argwhere(${args.join(", ")})`;
   },
 });

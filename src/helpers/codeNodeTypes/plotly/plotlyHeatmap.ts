@@ -7,7 +7,7 @@ import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
 export default defineCodeNode({
   type: "plotly.graph_objects.Heatmap",
   modules: ["plotly.graph_objects"],
-  title: "heatmap",
+  title: "Heatmap",
   inputs: {
     z: () => new NodeInputInterface("z"),
   },
@@ -17,6 +17,11 @@ export default defineCodeNode({
   variableName: "heatmap",
   codeTemplate() {
     if (!this.node) return this.type;
-    return `go.Heatmap(${this.node.inputs.x.value}, ${this.node.inputs.y.value})`;
+    const args = [];
+
+    const z = this.node.getConnectedNodesByInterface("z");
+    if (z.length > 0) args.push(`z=${this.code?.graph.formatLabels(z).join(", ")}`);
+
+    return `go.Heatmap(${args.join(", ")})`;
   },
 });

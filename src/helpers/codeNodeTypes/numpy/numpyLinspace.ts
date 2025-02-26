@@ -1,4 +1,4 @@
-// numpyArange.ts
+// numpyLinspace.ts
 
 import { NumberInterface, setType } from "baklavajs";
 
@@ -8,12 +8,12 @@ import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "../base/interfaceTypes";
 
 export default defineCodeNode({
-  type: "numpy.arange",
-  title: "arange",
+  type: "numpy.linspace",
+  title: "linspace",
   inputs: {
     start: () => new NumberInterface("start", 0).use(setType, numberType),
     stop: () => new NumberInterface("stop", 1).use(setType, numberType),
-    step: () => new NumberInterface("step", 1).use(setType, numberType),
+    num: () => new NumberInterface("num", 50).use(setType, numberType),
   },
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
@@ -32,11 +32,11 @@ export default defineCodeNode({
     if (stop.length > 0) args.push(`${this.code?.graph.formatLabels(stop).join(", ")}`);
     else args.push(`${this.node.inputs.stop.value}`);
 
-    keyword = args.length === 1 ? "step=" : "";
-    const step = this.node.getConnectedNodesByInterface("step");
-    if (step.length > 0) args.push(`${keyword}${this.code?.graph.formatLabels(step).join(", ")}`);
-    else if (this.node.inputs.step.value !== 1) args.push(`${keyword}${this.node.inputs.step.value}`);
+    keyword = args.length === 1 ? "num=" : "";
+    const num = this.node.getConnectedNodesByInterface("num");
+    if (num.length > 0) args.push(`${keyword}${this.code?.graph.formatLabels(num).join(", ")}`);
+    else if (this.node.inputs.num.value !== 50) args.push(`${keyword}${this.node.inputs.num.value}`);
 
-    return `np.arange(${args.join(", ")})`;
+    return `np.linspace(${args.join(", ")})`;
   },
 });

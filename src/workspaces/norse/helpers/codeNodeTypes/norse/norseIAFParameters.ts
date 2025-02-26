@@ -6,14 +6,12 @@ import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
-  type: "norse.torch.LIFParameters",
-  title: "LIF Parameters",
+  type: "norse.torch.IAFParameters",
+  title: "IAF Parameters",
   inputs: {
-    tau_syn_inv: () => new NumberInterface("tau_syn_inv", 200),
-    tau_mem_inv: () => new NumberInterface("tau_mem_inv", 100),
-    v_leak: () => new NumberInterface("v_leak", 0),
     v_th: () => new NumberInterface("v_th", 1),
     v_reset: () => new NumberInterface("v_reset", 0),
+    alpha: () => new NumberInterface("alpha", 100),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
@@ -22,13 +20,9 @@ export default defineCodeNode({
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
-    if (this.node.inputs.tau_syn_inv.value !== 200)
-      args.push(`tau_syn_inv=torch.tensor(${this.node.inputs.tau_syn_inv.value})`);
-    if (this.node.inputs.tau_mem_inv.value !== 100)
-      args.push(`tau_mem_inv=torch.tensor(${this.node.inputs.tau_mem_inv.value})`);
-    if (this.node.inputs.v_leak.value !== 0) args.push(`v_leak=torch.tensor(${this.node.inputs.v_leak.value})`);
     if (this.node.inputs.v_th.value !== 1) args.push(`v_th=torch.tensor(${this.node.inputs.v_th.value})`);
     if (this.node.inputs.v_reset.value !== 0) args.push(`v_reset=torch.tensor(${this.node.inputs.v_reset.value})`);
-    return args.length > 0 ? `norse.torch.LIFParameters(\n\t${args.join(",\n\t")}\n)` : "norse.torch.LIFParameters()";
+    if (this.node.inputs.alpha.value !== 100) args.push(`alpha=torch.tensor(${this.node.inputs.alpha.value})`);
+    return args.length > 0 ? `norse.torch.IAFParameters(\n\t${args.join(",\n\t")}\n)` : "norse.torch.IAFParameters()";
   },
 });

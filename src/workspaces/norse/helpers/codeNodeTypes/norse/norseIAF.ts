@@ -1,4 +1,6 @@
-// norseIAFCell.ts
+// norseIAF.ts
+
+import { CheckboxInterface } from "baklavajs";
 
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
@@ -9,10 +11,18 @@ export default defineCodeNode({
   title: "IAF",
   inputs: {
     p: () => new NodeInputInterface("p"),
+    record_states: () => new CheckboxInterface("record_states", false),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
   },
   variableName: "model",
-  codeTemplate: () => "norse.torch.IAF()",
+  codeTemplate() {
+    if (!this.node) return this.type;
+    const args = [];
+    const nodes = this.node.getConnectedNodesByInterface("p");
+    if (nodes.length > 0) args.push(`p=${this.code?.graph.formatLabels(nodes).join(", ")}`);
+    if (this.node.inputs.record_states.value) args.push(`record_states=True`);
+    return `norse.torch.IAF(${args.join(", ")})`;
+  },
 });

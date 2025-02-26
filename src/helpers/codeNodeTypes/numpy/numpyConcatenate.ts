@@ -20,9 +20,11 @@ export default defineCodeNode({
   variableName: "concat",
   codeTemplate() {
     if (!this.node) return this.type;
-    const aNodes = this.node.getConnectedNodesByInterface("a");
-    if (aNodes.length === 0) return this.node.type;
-    const aLabels = aNodes.map((node) => node.label);
-    return `np.concatenate(${aLabels.join(", ")})`;
+    const args: string[] = [];
+
+    const a = this.node.getConnectedNodesByInterface("a");
+    if (a.length > 0) a.map((node) => args.push(node.label));
+
+    return `np.concatenate(${args.join(", ")})`;
   },
 });

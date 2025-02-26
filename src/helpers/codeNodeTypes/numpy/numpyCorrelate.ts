@@ -22,11 +22,18 @@ export default defineCodeNode({
   variableName: "corr",
   codeTemplate() {
     if (!this.node) return this.type;
-    const aNodes = this.node.getConnectedNodesByInterface("a");
-    const vNodes = this.node.getConnectedNodesByInterface("v");
-    if (aNodes.length === 0 || vNodes.length === 0) return this.node.type;
-    const aLabels = aNodes.map((node) => node.label);
-    const vLabels = vNodes.map((node) => node.label);
-    return `np.correlate(${aLabels.join("+")}, ${vLabels.join("+")}, "{{ inputs.mode.value }}")`;
+    const args: string[] = [];
+
+    const a = this.node.getConnectedNodesByInterface("a");
+    if (a.length > 0) args.push(`a=${this.code?.graph.formatLabels(a).join(", ")}`);
+
+    const v = this.node.getConnectedNodesByInterface("v");
+    if (v.length > 0) args.push(`v=${this.code?.graph.formatLabels(v).join(", ")}`);
+
+    const mode = this.node.getConnectedNodesByInterface("mode");
+    if (mode.length > 0) args.push(`mode=${this.code?.graph.formatLabels(mode).join(", ")}`);
+    else if (this.node.inputs.mode.value !== "valid") args.push(`mode=${this.node.inputs.mode.value}`);
+
+    return `np.correlate(${args.join(", ")})`;
   },
 });
