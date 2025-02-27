@@ -1,23 +1,21 @@
-// plotlyScatter.ts
+// plotlyBar.ts
 
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
-import { SelectInterface } from "baklavajs";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 
 export default defineCodeNode({
-  type: "plotly.graph_objects.Scatter",
+  type: "plotly.graph_objects.Bar",
   modules: ["plotly.graph_objects"],
-  title: "Scatter",
+  title: "Bar",
   inputs: {
     x: () => new NodeInputInterface("x"),
     y: () => new NodeInputInterface("y"),
-    mode: () => new SelectInterface("mode", "markers", ["lines", "lines+markers", "markers"]),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "scatter",
+  variableName: "bar",
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
@@ -28,8 +26,6 @@ export default defineCodeNode({
     const y = this.node.getConnectedNodesByInterface("y");
     if (y.length > 0) args.push(`y=${this.code?.graph.formatLabels(y).join(", ")}`);
 
-    if (this.node.inputs.mode.value) args.push(`mode="${this.node.inputs.mode.value}"`);
-
-    return `go.Scatter(${args.join(", ")})`;
+    return `go.Bar(${args.join(", ")})`;
   },
 });

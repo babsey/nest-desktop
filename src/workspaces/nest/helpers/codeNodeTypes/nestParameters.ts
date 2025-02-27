@@ -1,10 +1,8 @@
 // nestParameters.ts
 
-import { NodeInterface, TextInputInterface, displayInSidebar } from "baklavajs";
+import { NodeInterface } from "baklavajs";
 
-import { IParamProps } from "@/helpers/common/parameter";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
-import { TNode } from "@/types";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 
 import { INESTNodeCollection } from "./interfaceTypes";

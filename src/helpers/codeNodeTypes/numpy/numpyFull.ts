@@ -3,7 +3,7 @@
 import { IntegerInterface, NumberInterface, setType } from "baklavajs";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "../base/interfaceTypes";
 
@@ -17,6 +17,7 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
+  variableName: "values",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];

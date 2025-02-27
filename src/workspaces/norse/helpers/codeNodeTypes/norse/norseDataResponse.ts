@@ -2,7 +2,7 @@
 
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 
 export default defineCodeNode({
   type: "norse/response",
@@ -30,7 +30,6 @@ export default defineCodeNode({
     const plotly = this.node.getConnectedNodesByInterface("plotly").map((node: AbstractCodeNode) => `${node.label}`);
     if (plotly.length > 0) responseData.push(`"plotly": ${plotly.join(", ")}.to_plotly_json()`);
 
-    if (responseData.length === 0) return "";
-    return `response = {\n\t${responseData.join(",\n\t")}\n}`;
+    return responseData.length > 0 ? `response = {\n\t${responseData.join(",\n\t")}\n}` : "response = {}";
   },
 });

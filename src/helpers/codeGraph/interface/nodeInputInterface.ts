@@ -2,7 +2,7 @@
 
 import { markRaw } from "vue";
 
-import NodeInputComponent from "../../components/codeGraph/NodeInputComponent.vue";
+import NodeInputComponent from "@/components/codeGraph/NodeInputComponent.vue";
 import { CodeNodeInterface } from "./codeNodeInterface";
 
 export class NodeInputInterface<T = any> extends CodeNodeInterface<T> {

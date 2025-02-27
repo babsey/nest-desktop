@@ -9,7 +9,7 @@ import {
   TextInputInterface,
 } from "baklavajs";
 
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 
 import {

@@ -3,8 +3,8 @@
 import { SelectInterface, setType } from "baklavajs";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { stringType } from "../base/interfaceTypes";
 

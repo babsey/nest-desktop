@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { CodeNodeInterface } from "../../helpers/codeGraph/codeNodeInterface";
+import { CodeNodeInterface } from "../../helpers/codeGraph/interface/codeNodeInterface";
 
 const props = defineProps<{ intf: CodeNodeInterface }>();
 </script>

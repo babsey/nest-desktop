@@ -83,9 +83,7 @@ export function defineDynamicCodeNode<I, O>(
 
     public onPlaced() {
       this.events.update.subscribe(this, (data) => {
-        if (!data) {
-          return;
-        }
+        if (!data) return;
 
         if (
           (data.type === "input" && this.staticInputKeys.includes(data.name)) ||
@@ -145,13 +143,9 @@ export function defineDynamicCodeNode<I, O>(
     }
 
     private onUpdate() {
-      if (this.preventUpdate) {
-        return;
-      }
+      if (this.preventUpdate) return;
 
-      if (this.graph) {
-        this.graph.activeTransactions++;
-      }
+      if (this.graph) this.graph.activeTransactions++;
 
       const inputValues = this.getStaticValues<I>(this.staticInputKeys, this.inputs);
       const outputValues = this.getStaticValues<O>(this.staticOutputKeys, this.outputs);
@@ -159,9 +153,7 @@ export function defineDynamicCodeNode<I, O>(
       this.updateInterfaces("input", result.inputs ?? {}, result.forceUpdateInputs ?? []);
       this.updateInterfaces("output", result.outputs ?? {}, result.forceUpdateOutputs ?? []);
 
-      if (this.graph) {
-        this.graph.activeTransactions--;
-      }
+      if (this.graph) this.graph.activeTransactions--;
 
       this.renderCode();
     }
@@ -180,9 +172,7 @@ export function defineDynamicCodeNode<I, O>(
 
       // remove all interfaces that are outdated
       for (const k of Object.keys(currentInterfaces)) {
-        if (staticKeys.includes(k) || (newInterfaces[k] && !forceUpdates.includes(k))) {
-          continue;
-        }
+        if (staticKeys.includes(k) || (newInterfaces[k] && !forceUpdates.includes(k))) continue;
 
         if (type === "input") {
           this.removeInput(k);
@@ -193,9 +183,7 @@ export function defineDynamicCodeNode<I, O>(
 
       // add all new interfaces
       for (const k of Object.keys(newInterfaces)) {
-        if (currentInterfaces[k]) {
-          continue;
-        }
+        if (currentInterfaces[k]) continue;
 
         const intf = newInterfaces[k]!();
         if (type === "input") {

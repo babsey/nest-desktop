@@ -1,24 +1,29 @@
 // apply.ts
 
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { TextInputInterface } from "baklavajs";
+
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
   type: "apply",
   title: "apply",
   inputs: {
-    call: () => new NodeInputInterface("call"),
-    inputs: () => new NodeInputInterface("inputs"),
+    call: () => new TextInputInterface("call", ""),
+    args: () => new NodeInputInterface("args"),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
   },
   codeTemplate() {
     if (!this.node) return this.type;
+
     const calls = this.node.getConnectedNodesByInterface("call");
-    if (calls.length == 0) return this.type;
-    const inputs = this.node.getConnectedNodesByInterface("inputs");
-    return `${calls[0].label}(${this.code?.graph.formatLabels(inputs).join(", ")})`;
+    const call = calls.length == 0 ? this.node.inputs.call.value : calls[0].label;
+
+    const args = this.node.getConnectedNodesByInterface("args");
+
+    return `${call}(${this.code?.graph.formatLabels(args).join(", ")})`;
   },
 });

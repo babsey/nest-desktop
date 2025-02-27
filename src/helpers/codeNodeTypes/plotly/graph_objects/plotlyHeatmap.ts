@@ -1,8 +1,8 @@
 // plotlyHeatmap.ts
 
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Heatmap",

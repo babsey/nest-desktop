@@ -2,9 +2,9 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({

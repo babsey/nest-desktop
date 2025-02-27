@@ -1,7 +1,7 @@
 // torchOnes.ts
 
 import { IntegerInterface } from "baklavajs";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({

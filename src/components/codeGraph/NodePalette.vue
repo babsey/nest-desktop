@@ -1,24 +1,32 @@
 <template>
   <div class="baklava-node-palette pa-0">
-    <v-list class="pa-0" density="compact" style="background-color: transparent" theme="dark">
+    <v-list class="pa-0" density="compact" theme="dark">
       <v-list-group v-for="c1 in nestedCategories" :key="c1.name">
         <template #activator="{ props }">
           <v-list-item v-bind="props" :title="c1.name" />
         </template>
 
-        <v-list v-if="c1.categories" class="pa-0" density="compact" style="background-color: transparent">
+        <v-list v-if="c1.categories" class="pa-0" density="compact">
           <v-list-group v-for="c2 in c1.categories" :key="c2.name">
             <template #activator="{ props }">
-              <v-list-item v-bind="props" :title="'.' + c2.name" />
+              <v-list-item v-bind="props" :title="'.' + c2.name" style="border-left: 2px solid currentColor" />
             </template>
 
-            <v-list-item v-for="(ni, nt) in c2.nodeTypes" :key="nt" style="padding: 1px !important">
+            <v-list-item
+              v-for="(ni, nt) in c2.nodeTypes"
+              :key="nt"
+              style="padding: 1px !important; border-left: 2px solid currentColor"
+            >
               <PaletteEntry :title="ni.title" :type="nt" class="pa-0 ma-0" @pointerdown="onDragStart(nt, ni)" />
             </v-list-item>
           </v-list-group>
         </v-list>
 
-        <v-list-item v-for="(ni, nt) in c1.nodeTypes" :key="nt" style="padding: 1px !important">
+        <v-list-item
+          v-for="(ni, nt) in c1.nodeTypes"
+          :key="nt"
+          style="padding: 1px !important; border-left: 2px solid currentColor"
+        >
           <PaletteEntry :title="ni.title" :type="nt" class="pa-0 ma-0" @pointerdown="onDragStart(nt, ni)" />
         </v-list-item>
       </v-list-group>

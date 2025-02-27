@@ -2,7 +2,7 @@
 
 import { NumberInterface } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
@@ -20,9 +20,11 @@ export default defineCodeNode({
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
+
     if (this.node.inputs.v_th.value !== 1) args.push(`v_th=torch.tensor(${this.node.inputs.v_th.value})`);
     if (this.node.inputs.v_reset.value !== 0) args.push(`v_reset=torch.tensor(${this.node.inputs.v_reset.value})`);
     if (this.node.inputs.alpha.value !== 100) args.push(`alpha=torch.tensor(${this.node.inputs.alpha.value})`);
+
     return args.length > 0 ? `norse.torch.IAFParameters(\n\t${args.join(",\n\t")}\n)` : "norse.torch.IAFParameters()";
   },
 });

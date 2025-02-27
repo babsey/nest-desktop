@@ -3,7 +3,7 @@
 import { NumberInterface, setType } from "baklavajs";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "../base/interfaceTypes";
 
@@ -18,7 +18,7 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  variableName: "a",
+  variableName: "values",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -32,7 +32,7 @@ export default defineCodeNode({
     if (stop.length > 0) args.push(`${this.code?.graph.formatLabels(stop).join(", ")}`);
     else args.push(`${this.node.inputs.stop.value}`);
 
-    keyword = args.length === 1 ? "step=" : "";
+    keyword = args.length < 2 ? "step=" : "";
     const step = this.node.getConnectedNodesByInterface("step");
     if (step.length > 0) args.push(`${keyword}${this.code?.graph.formatLabels(step).join(", ")}`);
     else if (this.node.inputs.step.value !== 1) args.push(`${keyword}${this.node.inputs.step.value}`);

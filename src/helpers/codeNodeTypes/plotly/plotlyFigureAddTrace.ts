@@ -1,7 +1,7 @@
 // plotlyFigureAddTrace.ts
 
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 
 export default defineCodeNode({
   type: "plotly.fig.add_trace",

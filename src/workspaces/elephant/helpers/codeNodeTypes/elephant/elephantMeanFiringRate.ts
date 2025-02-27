@@ -1,8 +1,8 @@
 // elephantMeanFiringRate.ts
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 
 export default defineCodeNode({
   type: "elephant.statistics.mean_firing_rate",

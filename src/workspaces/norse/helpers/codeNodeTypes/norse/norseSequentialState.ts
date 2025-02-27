@@ -3,7 +3,7 @@
 import { IntegerInterface, NodeInterface } from "baklavajs";
 
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
-import { NodeOutputInterface } from "@/helpers/codeGraph/nodeOutputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 
 export default defineDynamicCodeNode({
   type: "norse.torch.SequentialState",
@@ -16,7 +16,8 @@ export default defineDynamicCodeNode({
   },
   variableName: "model",
   codeTemplate() {
-    if (!this.node) return "norse.torch.SequentialState";
+    if (!this.node) return this.type;
+
     const nodes = this.node.getConnectedNodes("inputs");
     if (this.node.inputs.nModules.value != nodes.length + 1) this.node.inputs.nModules.value = nodes.length + 1;
     if (nodes.length === 0) return "norse.torch.SequentialState()";

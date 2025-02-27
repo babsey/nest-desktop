@@ -2,9 +2,9 @@
 
 import { displayInSidebar, NodeInterface, setType, TextInputInterface } from "baklavajs";
 
-import { DictInputInterface } from "@/helpers/codeGraph/dictInputInterface";
+import { DictInputInterface } from "@/helpers/codeGraph/interface/dictInputInterface";
 import { IParamProps } from "@/helpers/common/parameter";
-import { NodeInputInterface } from "@/helpers/codeGraph/nodeInputInterface";
+import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 

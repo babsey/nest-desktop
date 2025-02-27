@@ -8,10 +8,10 @@ import { dataframeType, IPandasDataFrame } from "./interfaceTypes";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
-  type: "pandas.DataFrame",
-  title: "data frame",
+  type: "pandas.concat",
+  title: "concat",
   inputs: {
-    data: () => new NodeInputInterface("data"),
+    objs: () => new NodeInputInterface("objs"),
   },
   outputs: {
     out: () => new NodeOutputInterface<IPandasDataFrame>().use(setType, dataframeType),
@@ -21,9 +21,9 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const data = this.node.getConnectedNodesByInterface("data");
-    if (data.length > 0) args.push(`${this.code?.graph.formatLabels(data).join(", ")}`);
+    const objs = this.node.getConnectedNodesByInterface("objs");
+    if (objs.length > 0) args.push(`${this.code?.graph.formatLabels(objs).join(", ")}`);
 
-    return `pd.DataFrame(${args.join(", ")})`;
+    return `pd.concat([${args.join(", ")}])`;
   },
 });
