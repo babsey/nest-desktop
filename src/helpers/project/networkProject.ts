@@ -199,10 +199,17 @@ export class NetworkProject extends BaseProject {
 
         if (response == null || response.status !== 200 || response.data == null || !response.data.data) return;
 
-        const vistoc = Date.now();
-        // Update activities.
-        this.activities.update(response.data.data);
-        this.state.state.stopwatch.visualization = Date.now() - vistoc;
+        if (response.data.data.plotly) {
+          const plotly_json = response.data.data.plotly;
+          const vistoc = Date.now();
+          this.activityGraph.activityChartGraph.react(plotly_json.data, plotly_json.layout);
+          this.state.state.stopwatch.visualization = Date.now() - vistoc;
+        } else {
+          const vistoc = Date.now();
+          // Update activities.
+          this.activities.update(response.data.data);
+          this.state.state.stopwatch.visualization = Date.now() - vistoc;
+        }
 
         // Commit network for the history (with activity).
         this.networkRevision.commit(true);
