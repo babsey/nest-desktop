@@ -1,6 +1,6 @@
 // numpyHistogram.ts
 
-import { setType } from "baklavajs";
+import { IntegerInterface, setType } from "baklavajs";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
@@ -12,18 +12,27 @@ export default defineCodeNode({
   title: "histogram",
   inputs: {
     x: () => new NodeInputInterface<INumpyArray>("x").use(setType, arrayType),
-    bins: () => new NodeInputInterface<string>("bins"),
+    bins: () => new IntegerInterface("bins", 10),
   },
   outputs: {
-    hist: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
-    bin_edges: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
+    hist: () => new NodeOutputInterface<INumpyArray>("hist", "[0]").use(setType, arrayType),
+    bin_edges: () => new NodeOutputInterface<INumpyArray>("bin_edges", "[1]").use(setType, arrayType),
   },
-  variableName: "hist",
   codeTemplate() {
     if (!this.node) return this.type;
-    const xNodes = this.node.getConnectedNodesByInterface("x");
-    if (xNodes.length === 0) return this.node.type;
-    const xLabels = xNodes.map((node) => node.label);
-    return `np.histogram(${xLabels.join("+")}, ${this.node.inputs.bins.value})`;
+    const args: string[] = [];
+
+    const x = this.node.getConnectedOutputInterfaceByInterface("x");
+    if (x.length > 0) args.push(`${this.code?.graph.formatInterfaceLabels(x).join("+")}`);
+
+    const bins = this.node.getConnectedOutputInterfaceByInterface("bins");
+    if (bins.length > 0) args.push(`${this.code?.graph.formatInterfaceLabels(bins).join(", ")}`);
+    else args.push(`${this.node.inputs.bins.value}`);
+
+    return `np.histogram(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "hist",
 });

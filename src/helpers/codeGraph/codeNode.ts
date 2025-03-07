@@ -7,6 +7,7 @@ import { reactive, UnwrapRef } from "vue";
 
 import { BaseCode } from "../code/code";
 import { TConnection, TNode, TSimulation } from "@/types";
+import { NodeOutputInterface } from "./interface/nodeOutputInterface";
 
 interface IAbstractCodeNodeState {
   commented: boolean;
@@ -72,6 +73,20 @@ export abstract class AbstractCodeNode extends AbstractNode {
     return this.variableName + (this.idxByVariableNames + 1);
   }
 
+  get module(): string {
+    if (!this.type.includes(".")) return "";
+    const modules = this.type.split(".");
+    return modules.slice(0, modules.length - 1).join(".");
+  }
+
+  get nOutputs(): number {
+    return Object.keys(this.outputs).length;
+  }
+
+  get nInputs(): number {
+    return Object.keys(this.inputs).length;
+  }
+
   get networkConnection(): TConnection | undefined {
     return this._networkItem as TConnection;
   }
@@ -86,10 +101,6 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   set networkItem(value: TNode | TConnection) {
     this._networkItem = value;
-  }
-
-  get nOutputs(): number {
-    return Object.keys(this.outputs).length;
   }
 
   get node(): AbstractCodeNode {
@@ -115,17 +126,42 @@ export abstract class AbstractCodeNode extends AbstractNode {
   // calculate?: CalculateFunction<any, any> | undefined;
 
   /**
+   * Get connected node interface to the node interface.
+   * @param nodeInterface string
+   * @returns interface instance
+   */
+  getConnectedInterfaceByInterface(nodeInterface: string): NodeInterface[] {
+    let nodeInterfaces: NodeInterface[] = [];
+
+    if (nodeInterface in this.inputs) {
+      const sources = this.graph?.connections
+        .filter((c) => c.to.id === this.inputs[nodeInterface].id || c.from.id === this.inputs[nodeInterface].id)
+        .map((c) => c.from);
+      if (sources) nodeInterfaces = nodeInterfaces.concat(sources);
+    }
+    if (nodeInterface in this.outputs) {
+      const targets = this.graph?.connections
+        .filter((c) => c.from.id === this.outputs[nodeInterface].id || c.from.id === this.outputs[nodeInterface].id)
+        .map((c) => c.to);
+      if (targets) nodeInterfaces = nodeInterfaces.concat(targets);
+    }
+
+    return nodeInterfaces;
+  }
+
+  /**
    * Get connected nodes to the node.
    */
   getConnectedNodes(mode?: string): AbstractCodeNode[] {
     let nodeIds: string[] = [];
-    if (mode != "outputs") {
-      const sources = this.graph?.connections.filter((c) => c.to.nodeId === this.id).map((c) => c.from.nodeId);
-      if (sources) nodeIds = nodeIds.concat(sources);
-    }
+
     if (mode != "inputs") {
       const targets = this.graph?.connections.filter((c) => c.from.nodeId === this.id).map((c) => c.to.nodeId);
       if (targets) nodeIds = nodeIds.concat(targets);
+    }
+    if (mode != "outputs") {
+      const sources = this.graph?.connections.filter((c) => c.to.nodeId === this.id).map((c) => c.from.nodeId);
+      if (sources) nodeIds = nodeIds.concat(sources);
     }
 
     if (!nodeIds || nodeIds.length == 0) return [];
@@ -139,12 +175,14 @@ export abstract class AbstractCodeNode extends AbstractNode {
    */
   getConnectedNodesByInterface(nodeInterface: string): AbstractCodeNode[] {
     let nodeIds: string[] = [];
+
     if (nodeInterface in this.inputs) {
       const sources = this.graph?.connections
         .filter((c) => c.to.id === this.inputs[nodeInterface].id || c.from.id === this.inputs[nodeInterface].id)
         .map((c) => c.from.nodeId);
       if (sources) nodeIds = nodeIds.concat(sources);
-    } else if (nodeInterface in this.outputs) {
+    }
+    if (nodeInterface in this.outputs) {
       const targets = this.graph?.connections
         .filter((c) => c.from.id === this.outputs[nodeInterface].id || c.from.id === this.outputs[nodeInterface].id)
         .map((c) => c.to.nodeId);
@@ -156,11 +194,29 @@ export abstract class AbstractCodeNode extends AbstractNode {
   }
 
   /**
+   * Get connected node output interface to the node interface.
+   * @param nodeInterface string
+   * @returns node output interface instance
+   */
+  getConnectedOutputInterfaceByInterface(nodeInterface: string): NodeOutputInterface[] {
+    let nodeInterfaces: NodeOutputInterface[] = [];
+
+    if (nodeInterface in this.inputs) {
+      const sources = this.graph?.connections
+        .filter((c) => c.to.id === this.inputs[nodeInterface].id || c.from.id === this.inputs[nodeInterface].id)
+        .map((c) => c.from) as NodeOutputInterface[];
+      if (sources) nodeInterfaces = nodeInterfaces.concat(sources);
+    }
+
+    return nodeInterfaces;
+  }
+
+  /**
    * Render code of this node.
    */
   renderCode(): void {
     this._state.script = Mustache.render(this.codeTemplate, this);
-    if (this.getConnectedNodesByInterface("out").length > 0) {
+    if (this.getConnectedNodes("outputs").length > 0) {
       this._state.script = `${this.label} = ${this._state.script}`;
     }
 

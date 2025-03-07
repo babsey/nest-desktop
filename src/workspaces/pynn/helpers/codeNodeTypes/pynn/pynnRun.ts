@@ -10,7 +10,7 @@ export default defineCodeNode({
   type: "pynn.run",
   title: "run",
   inputs: {
-    time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true).setPort(false),
+    time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true),
   },
   codeTemplate: () => "pynn.run({{ inputs.time.value }})",
 });

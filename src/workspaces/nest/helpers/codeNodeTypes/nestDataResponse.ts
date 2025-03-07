@@ -1,8 +1,8 @@
 // nestDataResponse.ts
 
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
+import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 
 export default defineCodeNode({
   type: "nest/response",
@@ -18,10 +18,9 @@ export default defineCodeNode({
     if (!this.node) return "";
     const responseData = [];
 
-    const events = this.node
-      .getConnectedNodesByInterface("events")
-      .map((node: AbstractCodeNode) => `${node.label}.events`);
-    if (events.length > 0) responseData.push(`"events": [${events.join(", ")}]`);
+    const outputInterfaces = this.node.getConnectedInterfaceByInterface("events") as NodeOutputInterface[];
+    const events = this.code?.graph.formatInterfaceLabels(outputInterfaces);
+    if (events && events.length > 0) responseData.push(`"events": [${events.join(", ")}]`);
 
     const positions = this.node.getConnectedNodesByInterface("positions");
     const getPositions = positions.map((pos) => `getPos(${pos.label})`);

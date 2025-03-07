@@ -1,22 +1,22 @@
 // norseLI.ts
 
-import { CheckboxInterface } from "baklavajs";
+import { CheckboxInterface, setType } from "baklavajs";
 
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { liParametersType } from "./interfaceTypes";
 
 export default defineCodeNode({
   type: "norse.torch.LI",
   title: "LI",
   inputs: {
-    p: () => new NodeInputInterface("p"),
-    record_states: () => new CheckboxInterface("record_states", false),
+    p: () => new NodeInputInterface("p").use(setType, liParametersType),
+    record_states: () => new CheckboxInterface("record_states", false).setPort(false),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "model",
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
@@ -27,4 +27,8 @@ export default defineCodeNode({
 
     return `norse.torch.LI(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "model",
 });

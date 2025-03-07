@@ -82,6 +82,7 @@ export class NESTCode extends BaseCode {
 
     this.graph.unsubscribe();
 
+    // Copy node model
     if (networkProps.models && networkProps.models.length > 0) {
       networkProps.models
         .filter((model) => !model.existing.includes("synapse"))
@@ -102,6 +103,8 @@ export class NESTCode extends BaseCode {
       const nodesProps = networkProps.nodes as INESTNodeProps[];
       nodesProps.forEach((nodeProps: INESTNodeProps, idx: number) => {
         let paramsNode: AbstractCodeNode;
+
+        // params
         if (nodeProps.params) {
           paramsNode = this.graph.addNodeAtColumn(nestParameters, 1, 100 + 260 * idx);
           paramsNode.state.role = "network";
@@ -118,6 +121,7 @@ export class NESTCode extends BaseCode {
           });
         }
 
+        // positions
         let posNode: AbstractCodeNode;
         if (nodeProps.spatial) {
           const randNode = this.graph.addNodeAtColumn(nestRandomUniform, 0, 900);
@@ -155,11 +159,10 @@ export class NESTCode extends BaseCode {
           spatialNodes.push(codeNode);
         }
 
-        codeNode.twoColumn = true;
         nodes.push(codeNode);
       });
     }
-
+    // Copy synapse model
     if (networkProps.models && networkProps.models.length > 0) {
       networkProps.models
         .filter((model) => model.existing.includes("synapse"))
@@ -235,6 +238,7 @@ export class NESTCode extends BaseCode {
     }
 
     this.graph.subscribe();
+    window.graph = this.graph;
   }
 
   /**

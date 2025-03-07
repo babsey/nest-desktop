@@ -6,7 +6,6 @@ import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Figure",
-  modules: ["plotly.graph_objects"],
   title: "Figure",
   inputs: {
     trace: () => new NodeInputInterface("trace"),

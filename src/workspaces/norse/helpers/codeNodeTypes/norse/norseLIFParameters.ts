@@ -1,9 +1,10 @@
 // norseLIFParameters.ts
 
-import { NumberInterface } from "baklavajs";
+import { NumberInterface, setType } from "baklavajs";
 
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { lifParametersType } from "./interfaceTypes";
 
 export default defineCodeNode({
   type: "norse.torch.LIFParameters",
@@ -16,9 +17,8 @@ export default defineCodeNode({
     v_reset: () => new NumberInterface("v_reset", 0),
   },
   outputs: {
-    out: () => new NodeOutputInterface(),
+    out: () => new NodeOutputInterface().use(setType, lifParametersType),
   },
-  variableName: "p",
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
@@ -33,4 +33,5 @@ export default defineCodeNode({
 
     return args.length > 0 ? `norse.torch.LIFParameters(\n\t${args.join(",\n\t")}\n)` : "norse.torch.LIFParameters()";
   },
+  variableName: "p",
 });

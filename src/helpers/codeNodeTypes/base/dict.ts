@@ -18,6 +18,7 @@ export default defineDynamicCodeNode({
     if (!this.node) return this.type;
     const kwargs: string[] = [];
     let keyword: string;
+    let value: string | undefined;
 
     const nodes = this.node.getConnectedNodes("inputs");
     if (this.node.inputs.nArgs.value != nodes.length + 1) this.node.inputs.nArgs.value = nodes.length + 1;
@@ -28,11 +29,15 @@ export default defineDynamicCodeNode({
       const args = this.node.getConnectedNodesByInterface(argId);
       if (args.length > 0) {
         keyword = this.node.inputs[argId].value;
-        kwargs.push(`${keyword}=${this.code?.graph.formatLabels(args).join(", ")}`);
+        value = this.code?.graph.formatLabels(args).join(", ");
+        kwargs.push(keyword ? `${keyword}=${value}` : `${value}`);
       }
     }
 
     return `dict(${kwargs.join(", ")})`;
+  },
+  onCreate() {
+    this.twoColumn = true;
   },
   onUpdate() {
     const inputs: Record<string, () => NodeInterface> = {};

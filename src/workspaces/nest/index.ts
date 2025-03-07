@@ -93,7 +93,7 @@ export const nest: IWorkspaceProps = {
       })(),
     };
 
-    registerCodeNodeTypes(["elephant", "nest", "neo", "norse", "torch"]);
+    registerCodeNodeTypes(["nest"]);
   },
   route,
   stores: {},

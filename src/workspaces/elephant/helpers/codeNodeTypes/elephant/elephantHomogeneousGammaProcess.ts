@@ -8,6 +8,7 @@ import { booleanType, numberType } from "@/helpers/codeNodeTypes/base/interfaceT
 
 export default defineCodeNode({
   type: "elephant.spike_train_generation.homogeneous_gamma_process",
+  modules: ["quantities"],
   title: "homogeneous gamma process",
   inputs: {
     a: () => new IntegerInterface("a", 3).use(setType, numberType),
@@ -18,8 +19,9 @@ export default defineCodeNode({
   },
   outputs: {
     out: () => new NodeOutputInterface(),
+    times: () => new NodeOutputInterface("times", ".times"),
+    size: () => new NodeOutputInterface("size", ".size"),
   },
-  variableName: "spiketrain",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -42,4 +44,8 @@ export default defineCodeNode({
 
     return `elephant.spike_train_generation.homogeneous_gamma_process(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "spiketrain",
 });

@@ -16,7 +16,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<IPandasDataFrame>().use(setType, dataframeType),
   },
-  variableName: "df",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -26,4 +25,8 @@ export default defineCodeNode({
 
     return `pd.concat([${args.join(", ")}])`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "df",
 });

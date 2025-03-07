@@ -1,7 +1,7 @@
 // defineCodeNode.ts
 // Adapted from https://github.com/newcat/baklavajs/blob/987018200389bd86c48544ac4afa7a393fe1e9bc/packages/core/src/defineNode.ts
 
-import { Node, NodeInterface, NodeInterfaceDefinition, INodeDefinition, INodeState } from "baklavajs";
+import { Node, NodeInterface, NodeInterfaceDefinition, INodeDefinition } from "baklavajs";
 
 import { AbstractCodeNode, CodeNode } from "./codeNode";
 import { BaseCode } from "../code/code";
@@ -31,8 +31,8 @@ export function defineCodeNode<I, O>(definition: ICodeNodeDefinition<I, O>): new
     constructor() {
       super();
       this._title = definition.title ?? definition.type;
-      if (definition.variableName) this.variableName = definition.variableName;
       if (definition.modules) this.modules = definition.modules;
+      if (definition.variableName) this.variableName = definition.variableName;
       this.executeFactory("input", definition.inputs);
       this.executeFactory("output", definition.outputs);
       definition.onCreate?.call(this);

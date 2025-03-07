@@ -27,6 +27,10 @@ export default defineDynamicCodeNode({
     if (params.length > 0) return `{\n\t${params.join(",\n\t")}\n}`;
     else return "";
   },
+  onCreate() {
+    this.twoColumn = true;
+    this.state.role = "network";
+  },
   onPlaced() {
     if (!this.code) return;
     this.networkItem = this.code.project.network.nodes.nodeItems[this.indexOfNodeType];

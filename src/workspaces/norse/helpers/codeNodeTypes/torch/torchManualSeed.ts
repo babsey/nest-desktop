@@ -1,13 +1,15 @@
 // torchManualSeed.ts
 
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
+import { IntegerInterface, setType } from "baklavajs";
+
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({
   type: "torch.manual_seed",
   title: "manual seed",
   inputs: {
-    seed: () => new NodeInputInterface("seed"),
+    seed: () => new IntegerInterface("seed", 1).use(setType, numberType),
   },
   onCreate() {
     this.state.position = "top";

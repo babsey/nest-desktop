@@ -18,7 +18,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  variableName: "randint",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -39,4 +38,8 @@ export default defineCodeNode({
 
     return `np.random.randint(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "randint",
 });

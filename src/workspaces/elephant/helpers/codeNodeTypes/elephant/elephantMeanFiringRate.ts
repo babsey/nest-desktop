@@ -6,13 +6,25 @@ import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInter
 
 export default defineCodeNode({
   type: "elephant.statistics.mean_firing_rate",
+  modules: ["quantities"],
   title: "mean firing rate",
   inputs: {
-    spiketrains: () => new NodeInputInterface("spiketrains"),
+    spiketrain: () => new NodeInputInterface("spiketrain"),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
   },
+  codeTemplate() {
+    if (!this.node) return this.type;
+    const args: string[] = [];
+
+    const spiketrain = this.node.getConnectedNodesByInterface("spiketrain");
+    if (spiketrain.length > 0) args.push(`${this.code?.graph.formatLabels(spiketrain).join(", ")}`);
+
+    return `elephant.statistics.mean_firing_rate(${args.join(", ")})`;
+  },
+  onCreate() {
+    this.twoColumn = true;
+  },
   variableName: "rate",
-  codeTemplate: () => "elephant.statistics.mean_firing_rate()",
 });

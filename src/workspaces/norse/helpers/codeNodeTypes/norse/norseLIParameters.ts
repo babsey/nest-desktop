@@ -1,9 +1,10 @@
 // norseLIParameters.ts
 
-import { NumberInterface } from "baklavajs";
+import { NumberInterface, setType } from "baklavajs";
 
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { liParametersType } from "./interfaceTypes";
 
 export default defineCodeNode({
   type: "norse.torch.LIParameters",
@@ -14,9 +15,8 @@ export default defineCodeNode({
     v_leak: () => new NumberInterface("v_leak", 0),
   },
   outputs: {
-    out: () => new NodeOutputInterface(),
+    out: () => new NodeOutputInterface().use(setType, liParametersType),
   },
-  variableName: "p",
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
@@ -29,4 +29,5 @@ export default defineCodeNode({
 
     return args.length > 0 ? `norse.torch.LIParameters(\n\t${args.join(",\n\t")}\n)` : "norse.torch.LIParameters()";
   },
+  variableName: "p",
 });

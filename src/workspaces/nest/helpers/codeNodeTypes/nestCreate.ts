@@ -12,7 +12,6 @@ import { INESTNodeCollection, nestNodeCollectionType } from "./interfaceTypes";
 export default defineDynamicCodeNode({
   type: "nest.Create",
   title: "create node",
-  variableName: "node",
   inputs: {
     model: () => new TextInputInterface("model", "iaf_psc_alpha").use(setType, stringType),
     size: () => new IntegerInterface("size", 1, 1).use(setType, numberType).use(displayInSidebar, true),
@@ -35,6 +34,10 @@ export default defineDynamicCodeNode({
 
     return `nest.Create(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+    this.state.role = "network";
+  },
   onPlaced() {
     if (!this.code) return;
     this.networkItem = this.code.project.network.nodes.nodeItems[this.indexOfNodeType];
@@ -45,12 +48,16 @@ export default defineDynamicCodeNode({
     const inputs: Record<string, () => NodeInterface> = {};
     const outputs: Record<string, () => NodeInterface> = {};
 
-    if (model.includes("recorder") || model.includes("meter"))
-      outputs["events"] = () => new NodeOutputInterface("events");
+    if (model.includes("recorder") || model.includes("meter")) {
+      outputs["events"] = () => new NodeOutputInterface("events", ".events");
+      outputs["times"] = () => new NodeOutputInterface("times", ".events['times']");
+      outputs["senders"] = () => new NodeOutputInterface("senders", ".events['senders']");
+    }
 
     const positions = this.node?.getConnectedNodesByInterface("positions") || [];
     if (positions.length > 0) outputs["positions"] = () => new NodeOutputInterface("positions");
 
     return { inputs, outputs };
   },
+  variableName: "node",
 });

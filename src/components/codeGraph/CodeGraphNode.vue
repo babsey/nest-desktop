@@ -87,8 +87,8 @@
       <!-- Outputs -->
       <div class="__outputs">
         <template v-for="output in displayedOutputs" :key="output.id">
-          <slot name="nodeInterface" type="output" :node="node" :intf="output">
-            <NodeInterface :node="node" :intf="output" :data-interface-type="output.type ?? ''" />
+          <slot name="nodeInterface" type="output" :node :intf="output">
+            <NodeInterface :node :intf="output" :data-interface-type="output.type ?? ''" />
           </slot>
         </template>
       </div>
@@ -96,8 +96,8 @@
       <!-- Inputs -->
       <div class="__inputs">
         <template v-for="input in displayedInputs" :key="input.id">
-          <slot name="nodeInterface" type="input" :node="node" :intf="input">
-            <NodeInterface :node="node" :intf="input" :data-interface-type="input.type ?? ''" />
+          <slot name="nodeInterface" type="input" :node :intf="input">
+            <NodeInterface :node :intf="input" :data-interface-type="input.type ?? ''" />
           </slot>
         </template>
       </div>

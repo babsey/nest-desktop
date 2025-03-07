@@ -17,6 +17,9 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "ir",
   codeTemplate: () => "elephant.statistics.instantaneous_rate()",
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "ir",
 });

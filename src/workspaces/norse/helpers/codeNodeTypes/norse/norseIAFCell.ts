@@ -9,6 +9,9 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "model",
   codeTemplate: () => "norse.torch.IAFCell()",
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "model",
 });

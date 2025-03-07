@@ -19,7 +19,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  variableName: "conv",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -36,4 +35,8 @@ export default defineCodeNode({
 
     return `np.convolve(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "conv",
 });

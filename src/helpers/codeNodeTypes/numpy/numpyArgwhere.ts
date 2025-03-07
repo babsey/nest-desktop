@@ -20,9 +20,12 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const a = this.node.getConnectedNodesByInterface("a");
-    if (a.length > 0 && this.code) args.push(this.code.graph.formatLabels(a).join(", "));
+    const a = this.node.getConnectedInterfaceByInterface("a") as NodeOutputInterface[];
+    if (a.length > 0 && this.code) args.push(this.code.graph.formatInterfaceLabels(a).join(", "));
 
     return `np.argwhere(${args.join(", ")})`;
+  },
+  onCreate() {
+    this.twoColumn = true;
   },
 });

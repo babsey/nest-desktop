@@ -37,6 +37,10 @@ export default defineDynamicCodeNode({
 
     return `nest.CopyModel(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+    this.state.role = "network";
+  },
   onPlaced() {
     if (!this.code) return;
     this.networkItem = this.code.project.network.modelsCopied.all[this.indexOfNodeType];

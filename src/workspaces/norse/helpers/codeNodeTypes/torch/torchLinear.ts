@@ -2,6 +2,7 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
+import { ITorchTensor, torchTensorType } from "./interfaceTypes";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
@@ -10,15 +11,23 @@ export default defineCodeNode({
   type: "torch.nn.Linear",
   title: "linear",
   inputs: {
-    in_feature: () => new IntegerInterface("in feature", 1).use(setType, numberType),
-    out_feature: () => new IntegerInterface("out feature", 1).use(setType, numberType),
+    in_features: () => new IntegerInterface("in features", 1).use(setType, numberType),
+    out_features: () => new IntegerInterface("out features", 1).use(setType, numberType),
   },
   outputs: {
-    out: () => new NodeOutputInterface(),
+    out: () => new NodeOutputInterface<ITorchTensor>().use(setType, torchTensorType),
   },
   variableName: "lin",
   codeTemplate() {
     if (!this.node) return this.type;
-    return `torch.nn.Linear(${this.node.inputs.in_feature.value}, ${this.node.inputs.out_feature.value})`;
+    const args: string[] = [];
+
+    const inFeatures = this.node.getConnectedNodesByInterface("in_features");
+    if (inFeatures.length > 0) args.push(`in_features=${this.code?.graph.formatLabels(inFeatures).join(", ")}`);
+
+    const outFeatures = this.node.getConnectedNodesByInterface("out_features");
+    if (outFeatures.length > 0) args.push(`out_features=${this.code?.graph.formatLabels(outFeatures).join(", ")}`);
+
+    return `torch.nn.Linear(${args.join(", ")})`;
   },
 });

@@ -13,7 +13,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "intervals",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -23,4 +22,9 @@ export default defineCodeNode({
 
     return `elephant.statistics.isi(${args.join(", ")})`;
   },
+
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "intervals",
 });

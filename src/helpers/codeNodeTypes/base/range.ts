@@ -36,4 +36,7 @@ export default defineCodeNode({
 
     return `range(${args.join(",")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
 });

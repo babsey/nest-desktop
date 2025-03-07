@@ -7,6 +7,7 @@ import { AbstractCodeNode } from "./codeNode";
 import { BaseCode } from "../code/code";
 import { BaseObj } from "../common/base";
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { NodeOutputInterface } from "./interface/nodeOutputInterface";
 
 interface ICodeGraphState {
   graph: IGraphState;
@@ -45,16 +46,24 @@ export class CodeGraph extends BaseObj {
   }
 
   get modules(): string[] {
-    const codeGraphStore = useCodeGraphStore();
-    const categories = Array.from(
+    let categories = Array.from(
       new Set(
         this.nodes
-          .filter((node: AbstractCodeNode) => node.type.includes("."))
-          .map((node: AbstractCodeNode) => node.type.split(".")[0]),
+          .filter((node: AbstractCodeNode) => node.module.length > 0)
+          .map((node: AbstractCodeNode) => node.module),
       ),
     );
+
+    this.nodes
+      .filter((node: AbstractCodeNode) => node.modules.length > 0)
+      .forEach((node: AbstractCodeNode) => {
+        categories = categories.concat(node.modules);
+      });
+
     categories.sort();
-    return categories.map((category: string) => codeGraphStore.state.modules[category]);
+
+    const codeGraphStore = useCodeGraphStore();
+    return Array.from(new Set(categories.map((category: string) => codeGraphStore.state.modules[category])));
   }
 
   get nodes(): AbstractCodeNode[] {
@@ -115,8 +124,23 @@ export class CodeGraph extends BaseObj {
     this.connections = [];
   }
 
+  formatInterfaceLabels(outputInterfaces: NodeOutputInterface[], sorted: boolean = true): string[] {
+    const labels: string[] = [];
+
+    outputInterfaces.forEach((outputInterface: NodeOutputInterface) => {
+      const node = outputInterface.node as AbstractCodeNode;
+      labels.push(node.state.integrated ? node.codeTemplate : outputInterface.label);
+    });
+
+    if (sorted) labels.sort();
+    return labels;
+  }
+
   formatLabels(nodes: AbstractCodeNode[], sorted: boolean = true): string[] {
-    const labels = nodes.map((node: AbstractCodeNode) => (node.state.integrated ? node.codeTemplate : node.label));
+    const labels: string[] = [];
+
+    nodes.forEach((node: AbstractCodeNode) => labels.push(node.state.integrated ? node.codeTemplate : node.label));
+
     if (sorted) labels.sort();
     return labels;
   }

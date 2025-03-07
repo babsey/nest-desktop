@@ -16,14 +16,17 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<IPandasDataFrame>().use(setType, dataframeType),
   },
-  variableName: "df",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const data = this.node.getConnectedNodesByInterface("data");
-    if (data.length > 0) args.push(`${this.code?.graph.formatLabels(data).join(", ")}`);
+    const data = this.node.getConnectedInterfaceByInterface("data") as NodeOutputInterface[];
+    if (data && data.length > 0) args.push(`${this.code?.graph.formatInterfaceLabels(data).join(", ")}`);
 
     return `pd.DataFrame(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "df",
 });

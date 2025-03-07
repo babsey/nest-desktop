@@ -22,6 +22,7 @@ import { addNumpyTypes } from "./interfaceTypes";
 export const registerNumpyNodeTypes = () => {
   const codeGraphStore = useCodeGraphStore();
   codeGraphStore.state.modules["numpy"] = "import numpy as np";
+  codeGraphStore.state.modules["numpy.random"] = "import numpy as np";
   addNumpyTypes(codeGraphStore.viewModel as IBaklavaViewModel);
 
   const editor = codeGraphStore.viewModel.editor;

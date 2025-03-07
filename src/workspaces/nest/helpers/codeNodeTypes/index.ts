@@ -23,6 +23,8 @@ import nestSpatialGrid from "./nestSpatialGrid";
 export const registerNESTNodeTypes = () => {
   const codeGraphStore = useCodeGraphStore();
   codeGraphStore.state.modules["nest"] = "import nest";
+  codeGraphStore.state.modules["nest.random"] = "import nest";
+  codeGraphStore.state.modules["nest.spatial"] = "import nest";
 
   const editor = codeGraphStore.viewModel.editor;
   editor.registerNodeType(nestConnect, { category: "nest" });

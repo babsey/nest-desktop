@@ -1,28 +1,26 @@
-// text.ts
-
-import { setType } from "baklavajs";
+// list.ts
 
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { numberType } from "./interfaceTypes";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 
 export default defineCodeNode({
   type: "list",
   title: "list",
   inputs: {
-    input: () => new NodeInputInterface(),
+    iterable: () => new NodeInputInterface("iterable"),
   },
   outputs: {
-    out: () => new NodeOutputInterface<number>().use(setType, numberType),
+    out: () => new NodeOutputInterface(),
   },
   variableName: "n",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const input = this.node.getConnectedNodesByInterface("input");
-    if (input.length > 0) args.push(`${this.code?.graph.formatLabels(input).join(", ")}`);
+    const iterable = this.node.getConnectedNodesByInterface("iterable");
+    if (iterable.length > 1) args.push(`(${this.code?.graph.formatLabels(iterable, false).join(", ")})`);
+    else if (iterable.length > 0) args.push(`${this.code?.graph.formatLabels(iterable, false).join(", ")}`);
 
     return `list(${args.join(", ")})`;
   },

@@ -1,26 +1,29 @@
-// text.ts
+// zip.ts
 
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 
 export default defineCodeNode({
-  type: "neo/spikeTimes",
-  title: "spike times",
+  type: "zip",
+  title: "zip",
   inputs: {
-    spiketrain: () => new NodeInputInterface("spiketrain"),
+    iterables: () => new NodeInputInterface(),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "times",
+  variableName: "z",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const spiketrain = this.node.getConnectedNodesByInterface("spiketrain");
-    if (spiketrain.length > 0) args.push(`${this.code?.graph.formatLabels(spiketrain).join(", ")}`);
+    const input = this.node.getConnectedNodesByInterface("iterables");
+    if (input.length > 0) args.push(`${this.code?.graph.formatLabels(input).join(", ")}`);
 
-    return `${args.join("+")}.times`;
+    return `zip(${args.join(", ")})`;
+  },
+  onCreate() {
+    this.twoColumn = true;
   },
 });

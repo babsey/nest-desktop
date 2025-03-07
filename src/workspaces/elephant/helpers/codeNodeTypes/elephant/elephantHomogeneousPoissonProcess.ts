@@ -8,6 +8,7 @@ import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 export default defineCodeNode({
   type: "elephant.spike_train_generation.homogeneous_poisson_process",
+  modules: ["quantities"],
   title: "homogeneous Poisson process",
   inputs: {
     rate: () => new IntegerInterface("rate", 10).use(setType, numberType),
@@ -16,8 +17,9 @@ export default defineCodeNode({
   },
   outputs: {
     out: () => new NodeOutputInterface(),
+    times: () => new NodeOutputInterface("times", ".times"),
+    size: () => new NodeOutputInterface("size", ".size"),
   },
-  variableName: "spiketrain",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -36,4 +38,9 @@ export default defineCodeNode({
 
     return `elephant.spike_train_generation.homogeneous_poisson_process(${args.join(", ")})`;
   },
+
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "spiketrain",
 });

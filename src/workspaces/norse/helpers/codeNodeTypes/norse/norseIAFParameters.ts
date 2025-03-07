@@ -1,22 +1,23 @@
 // norseLIFParameters.ts
 
-import { NumberInterface } from "baklavajs";
+import { NumberInterface, setType } from "baklavajs";
 
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { iafParametersType } from "./interfaceTypes";
 
 export default defineCodeNode({
   type: "norse.torch.IAFParameters",
   title: "IAF Parameters",
   inputs: {
-    v_th: () => new NumberInterface("v_th", 1),
-    v_reset: () => new NumberInterface("v_reset", 0),
-    alpha: () => new NumberInterface("alpha", 100),
+    v_th: () => new NumberInterface("v_th", 1).use(setType, numberType),
+    v_reset: () => new NumberInterface("v_reset", 0).use(setType, numberType),
+    alpha: () => new NumberInterface("alpha", 100).use(setType, numberType),
   },
   outputs: {
-    out: () => new NodeOutputInterface(),
+    out: () => new NodeOutputInterface().use(setType, iafParametersType),
   },
-  variableName: "p",
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
@@ -27,4 +28,5 @@ export default defineCodeNode({
 
     return args.length > 0 ? `norse.torch.IAFParameters(\n\t${args.join(",\n\t")}\n)` : "norse.torch.IAFParameters()";
   },
+  variableName: "p",
 });

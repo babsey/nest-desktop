@@ -1,22 +1,24 @@
 // norseLIF.ts
 
-import { CheckboxInterface } from "baklavajs";
+import { CheckboxInterface, setType } from "baklavajs";
 
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { lifParametersType } from "./interfaceTypes";
 
 export default defineCodeNode({
   type: "norse.torch.LIF",
   title: "LIF",
   inputs: {
-    p: () => new NodeInputInterface("p"),
-    record_states: () => new CheckboxInterface("record_states", false),
+    p: () => new NodeInputInterface("p").use(setType, lifParametersType),
+    record_states: () => new CheckboxInterface("record_states", false).setPort(false),
+    // input: () => new NodeInputInterface("input"),
+    // state: () => new NodeInputInterface("state"),
   },
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "model",
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
@@ -27,4 +29,8 @@ export default defineCodeNode({
 
     return `norse.torch.LIF(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "model",
 });

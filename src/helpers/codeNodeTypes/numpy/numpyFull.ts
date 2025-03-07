@@ -17,13 +17,12 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  variableName: "values",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const shape = this.node.getConnectedNodesByInterface("shape");
-    if (shape.length > 0) args.push(`shape=${this.code?.graph.formatLabels(shape).join(", ")}`);
+    const shape = this.node.getConnectedOutputInterfaceByInterface("shape");
+    if (shape.length > 0) args.push(`shape=${this.code?.graph.formatInterfaceLabels(shape).join(", ")}`);
     else args.push(`shape=${this.node.inputs.shape.value}`);
 
     const fill_value = this.node.getConnectedNodesByInterface("fill_value");
@@ -32,4 +31,8 @@ export default defineCodeNode({
 
     return `np.full(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "values",
 });

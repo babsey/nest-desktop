@@ -11,12 +11,11 @@ export default defineCodeNode({
   type: "len",
   title: "len",
   inputs: {
-    list: () => new NodeInputInterface(),
+    list: () => new NodeInputInterface("list"),
   },
   outputs: {
     out: () => new NodeOutputInterface<number>().use(setType, numberType),
   },
-  variableName: "n",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -26,4 +25,8 @@ export default defineCodeNode({
 
     return `len(${args.join("+")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "n",
 });

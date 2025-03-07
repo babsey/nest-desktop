@@ -13,6 +13,9 @@ import elephantTimeHistogram from "./elephantTimeHistogram";
 export const registerElephantNodeTypes = () => {
   const codeGraphStore = useCodeGraphStore();
   codeGraphStore.state.modules["elephant"] = "import elephant";
+  codeGraphStore.state.modules["elephant.spike_train_generation"] = "import elephant";
+  codeGraphStore.state.modules["elephant.statistics"] = "import elephant";
+
   codeGraphStore.state.modules["quantities"] = "import quantities as pq";
 
   const editor = codeGraphStore.viewModel.editor;

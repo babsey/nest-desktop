@@ -2,6 +2,7 @@
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
+import { ITorchTensor, torchTensorType } from "./interfaceTypes";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
@@ -16,7 +17,7 @@ export default defineCodeNode({
     y: () => new IntegerInterface("y", 1).use(setType, numberType).use(displayInSidebar, true),
   },
   outputs: {
-    out: () => new NodeOutputInterface(),
+    out: () => new NodeOutputInterface<ITorchTensor>().use(setType, torchTensorType),
   },
   codeTemplate() {
     if (!this.node) return this.type;

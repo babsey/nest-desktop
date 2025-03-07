@@ -65,7 +65,8 @@ export function defineDynamicCodeNode<I, O>(
     constructor() {
       super();
       this._title = definition.title ?? definition.type;
-      this.variableName = definition.variableName ?? "x";
+      if (definition.modules) this.modules = definition.modules;
+      if (definition.variableName) this.variableName = definition.variableName;
       this.executeFactory("input", definition.inputs);
       this.executeFactory("output", definition.outputs);
 

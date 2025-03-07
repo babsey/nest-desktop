@@ -6,7 +6,6 @@ import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInter
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Bar",
-  modules: ["plotly.graph_objects"],
   title: "Bar",
   inputs: {
     x: () => new NodeInputInterface("x"),

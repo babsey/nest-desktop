@@ -12,6 +12,11 @@ export default defineCodeNode({
   },
   outputs: {
     out: () => new NodeOutputInterface(),
+    times: () => new NodeOutputInterface("times", ".times"),
   },
   codeTemplate: () => "neo.core.SpikeTrain({{ inputs.times.value }})",
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "spiketrain",
 });

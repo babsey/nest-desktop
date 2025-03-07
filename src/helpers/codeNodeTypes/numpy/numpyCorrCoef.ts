@@ -16,7 +16,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  variableName: "corrcoef",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -26,4 +25,8 @@ export default defineCodeNode({
 
     return `np.corrcoef(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "corrcoef",
 });

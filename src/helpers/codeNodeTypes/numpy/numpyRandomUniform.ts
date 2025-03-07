@@ -18,7 +18,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<INumpyArray>().use(setType, arrayType),
   },
-  variableName: "uniform",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -40,4 +39,8 @@ export default defineCodeNode({
 
     return `np.random.uniform(${args.join(", ")})`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "uniform",
 });

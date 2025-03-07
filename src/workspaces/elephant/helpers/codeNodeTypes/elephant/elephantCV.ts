@@ -13,7 +13,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "variation",
   codeTemplate() {
     if (!this.node) return this.type;
     const args: string[] = [];
@@ -23,4 +22,9 @@ export default defineCodeNode({
 
     return `elephant.statistics.cv(${args.join(", ")})`;
   },
+
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "variation",
 });

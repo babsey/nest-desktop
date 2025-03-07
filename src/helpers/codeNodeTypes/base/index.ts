@@ -14,6 +14,7 @@ import modifyListElement from "./modifyListElement";
 import number from "./number";
 import range from "./range";
 import text from "./text";
+import zip from "./zip";
 import { addBaseTypes } from "./interfaceTypes";
 
 export const registerBaseNodeTypes = () => {
@@ -32,4 +33,5 @@ export const registerBaseNodeTypes = () => {
   editor.registerNodeType(number, { category: "base" });
   editor.registerNodeType(range, { category: "base" });
   editor.registerNodeType(text, { category: "base" });
+  editor.registerNodeType(zip, { category: "base" });
 };

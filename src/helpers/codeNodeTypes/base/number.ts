@@ -15,9 +15,12 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface<number>().use(setType, numberType),
   },
-  variableName: "n",
   codeTemplate() {
     if (!this.node) return "{{ inputs.number.value }}";
     return `${this.node.inputs.number.value}`;
   },
+  onCreate() {
+    this.twoColumn = true;
+  },
+  variableName: "n",
 });

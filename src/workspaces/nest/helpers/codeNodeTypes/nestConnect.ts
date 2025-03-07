@@ -34,8 +34,7 @@ export default defineDynamicCodeNode({
         "pairwise_bernoulli",
       ])
         .use(displayInSidebar, true)
-        .setHidden(true)
-        .setPort(false),
+        .setHidden(true),
     syn_spec: () => new TextInputInterface("syn_spec", "static_synapse").use(displayInSidebar, true).setHidden(true),
     model: () => new TextInputInterface("model", "static_synapse").use(displayInSidebar, true).setHidden(true),
     weight: () => new NumberInterface("syn_spec", 1).use(displayInSidebar, true).setHidden(true),
@@ -58,9 +57,13 @@ export default defineDynamicCodeNode({
 
     return `nest.Connect(${args.join(", ")})`;
   },
+  onCreate() {
+    this.state.role = "network";
+  },
   onPlaced() {
     if (!this.code) return;
     this.networkItem = this.code.project.network.connections.all[this.indexOfNodeType];
+    if (!this.networkItem) return;
     this.networkItem.codeNode = this;
   },
   onUpdate({ conn_spec }) {

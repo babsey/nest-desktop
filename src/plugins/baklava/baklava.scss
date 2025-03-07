@@ -23,6 +23,10 @@
   --baklava-node-interface-port-color: #f63;
 }
 
+.baklava-node-interface[data-interface-type="torchTensor"] {
+  --baklava-node-interface-port-color: #ee4c2c;
+}
+
 // .baklava-category,
 .baklava-node .__title {
   background-color: #4584b6 !important;

@@ -1,5 +1,8 @@
 // torchSin.ts
 
+import { setType } from "baklavajs";
+
+import { ITorchTensor, torchTensorType } from "./interfaceTypes";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
@@ -8,10 +11,10 @@ export default defineCodeNode({
   type: "torch.sin",
   title: "sinewave",
   inputs: {
-    input: () => new NodeInputInterface("input"),
+    input: () => new NodeInputInterface<ITorchTensor>("input").use(setType, torchTensorType),
   },
   outputs: {
-    out: () => new NodeOutputInterface(),
+    out: () => new NodeOutputInterface<ITorchTensor>().use(setType, torchTensorType),
   },
   variableName: "sin",
   codeTemplate() {

@@ -30,9 +30,12 @@ export default defineDynamicCodeNode({
 
     const nModules = this.inputs?.nModules.value ?? 1;
     for (let i = 0; i < nModules; i++) {
-      inputs["module" + i + 1] = () => new NodeInterface(`module ${i + 1}`, "");
+      inputs["module" + i + 1] = () => new NodeInterface(`module${i + 1}`, "");
     }
 
     return { inputs, outputs };
+  },
+  onCreate() {
+    this.twoColumn = true;
   },
 });

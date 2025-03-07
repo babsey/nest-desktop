@@ -8,7 +8,6 @@ import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInt
 
 export default defineCodeNode({
   type: "plotly.express.scatter",
-  modules: ["plotly.express"],
   title: "scatter",
   inputs: {
     data_frame: () => new NodeInputInterface("data_frame"),
@@ -33,7 +32,6 @@ export default defineCodeNode({
   outputs: {
     out: () => new NodeOutputInterface(),
   },
-  variableName: "fig",
   codeTemplate() {
     if (!this.node) return this.type;
     const args = [];
@@ -41,19 +39,19 @@ export default defineCodeNode({
     const data_frame = this.node.getConnectedNodesByInterface("data_frame");
     if (data_frame.length > 0) args.push(`${this.code?.graph.formatLabels(data_frame).join(", ")}`);
 
-    const x = this.node.getConnectedNodesByInterface("x");
-    if (x.length > 1) args.push(`x=[${this.code?.graph.formatLabels(x).join(", ")}]`);
-    else if (x.length > 0) args.push(`x=${this.code?.graph.formatLabels(x).join(", ")}`);
+    const x = this.node.getConnectedOutputInterfaceByInterface("x");
+    if (x.length > 1) args.push(`x=[${this.code?.graph.formatInterfaceLabels(x).join(", ")}]`);
+    else if (x.length > 0) args.push(`x=${this.code?.graph.formatInterfaceLabels(x).join(", ")}`);
     else if (this.node.inputs.x.value) args.push(`x="${this.node.inputs.x.value}"`);
 
-    const y = this.node.getConnectedNodesByInterface("y");
-    if (y.length > 1) args.push(`y=[${this.code?.graph.formatLabels(y).join(", ")}]`);
-    else if (y.length > 0) args.push(`y=${this.code?.graph.formatLabels(y).join(", ")}`);
+    const y = this.node.getConnectedOutputInterfaceByInterface("y");
+    if (y.length > 1) args.push(`y=[${this.code?.graph.formatInterfaceLabels(y).join(", ")}]`);
+    else if (y.length > 0) args.push(`y=${this.code?.graph.formatInterfaceLabels(y).join(", ")}`);
     else if (this.node.inputs.y.value) args.push(`y="${this.node.inputs.y.value}"`);
 
     if (this.node.inputs.color.value) args.push(`color="${this.node.inputs.color.value}"`);
     if (this.node.inputs.symbol.value) args.push(`symbol="${this.node.inputs.symbol.value}"`);
-    if (this.node.inputs.size.value) args.push(`symbol="${this.node.inputs.size.value}"`);
+    if (this.node.inputs.size.value) args.push(`size="${this.node.inputs.size.value}"`);
     if (this.node.inputs.marginal_x.value) args.push(`marginal_x="${this.node.inputs.marginal_x.value}"`);
     if (this.node.inputs.marginal_y.value) args.push(`marginal_y="${this.node.inputs.marginal_y.value}"`);
     if (this.node.inputs.log_x.value) args.push(`log_x=True`);
@@ -62,4 +60,5 @@ export default defineCodeNode({
 
     return args.length > 0 ? `px.scatter(\n\t${args.join(",\n\t")}\n)` : "px.scatter()";
   },
+  variableName: "fig",
 });
