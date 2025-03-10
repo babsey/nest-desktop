@@ -3,6 +3,7 @@
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 // import plotlyGraphObjectsBar from "./graph_objects/plotlyBar";
+import plotlyArea from "./express/plotlyArea";
 import plotlyBar from "./express/plotlyBar";
 import plotlyDataResponse from "./plotlyDataResponse";
 // import plotlyFigureAddTrace from "./plotlyFigureAddTrace";
@@ -25,6 +26,7 @@ export const registerPlotlyNodeTypes = () => {
   // codeGraphStore.state.modules["plotly.subplots"] = "import plotly.subplots as sp";
 
   const editor = codeGraphStore.viewModel.editor;
+  editor.registerNodeType(plotlyArea, { category: "plotly.express" });
   editor.registerNodeType(plotlyBar, { category: "plotly.express" });
   editor.registerNodeType(plotlyDataResponse, { category: "plotly" });
   // editor.registerNodeType(plotlyFigureAddTrace, { category: "plotly" });

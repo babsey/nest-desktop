@@ -284,10 +284,13 @@ export class NESTCode extends BaseCode {
     this.graph.clear();
     this.graph.subscribe();
 
-    this.addBaseCodeNodes();
-    this.addSimulationCodeNodes(projectProps.simulation as INESTSimulationProps);
-    this.addNetworkCodeNodes(projectProps.network as INESTNetworkProps);
-    this.sortNodes();
+    if (projectProps.network?.nodes?.length > 0) {
+      this.addBaseCodeNodes();
+      this.addSimulationCodeNodes(projectProps.simulation as INESTSimulationProps);
+      this.addNetworkCodeNodes(projectProps.network as INESTNetworkProps);
+      this.sortNodes();
+    }
+
 
     this.graph.onUpdate();
   }
