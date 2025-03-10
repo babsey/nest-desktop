@@ -9,7 +9,7 @@ export const getPlotlyArgs = (codeNode: ICodeNodeDefinition): string[] => {
   const x = codeNode.node.getConnectedOutputInterfaceByInterface("x");
   if (x.length > 1) args.push(`x=[${codeNode.code?.graph.formatInterfaceLabels(x).join(", ")}]`);
   else if (x.length > 0) args.push(`x=${codeNode.code?.graph.formatInterfaceLabels(x).join(", ")}`);
-  else if (codeNode.node.inputs.x.value) args.push(`x=${codeNode.node.inputs.x.value}`);
+  else if (codeNode.node.inputs.x.value) args.push(`x="${codeNode.node.inputs.x.value}"`);
 
   const y = codeNode.node.getConnectedOutputInterfaceByInterface("y");
   if (y.length > 1) args.push(`y=[${codeNode.code?.graph.formatInterfaceLabels(y).join(", ")}]`);
