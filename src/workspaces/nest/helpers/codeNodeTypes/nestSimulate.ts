@@ -13,7 +13,8 @@ export default defineCodeNode({
     time: () => new IntegerInterface("time", 1000).use(setType, numberType).use(displayInSidebar, true),
   },
   onCreate() {
-    this.state.position = "bottom";
+    this.state.comments = "Run simulation";
+    this.state.role = "simulate";
   },
   onPlaced() {
     if (!this.code) return;

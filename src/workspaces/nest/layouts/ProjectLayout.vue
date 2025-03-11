@@ -32,9 +32,10 @@
                 :to="{
                   name: 'nestGraphEditor',
                   params: { projectId: projectStore.state.projectId },
+                  query: { graphView: 'code' },
                 }"
-                @click.="() => (projectViewStore.state.views.graph = 'code')"
                 prepend-icon="graph:flowchart"
+                key="code"
               >
                 code (beta)
               </v-list-item>
@@ -43,9 +44,9 @@
                 :to="{
                   name: 'nestGraphEditor',
                   params: { projectId: projectStore.state.projectId },
+                  query: { graphView: 'network' },
                 }"
                 exact
-                @click="() => (projectViewStore.state.views.graph = 'network')"
               >
                 <template #prepend>
                   <v-icon icon="graph:network" />
@@ -95,8 +96,8 @@
                 :to="{
                   name: 'nestActivityExplorer',
                   params: { projectId: projectStore.state.projectId },
+                  query: { activityView: 'abstract' },
                 }"
-                @click="() => (projectViewStore.state.views.activity = 'abstract')"
               >
                 <template #prepend>
                   <v-icon class="mdi-flip-v" icon="mdi:mdi-border-style" />
@@ -108,9 +109,9 @@
                 :to="{
                   name: 'nestActivityExplorer',
                   params: { projectId: projectStore.state.projectId },
+                  query: { activityView: 'spatial' },
                 }"
                 prepend-icon="mdi:mdi-axis-arrow"
-                @click="() => (projectViewStore.state.views.activity = 'spatial')"
               >
                 spatial
               </v-list-item>
@@ -249,7 +250,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 import ActivityChartController from "@/components/activityChart/ActivityChartController.vue";
 import ConnectionEditor from "@/components/connection/ConnectionEditor.vue";
@@ -276,7 +277,7 @@ import { NESTNodeSpatial } from "../helpers/node/nodeSpatial/nodeSpatial";
 import { NESTProject, NESTSynapse } from "../types";
 import { openNESTModuleDialog } from "../stores/moduleStore";
 
-import { useRoute, useRouter } from "vue-router";
+import { RouteLocationNormalizedLoaded, useRoute, useRouter } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 
@@ -314,7 +315,31 @@ const getPopItems = (node: NESTNode) => [
   },
 ];
 
+const setActivityView = (route: RouteLocationNormalizedLoaded) => {
+  if (route.query?.activityView) {
+    projectViewStore.value.state.views.activity = route.query.activityView;
+  }
+};
+
+const setGraphView = (route: RouteLocationNormalizedLoaded) => {
+  if (route.query?.graphView) {
+    projectViewStore.value.state.views.graph = route.query.graphView;
+  }
+};
+
 onMounted(() => {
   mountProjectLayout({ route, router });
+  setActivityView(route);
+  setGraphView(route);
 });
+
+watch(
+  () => route.query?.activityView,
+  () => setActivityView(route),
+);
+
+watch(
+  () => route.query?.graphView,
+  () => setGraphView(route),
+);
 </script>

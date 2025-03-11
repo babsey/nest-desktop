@@ -32,8 +32,8 @@
                 :to="{
                   name: 'norseGraphEditor',
                   params: { projectId: projectStore.state.projectId },
+                  query: { graphView: 'code' },
                 }"
-                @click.="() => (projectViewStore.state.views.graph = 'code')"
                 prepend-icon="graph:flowchart"
               >
                 code (beta)
@@ -43,9 +43,9 @@
                 :to="{
                   name: 'norseGraphEditor',
                   params: { projectId: projectStore.state.projectId },
+                  query: { graphView: 'network' },
                 }"
                 exact
-                @click="() => (projectViewStore.state.views.graph = 'network')"
               >
                 <template #prepend>
                   <v-icon icon="graph:network" />
@@ -67,14 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 
 import ProjectBar from "@/components/project/ProjectBar.vue";
 import ProjectController from "@/components/project/ProjectController.vue";
 import ProjectNav from "@/components/project/ProjectNav.vue";
 import { mountProjectLayout } from "@/helpers/routes";
 
-import { useRoute, useRouter } from "vue-router";
+import { RouteLocationNormalizedLoaded, useRoute, useRouter } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 
@@ -86,5 +86,16 @@ const projectStore = useNorseProjectStore();
 
 const projectViewStore = computed(() => appStore.currentWorkspace.views.project);
 
+const setGraphView = (route: RouteLocationNormalizedLoaded) => {
+  if (route.query?.graphView) {
+    projectViewStore.value.state.views.graph = route.query.graphView;
+  }
+};
+
 onMounted(() => mountProjectLayout({ route, router }));
+
+watch(
+  () => route.query?.graphView,
+  () => setGraphView(route),
+);
 </script>

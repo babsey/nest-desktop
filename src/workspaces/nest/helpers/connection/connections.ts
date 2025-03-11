@@ -4,6 +4,7 @@ import { BaseConnections } from "@/helpers/connection/connections";
 
 import { INESTConnectionProps, NESTConnection } from "./connection";
 import { NESTNetwork } from "../network/network";
+import { NESTCode } from "../code/code";
 
 export class NESTConnections extends BaseConnections {
   constructor(network: NESTNetwork, connectionsProps: INESTConnectionProps[] = []) {
@@ -37,18 +38,29 @@ export class NESTConnections extends BaseConnections {
   }
 
   /**
-   * Add connection component to the network.
-   * @param connectionProps connection props
-   * @returns connection object
+   * Add code nodes.
+   * @param connection connection component.
+   *
    */
-  override addConnection(connectionProps: INESTConnectionProps): NESTConnection {
-    this.logger.trace("add");
-
-    const connection: NESTConnection = new this.Connection(this, connectionProps);
-    connection.updateHash();
-    this.connections.push(connection);
-    return connection;
+  override addCodeNodes(connection: NESTConnection): void {
+    const code = this.network.project.code as NESTCode;
+    connection.codeNode = code.addConnectNodes(connection as NESTConnection);
   }
+
+  // /**
+  //  * Add connection component to the network.
+  //  * @param connectionProps connection props
+  //  * @returns connection object
+  //  */
+  // override addConnection(connectionProps: INESTConnectionProps): NESTConnection {
+  //   this.logger.trace("add");
+
+  //   const connection: NESTConnection = new this.Connection(this, connectionProps);
+  //   this.connections.push(connection);
+
+  //   this.clean();
+  //   return connection;
+  // }
 
   /**
    * Clean nodes and connection components.
@@ -64,6 +76,11 @@ export class NESTConnections extends BaseConnections {
     });
   }
 
+  /**
+   * Get connection by synapse model id.
+   * @param modelId string
+   * @returns connection component.
+   */
   getBySynapseModelId(modelId: string): NESTConnection | undefined {
     return this.all.find((connection: NESTConnection) => connection.synapse.modelId === modelId);
   }

@@ -257,7 +257,7 @@ export class BaseNetwork extends BaseObj {
    * @param elementType string
    * @returns a list of models
    */
-  getModelsByElementType(elementType: string): TModel[] {
+  getModelsByElementType(elementType: string): (TModel | unknown)[] {
     return this.project.modelDBStore.getModelsByElementType(elementType);
   }
 

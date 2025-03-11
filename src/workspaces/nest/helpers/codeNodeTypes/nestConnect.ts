@@ -35,9 +35,9 @@ export default defineDynamicCodeNode({
       ])
         .use(displayInSidebar, true)
         .setHidden(true),
-    syn_spec: () => new TextInputInterface("syn_spec", "static_synapse").use(displayInSidebar, true).setHidden(true),
+    syn_spec: () => new TextInputInterface("syn_spec", "static_synapse").use(displayInSidebar, true),
     model: () => new TextInputInterface("model", "static_synapse").use(displayInSidebar, true).setHidden(true),
-    weight: () => new NumberInterface("syn_spec", 1).use(displayInSidebar, true).setHidden(true),
+    weight: () => new NumberInterface("weight", 1).use(displayInSidebar, true).setHidden(true),
   },
   codeTemplate() {
     if (!this.node) return this.type;
@@ -58,7 +58,7 @@ export default defineDynamicCodeNode({
     return `nest.Connect(${args.join(", ")})`;
   },
   onCreate() {
-    this.state.role = "network";
+    this.state.role = "connectNodes";
   },
   onPlaced() {
     if (!this.code) return;

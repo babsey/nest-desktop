@@ -174,6 +174,15 @@ export class BaseNodes extends BaseObj {
   // }
 
   /**
+   * Add code nodes.
+   * @param node node component.
+   *
+   */
+  addCodeNodes(node: TNode | TNodeGroup): void {
+    node;
+  }
+
+  /**
    * Add node component.
    * @param nodeProps node props
    */

@@ -31,7 +31,7 @@ export interface INodeProps {
 export class BaseNode extends BaseObj {
   private _activity?: NodeSpikeActivity | NodeAnalogSignalActivity | NodeActivity | undefined;
   private _annotations: string[] = [];
-  private _codeNode: AbstractCodeNode;
+  private _codeNodes: Record<string, AbstractCodeNode> = {};
   private _props: INodeProps; // raw data of props
   private _params: Record<string, NodeParameter> = {};
   private _paramsVisible: string[] = [];
@@ -68,12 +68,12 @@ export class BaseNode extends BaseObj {
     return this._annotations;
   }
 
-  get codeNode(): AbstractCodeNode {
-    return this._codeNode;
+  get codeNodes(): Record<string, AbstractCodeNode> {
+    return this._codeNodes;
   }
 
-  set codeNode(value: AbstractCodeNode) {
-    this._codeNode = value;
+  set codeNodes(value: Record<string, AbstractCodeNode>) {
+    this._codeNodes = value;
   }
 
   get connectedNodes(): TNode[] {
@@ -703,35 +703,8 @@ export class BaseNode extends BaseObj {
    */
   update(): void {
     this.clean();
-    this.updateCodeNode();
+    this.updateCodeNodes();
     this.updateHash();
-  }
-
-  /**
-   * Update code node.
-   */
-  updateCodeNode(): void {
-    if (!this.codeNode) return;
-    this.codeNode.inputs.model.value = this.modelId;
-    this.codeNode.inputs.size.value = this.size;
-    this.paramsVisible.forEach((paramKey: string) => {
-      if (this.codeNode.inputs[paramKey]) {
-        this.codeNode.inputs[paramKey].value = this.params[paramKey].value;
-      }
-    });
-  }
-
-  /**
-   * Update hash.
-   */
-  updateHash(): void {
-    this._updateHash({
-      idx: this.idx,
-      model: this._modelId,
-      params: this.paramsAll.map((param: NodeParameter) => param.toJSON()),
-      recordables: this._recordables.map((recordable: NodeRecord) => recordable.uuid),
-      size: this._size,
-    });
   }
 
   /**
@@ -744,6 +717,24 @@ export class BaseNode extends BaseObj {
 
     this.updateRecordables();
     this.updateRecords();
+  }
+
+  /**
+   * Update code node.
+   */
+  updateCodeNodes(): void {}
+
+  /**
+   * Update hash.
+   */
+  updateHash(): void {
+    this._updateHash({
+      idx: this.idx,
+      model: this._modelId,
+      params: this.paramsAll.map((param: NodeParameter) => param.toJSON()),
+      recordables: this._recordables.map((recordable: NodeRecord) => recordable.uuid),
+      size: this._size,
+    });
   }
 
   /**

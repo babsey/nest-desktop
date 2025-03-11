@@ -380,15 +380,15 @@ export class BaseConnection extends BaseObj {
    */
   update(): void {
     this.clean();
-    this.updateCodeNode();
+    this.updateCodeNodes();
     this.updateHash();
   }
 
   /**
-   * Update code node.
+   * Update code nodes.
    */
-  updateCodeNode(): void {
-    if (!this.codeNode) return;
+  updateCodeNodes(): void {
+    if (!this.codeNode) this.connections.addCodeNodes(this);
 
     this.codeNode.inputs.source.value = this.sourceIdx;
     this.codeNode.inputs.target.value = this.targetIdx;

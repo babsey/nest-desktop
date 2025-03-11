@@ -36,13 +36,19 @@ export default defineDynamicCodeNode({
   },
   onCreate() {
     this.twoColumn = true;
-    this.state.role = "network";
+    this.state.role = "createNode";
   },
   onPlaced() {
     if (!this.code) return;
-    this.networkItem = this.code.project.network.nodes.nodeItems[this.indexOfNodeType];
-    if (!this.networkItem) return;
-    this.networkItem.codeNode = this;
+    const nodeItems = this.code.project.network.nodes.nodeItems;
+    this.networkItem = nodeItems[this.indexOfNodeType];
+    if (!this.networkItem) {
+      this.networkItem = this.code.project.network.nodes.addNode({ model: this.inputs.model.value });
+      this.networkItem.codeNodes.node = this;
+      this.networkItem.init();
+      this.variableName = this.networkItem.model.isNeuron ? "n" : this.networkItem.model.abbreviation;
+      this.code.project.network.changes({ prevenSimulation: true });
+    }
   },
   onUpdate({ model }) {
     const inputs: Record<string, () => NodeInterface> = {};

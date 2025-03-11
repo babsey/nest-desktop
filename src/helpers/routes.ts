@@ -171,6 +171,7 @@ export const projectBeforeEnter = (to: TProjectRoute): void => {
 
   const appStore = useAppStore();
   const projectViewStore = appStore.currentWorkspace.views.project;
+
   const path = to.path.split("/");
   projectViewStore.state.views.main = path[path.length - 1] || "edit";
 

@@ -6,7 +6,7 @@ export default defineCodeNode({
   type: "nest.ResetKernel",
   title: "reset kernel",
   onCreate() {
-    this.state.position = "top";
+    this.state.role = "resetKernel";
   },
   codeTemplate: () => "nest.ResetKernel()",
 });

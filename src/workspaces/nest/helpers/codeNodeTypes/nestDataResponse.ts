@@ -12,7 +12,7 @@ export default defineCodeNode({
     positions: () => new NodeInputInterface("positions"),
   },
   onCreate() {
-    this.state.position = "bottom";
+    this.state.role = "nestDataResponse";
   },
   codeTemplate() {
     if (!this.node) return "";

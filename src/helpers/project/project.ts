@@ -171,6 +171,8 @@ export class BaseProject extends BaseObj {
 
     this.activities.checkRecorders();
 
+    this.code.changes();
+
     this.generateCode();
 
     // It resets panels of activity chart graph.
@@ -186,6 +188,7 @@ export class BaseProject extends BaseObj {
   clean(): void {
     this.logger.trace("clean");
 
+    this.code.clean();
     this.updateHash();
 
     this._state.checkChanges();

@@ -18,15 +18,30 @@ import nestResetKernel from "../codeNodeTypes/nestResetKernel";
 import nestSetKernelStatus from "../codeNodeTypes/nestSetKernelStatus";
 import nestSimulate from "../codeNodeTypes/nestSimulate";
 import nestSpatialFree from "../codeNodeTypes/nestSpatialFree";
-import { INESTConnectionProps } from "../connection/connection";
+import { INESTConnectionProps, NESTConnection } from "../connection/connection";
 import { INESTNetworkProps } from "../network/network";
-import { INESTNodeProps } from "../node/node";
+import { INESTNodeProps, NESTNode } from "../node/node";
 import { INESTSimulationProps } from "../simulation/simulation";
 import { NESTProject } from "../project/project";
 import { INESTCopyModelProps } from "../model/copyModel";
 import nestCopyModel from "../codeNodeTypes/nestCopyModel";
 import { IntegerInterface, NodeInterface, NumberInterface, TextInputInterface } from "baklavajs";
 import nestParameters from "../codeNodeTypes/nestParameters";
+
+const roles = [
+  "resetKernel",
+  "installModule",
+  "setKernelStatus",
+  "copyNodeModel",
+  "nodeParams",
+  "nodePos",
+  "createNode",
+  "copySynapseModel",
+  "connectNodes",
+  "simulate",
+  "getPos",
+  "nestDataResponse",
+];
 
 export class NESTCode extends BaseCode {
   constructor(project: NESTProject) {
@@ -53,19 +68,65 @@ export class NESTCode extends BaseCode {
    */
   addBaseCodeNodes(): void {
     this.logger.trace("add base code nodes");
-    let codeNode: AbstractCodeNode;
 
     this.graph.unsubscribe();
 
     // nest.ResetKernel
-    codeNode = this.graph.addNodeAtColumn(nestResetKernel, 0, 100);
-    codeNode.state.role = "first";
+    this.graph.addNodeAtColumn(nestResetKernel, 0, 100);
 
     // response of nest data
-    codeNode = this.graph.addNodeAtColumn(nestDataResponse, 3, 600);
-    codeNode.state.role = "last";
+    this.graph.addNodeAtColumn(nestDataResponse, 4, 100);
 
     this.graph.subscribe();
+  }
+
+  /**
+   * Add connect nodes.
+   * @param connection connnection component
+   */
+  addConnectNodes(connection: NESTConnection): AbstractCodeNode {
+    const nodes = this.graph.nodes.filter((node) => node.state.role === "createNode");
+    const idx = connection.idx;
+
+    const codeNode = this.graph.addNodeAtColumn(nestConnect, 3, 100 + 200 * idx);
+    if (idx === 0) codeNode.state.comments = "Connect nodes";
+    if (connection.synapse) {
+      if (connection.synapse.model) codeNode.inputs.model.value = connection.synapse.modelId;
+      // connection.synapse.params?.forEach((param: IParamProps) => (codeNode.inputs.weight.value = param.value));
+    }
+
+    this.graph.addConnection(codeNode.inputs.pre, nodes[connection.sourceIdx].outputs.out);
+    this.graph.addConnection(nodes[connection.targetIdx].outputs.out, codeNode.inputs.post);
+
+    return codeNode;
+  }
+
+  /**
+   * Add create node.
+   * @param node node component
+   */
+  addCreateNode(node: NESTNode): AbstractCodeNode {
+    const nodes = this.graph.nodes.filter((node) => node.state.role === "createNode");
+    const idx = nodes.length;
+
+    const codeNode = this.graph.addNodeAtColumn(nestCreate, 2, 100 + 290 * idx);
+    codeNode.variableName = node.model.isNeuron ? "n" : node.model.abbreviation;
+    codeNode.networkItem = node;
+    if (idx === 0) codeNode.state.comments = "Create nodes";
+
+    return codeNode;
+  }
+
+  addNodeParams(node: NESTNode): AbstractCodeNode {
+    const nodes = this.graph.nodes.filter((node) => node.state.role === "nodeParams");
+    const idx = nodes.length;
+
+    const paramsNode = this.graph.addNodeAtColumn(nestParameters, 1, 100 + 260 * idx);
+    paramsNode.state.role = "nodeParams";
+    paramsNode.networkItem = node;
+    paramsNode.state.integrated = true;
+
+    return paramsNode;
   }
 
   /**
@@ -89,7 +150,7 @@ export class NESTCode extends BaseCode {
         .forEach((model: INESTCopyModelProps) => {
           // nest.CopyModel
           codeNode = this.graph.addNodeAtColumn(nestCopyModel, 1, 100);
-          codeNode.state.role = "network";
+          codeNode.state.role = "copyNodeModel";
           codeNode.inputs.existing.value = model.existing;
           codeNode.inputs.new.value = model.new;
           model.params?.forEach((param) => {
@@ -107,7 +168,7 @@ export class NESTCode extends BaseCode {
         // params
         if (nodeProps.params) {
           paramsNode = this.graph.addNodeAtColumn(nestParameters, 1, 100 + 260 * idx);
-          paramsNode.state.role = "network";
+          paramsNode.state.role = "nodeParams";
           paramsNode.state.integrated = true;
 
           nodeProps.params?.forEach((param) => {
@@ -125,19 +186,18 @@ export class NESTCode extends BaseCode {
         let posNode: AbstractCodeNode;
         if (nodeProps.spatial) {
           const randNode = this.graph.addNodeAtColumn(nestRandomUniform, 0, 900);
-          randNode.state.role = "network";
+          randNode.state.role = "nodePos";
           randNode.state.integrated = true;
           randNode.inputs.min.value = -0.5;
           randNode.inputs.max.value = 0.5;
           posNode = this.graph.addNodeAtColumn(nestSpatialFree, 1, 900);
-          posNode.state.role = "network";
+          posNode.state.role = "node";
           posNode.state.integrated = true;
           this.graph.addConnection(randNode.outputs.out, posNode.inputs.pos);
         }
 
         // nest.Create
         codeNode = this.graph.addNodeAtColumn(nestCreate, 2, 100 + 290 * idx);
-        codeNode.state.role = "network";
         if (idx === 0) codeNode.state.comments = "Create nodes";
         // codeNode.variableName = nodeProps.model as string;
         codeNode.inputs.model.value = nodeProps.model;
@@ -169,7 +229,7 @@ export class NESTCode extends BaseCode {
         .forEach((model: INESTCopyModelProps, idx: number) => {
           // nest.CopyModel
           codeNode = this.graph.addNodeAtColumn(nestCopyModel, 3, 1500 + idx * 600);
-          codeNode.state.role = "network";
+          codeNode.state.role = "copySynapseModel";
           codeNode.inputs.existing.value = model.existing;
           codeNode.inputs.new.value = model.new;
           model.params?.forEach((param) => {
@@ -200,7 +260,6 @@ export class NESTCode extends BaseCode {
       networkProps.connections.forEach((connection: INESTConnectionProps, idx: number) => {
         // nest.Connect
         codeNode = this.graph.addNodeAtColumn(nestConnect, 3, 100 + 200 * idx);
-        codeNode.state.role = "network";
         if (idx === 0) codeNode.state.comments = "Connect nodes";
         if (connection.synapse) {
           if (connection.synapse.model) codeNode.inputs.model.value = connection.synapse.model;
@@ -214,7 +273,7 @@ export class NESTCode extends BaseCode {
     // define function getPos
     if (spatialNodes.length > 0) {
       const posNode = this.graph.addNodeAtColumn(functionNode, 3, 800);
-      posNode.state.role = "network";
+      posNode.state.role = "getPos";
       // posNode.inputs.code.value = "def getPos(n): return dict(zip(n.global_id, nest.GetPosition(n)))";
       posNode.inputs.code.value = "getPos = lambda n: dict(zip(n.global_id, nest.GetPosition(n)))";
     }
@@ -238,7 +297,6 @@ export class NESTCode extends BaseCode {
     }
 
     this.graph.subscribe();
-    window.graph = this.graph;
   }
 
   /**
@@ -251,15 +309,14 @@ export class NESTCode extends BaseCode {
     this.graph.unsubscribe();
 
     if (simulationProps?.modules) {
-      // nest.Install
-      codeNode = this.graph.addNodeAtColumn(nestInstall, 0, 200);
-      codeNode.state.role = "before";
+      simulationProps.modules.forEach((module) => {
+        // nest.Install
+        codeNode = this.graph.addNodeAtColumn(nestInstall, 0, 200);
+      });
     }
 
     // nest.SetKernelStatus
     codeNode = this.graph.addNodeAtColumn(nestSetKernelStatus, 0, 350);
-    codeNode.state.role = "before";
-    codeNode.state.comments = "Set simulation kernel";
     if (simulationProps?.kernel) {
       codeNode.inputs.local_num_threads.value = simulationProps.kernel.localNumThreads;
       codeNode.inputs.resolution.value = simulationProps.kernel.resolution;
@@ -268,59 +325,56 @@ export class NESTCode extends BaseCode {
 
     // nest.Simulate
     codeNode = this.graph.addNodeAtColumn(nestSimulate, 0, 450);
-    codeNode.state.role = "after";
-    codeNode.state.comments = "Run simulation";
     codeNode.inputs.time.value = simulationProps?.time ?? 1000;
 
     this.graph.subscribe();
   }
 
-  override initGraph(): void {
-    this.logger.trace("init graph");
+  /**
+   * Initialize code component.
+   * @remarks It generates code.
+   */
+  override init(): void {
+    this.logger.trace("init");
+
+    this.initGraph();
+    this.loadNodes();
+    this.generate();
+  }
+
+  /**
+   * Load nodes
+   */
+  loadNodes(): void {
+    this.logger.trace("load nodes");
+
     const projectProps = this.project.toJSON();
-
-    this.graph.unsubscribe();
-    this.graph.init();
-    this.graph.clear();
-    this.graph.subscribe();
-
     if (projectProps.network?.nodes?.length > 0) {
       this.addBaseCodeNodes();
       this.addSimulationCodeNodes(projectProps.simulation as INESTSimulationProps);
-      this.addNetworkCodeNodes(projectProps.network as INESTNetworkProps);
+      // this.addNetworkCodeNodes(projectProps.network as INESTNetworkProps);
       this.sortNodes();
     }
 
-
     this.graph.onUpdate();
   }
 
-  clearNetworkCodeNodes(): void {
-    this.graph.unsubscribe();
-    this.graph.nodes
-      .filter((node) => node.state.role === "network")
-      .forEach((node) => this.graph.graph.removeNode(node));
-    this.graph.subscribe();
-  }
-
+  /**
+   * sort nodes by roles.
+   */
   sortNodes(): void {
-    this.graph.unsubscribe();
-    const nodes: Record<string, AbstractCodeNode[]> = { first: [], before: [], network: [], after: [], last: [] };
-    this.graph.nodes.forEach((node) => nodes[node.state.role].push(node));
-    this.graph.nodes = [...nodes.first, ...nodes.before, ...nodes.network, ...nodes.after, ...nodes.last];
-    this.graph.subscribe();
+    this._sortNodes(roles);
   }
 
-  updateNetworkCodeNodes(): void {
-    this.logger.trace("init graph");
-    const projectProps = this.project.toJSON();
+  updateNodeParams(node: NESTNode): void {
+    if (!node.codeNodes.param) return;
+    const paramsNode = node.codeNodes.param;
 
-    this.clearNetworkCodeNodes();
-    this.addNetworkCodeNodes(projectProps.network as INESTNetworkProps);
-    this.sortNodes();
-
-    this.graph.onUpdate();
-    this.graph.save();
+    node.filteredParams
+      .filter((param) => param.id in paramsNode.inputs)
+      .forEach((param) => {
+        paramsNode.inputs[param.id].value = param.value;
+      });
   }
 
   // /**

@@ -12,6 +12,7 @@ import { TProject } from "@/types";
 import { BaseObj } from "../common/base";
 import { CodeGraph } from "../codeGraph/codeGraph";
 import { download } from "../../utils/download";
+import { AbstractCodeNode } from "../codeGraph/codeNode";
 
 export interface IResponseProps {
   data: object | string;
@@ -89,6 +90,17 @@ export class BaseCode extends BaseObj {
    */
   clean(): void {
     this.logger.trace("clean");
+
+    this.sortNodes();
+    this.graph.onUpdate();
+    this.graph.save();
+  }
+
+  /**
+   * Triggers on changes.
+   */
+  changes(): void {
+    this.clean();
   }
 
   /**
@@ -187,11 +199,15 @@ export class BaseCode extends BaseObj {
     this.generate();
   }
 
+  /**
+   * Initialize code node graph.
+   */
   initGraph(): void {
     this.logger.trace("init graph");
 
     this.graph.unsubscribe();
     this.graph.init();
+    this.graph.clear();
     this.graph.subscribe();
   }
 
@@ -206,6 +222,9 @@ export class BaseCode extends BaseObj {
     });
   }
 
+  /**
+   * Render code.
+   */
   renderCode(): void {
     this.script = Mustache.render(this.state.template || "", this.graph);
   }
@@ -218,6 +237,26 @@ export class BaseCode extends BaseObj {
       lineNumber: -1,
       message: "",
     };
+  }
+
+  /**
+   * Sort code nodes.
+   */
+  sortNodes(): void {}
+
+  /**
+   * Sort code nodes by roles.
+   */
+  _sortNodes(roles: string[]): void {
+    this.graph.unsubscribe();
+    const nodes: Record<string, AbstractCodeNode[]> = {};
+    roles.forEach((role) => (nodes[role] = []));
+
+    this.graph.nodes.forEach((node) => (node.state.role in nodes ? nodes[node.state.role].push(node) : ""));
+
+    const nodesOrdered = roles.filter((role) => nodes[role].length > 0).map((role) => nodes[role]);
+    this.graph.nodes = nodesOrdered.flat();
+    this.graph.subscribe();
   }
 
   /**

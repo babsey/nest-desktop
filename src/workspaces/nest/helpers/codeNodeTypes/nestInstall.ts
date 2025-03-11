@@ -13,7 +13,7 @@ export default defineCodeNode({
       new TextInputInterface("module name", "nestmlmodule").use(setType, stringType).use(displayInSidebar, true),
   },
   onCreate() {
-    this.state.position = "top";
+    this.state.role = "installModule";
   },
   codeTemplate() {
     if (!this.node) return this.type;

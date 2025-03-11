@@ -109,7 +109,7 @@ export class NetworkProject extends BaseProject {
 
     this.activities.checkRecorders();
 
-    // this.initCode();
+    this.code.changes();
 
     this.networkRevision.commit();
 
@@ -152,6 +152,9 @@ export class NetworkProject extends BaseProject {
   override init(): void {
     this.logger.trace("init");
 
+    // Initialize code.
+    this.code.init();
+
     // Initialize network.
     this.network.init();
 
@@ -160,9 +163,6 @@ export class NetworkProject extends BaseProject {
 
     // Initialize simulation.
     this.simulation.init();
-
-    // Initialize code.
-    this.code.init();
 
     // Initialize activities.
     this.activities.init();

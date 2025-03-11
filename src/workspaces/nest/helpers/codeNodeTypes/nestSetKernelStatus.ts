@@ -15,7 +15,8 @@ export default defineCodeNode({
     rng_seed: () => new IntegerInterface("RNG Seed", 1, 1).use(displayInSidebar, true).setHidden(true),
   },
   onCreate() {
-    this.state.position = "top";
+    this.state.comments = "Set simulation kernel";
+    this.state.role = "setKernelStatus";
   },
   onPlaced() {
     if (!this.code) return;
