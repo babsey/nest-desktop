@@ -44,7 +44,7 @@ export class NESTConnections extends BaseConnections {
    */
   override addCodeNodes(connection: NESTConnection): void {
     const code = this.network.project.code as NESTCode;
-    connection.codeNode = code.addConnectNodes(connection as NESTConnection);
+    connection.codeNodes.node = code.addConnectNodes(connection as NESTConnection);
   }
 
   // /**

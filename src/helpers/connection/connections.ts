@@ -138,6 +138,8 @@ export class BaseConnections extends BaseObj {
 
     this.resetState();
 
+    connection.removeCodeNodes();
+
     // Remove connection from the connection list.
     this._connections.splice(connection.idx, 1);
 
@@ -150,6 +152,10 @@ export class BaseConnections extends BaseObj {
    */
   removeByNode(node: TNode | TNodeGroup): void {
     this.resetState();
+
+    this.connections
+      .filter((connection: TConnection) => connection.source === node || connection.target == node)
+      .forEach((connection: TConnection) => connection.removeCodeNodes());
 
     this._connections = this.connections.filter(
       (connection: TConnection) => connection.source !== node && connection.target !== node,

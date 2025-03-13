@@ -107,9 +107,9 @@ export class NESTNodes extends BaseNodes {
     node.updateCodeNodes();
 
     if (node.model.isRecorder) {
-      const responseNode = code.graph.nodes.find((node) => node.state.role === "response");
-      if (!responseNode) return;
-      code.graph.addConnection(node.codeNodes.node.outputs.events, responseNode.inputs.events);
+      const responseNode = code.graph.nodes.find((node) => node.state.role === "nestDataResponse");
+      console.log(responseNode);
+      if (responseNode) code.graph.addConnection(node.codeNodes.node.outputs.events, responseNode.inputs.events);
     }
   }
 

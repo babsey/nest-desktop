@@ -277,6 +277,8 @@ export class BaseNodes extends BaseObj {
 
     this._network.state.unselectAll();
 
+    if (node.isNode) node.removeCodeNodes();
+
     // Remove node from the node list.
     this._nodes.splice(node.idx, 1);
   }

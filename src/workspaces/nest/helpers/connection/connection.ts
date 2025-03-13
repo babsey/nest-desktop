@@ -146,15 +146,15 @@ export class NESTConnection extends BaseConnection {
    * Update code nodes.
    */
   override updateCodeNodes(): void {
-    if (!this.codeNode) this.connections.addCodeNodes(this);
+    if (!this.codeNodes.node) this.connections.addCodeNodes(this);
 
-    this.codeNode.inputs.pre.value = this.sourceIdx;
-    this.codeNode.inputs.post.value = this.targetIdx;
-    this.codeNode.inputs.conn_spec.value = this.rule.value;
+    this.codeNodes.node.inputs.pre.value = this.sourceIdx;
+    this.codeNodes.node.inputs.post.value = this.targetIdx;
+    this.codeNodes.node.inputs.conn_spec.value = this.rule.value;
 
     this.paramsVisible.forEach((paramKey: string) => {
-      if (this.codeNode.inputs[paramKey]) {
-        this.codeNode.inputs[paramKey].value = this.params[paramKey].value;
+      if (this.codeNodes.node.inputs[paramKey]) {
+        this.codeNodes.node.inputs[paramKey].value = this.params[paramKey].value;
       }
     });
   }

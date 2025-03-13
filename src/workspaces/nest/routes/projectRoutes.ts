@@ -10,7 +10,7 @@ import { currentProject, useNESTProjectStore } from "../stores/project/projectSt
 import { TProjectRoute, TRoute } from "@/types";
 
 const logger = mainLogger.getSubLogger({
-  minLevel: 1,
+  minLevel: 3,
   name: "nest project route",
 });
 

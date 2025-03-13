@@ -608,6 +608,16 @@ export class BaseNode extends BaseObj {
   }
 
   /**
+   * Remove code nodes.
+   */
+  removeCodeNodes(): void {
+    Object.keys(this.codeNodes).forEach((key: string) => {
+      this.codeNodes[key].remove();
+      delete this.codeNodes[key];
+    });
+  }
+
+  /**
    * Remove record.
    * @param recordId string
    */

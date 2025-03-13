@@ -23,8 +23,8 @@ export interface IConnectionProps {
 export class BaseConnection extends BaseObj {
   private readonly _name = "Connection";
 
-  private _codeNode: AbstractCodeNode;
-  private _idx: number; // generative
+  private _codeNodes: Record<string, AbstractCodeNode> = {};
+  // private _idx: number; // generative
   private _params: Record<string, ConnectionParameter> = {};
   private _paramsVisible: string[] = [];
   private _rule: ConnectionRule;
@@ -45,7 +45,7 @@ export class BaseConnection extends BaseObj {
     });
 
     this._connections = connections;
-    this._idx = this.connections.all.length;
+    // this._idx = this.connections.all.length;
 
     this._state = new ConnectionState(this);
     this._view = new ConnectionView(this);
@@ -63,12 +63,8 @@ export class BaseConnection extends BaseObj {
     return BaseSynapse;
   }
 
-  get codeNode(): AbstractCodeNode {
-    return this._codeNode;
-  }
-
-  set codeNode(value: AbstractCodeNode) {
-    this._codeNode = value;
+  get codeNodes(): Record<string, AbstractCodeNode> {
+    return this._codeNodes;
   }
 
   get connections(): TConnections {
@@ -346,6 +342,16 @@ export class BaseConnection extends BaseObj {
    */
   remove(): void {
     this.network.deleteConnection(this);
+  }
+
+  /**
+   * Remove code nodes.
+   */
+  removeCodeNodes(): void {
+    Object.keys(this.codeNodes).forEach((key: string) => {
+      this.codeNodes[key].remove();
+      delete this.codeNodes[key];
+    });
   }
 
   // /**

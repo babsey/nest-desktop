@@ -181,6 +181,10 @@ export class CodeGraph extends BaseObj {
     this.save();
   };
 
+  removeNode(node: AbstractCodeNode): void {
+    this.graph.removeNode(node);
+  }
+
   renderCodes(): void {
     if (this.nodes.length === 0) return;
     this.nodes.forEach((node: AbstractCodeNode) => (node.renderCode ? node.renderCode() : null));

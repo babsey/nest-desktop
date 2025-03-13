@@ -229,6 +229,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
       this._state.script = `\n# ${this._state.comments}\n${this._state.script}`;
     }
   }
+
+  remove(): void {
+    this.graph?.removeNode(this);
+  }
 }
 
 export abstract class CodeNode<I, O> extends AbstractCodeNode {
