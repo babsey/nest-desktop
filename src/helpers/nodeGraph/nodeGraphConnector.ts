@@ -182,11 +182,8 @@ export class NodeGraphConnector extends BaseObj {
     connector
       .selectAll("path")
       .transition(t)
-      .attr(
-        "d",
-        (
-          n: TNode | TNodeGroup | any, // TODO: no any!
-        ) => drawPathMouse({ x: 0, y: 0 }, n.state.isFocused && !connectionDrag ? connectorEndPos : { x: 0, y: 0 }),
+      .attr("d", (n: TNode | TNodeGroup | unknown) =>
+        drawPathMouse({ x: 0, y: 0 }, n.state.isFocused && !connectionDrag ? connectorEndPos : { x: 0, y: 0 }),
       );
 
     connector

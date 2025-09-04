@@ -19,7 +19,7 @@ export interface IActivityAnimationLayerFrame {
 }
 
 interface IActivityAnimationLayerModel {
-  component: any;
+  component: unknown;
   title: string;
   value: string;
 }

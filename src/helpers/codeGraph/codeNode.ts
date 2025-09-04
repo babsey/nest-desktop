@@ -36,9 +36,9 @@ export interface ICodeNodeState<I, O> {
   type: string;
   title: string;
   id: string;
-  inputs: NodeInterfaceDefinitionStates<I> & NodeInterfaceDefinitionStates<Record<string, NodeInterface<any>>>;
+  inputs: NodeInterfaceDefinitionStates<I> & NodeInterfaceDefinitionStates<Record<string, NodeInterface<unknown>>>;
   integrated: boolean;
-  outputs: NodeInterfaceDefinitionStates<O> & NodeInterfaceDefinitionStates<Record<string, NodeInterface<any>>>;
+  outputs: NodeInterfaceDefinitionStates<O> & NodeInterfaceDefinitionStates<Record<string, NodeInterface<unknown>>>;
 }
 
 export interface CodeNodeInterface extends NodeInterface<unknown> {
@@ -475,7 +475,10 @@ export const formatLabels = (nodes: AbstractCodeNode[], sorted: boolean = true):
  * @param graph code graph
  * @param nodeState node state
  */
-export const loadNodeState = (graph: CodeGraph | Graph | undefined, nodeState: ICodeNodeState<any, any>): void => {
+export const loadNodeState = (
+  graph: CodeGraph | Graph | undefined,
+  nodeState: ICodeNodeState<unknown, unknown>,
+): void => {
   if (!graph) return;
 
   const node = graph.findNodeById(nodeState.id);
@@ -501,7 +504,10 @@ export const loadNodeState = (graph: CodeGraph | Graph | undefined, nodeState: I
  * @param graph code graph
  * @param nodeState node state
  */
-export const saveNodeState = (graph: CodeGraph | Graph | undefined, nodeState: ICodeNodeState<any, any>): void => {
+export const saveNodeState = (
+  graph: CodeGraph | Graph | undefined,
+  nodeState: ICodeNodeState<unknown, unknown>,
+): void => {
   if (!graph) return;
 
   const node = graph.findNodeById(nodeState.id);

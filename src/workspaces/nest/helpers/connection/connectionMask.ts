@@ -12,16 +12,51 @@ enum EMaskType {
   rectangular = "rectangular",
 }
 
+interface INESTConnectionMaskSpecs {
+  inner_radius?: number;
+  lower_left?: [number, number];
+  major_axis?: number;
+  minor_axis?: number;
+  outer_radius?: number;
+  radius?: number;
+  upper_right?: [number, number];
+}
+
 export interface INESTConnectionMaskProps {
   masktype?: EMaskType;
-  specs: any;
+  specs: INESTConnectionMaskSpecs;
+}
+
+export interface INESTConnectionMaskShape {
+  type: string;
+  xref: string;
+  yref: string;
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  opacity: number;
+  fillcolor: string;
+  line: {
+    color: string;
+  };
+}
+
+interface INESTConnectionMaskGraph {
+  data: unknown;
+  layout: {
+    xaxis: { range: [number, number] };
+    yaxis: { range: [number, number] };
+    shapes?: INESTConnectionMaskShape[];
+  };
+  style: { position: string; width: string; height: string };
 }
 
 export class NESTConnectionMask extends BaseObj {
   private _connection: NESTConnection;
-  private _graph: any;
+  private _graph: INESTConnectionMaskGraph;
   private _masktype: EMaskType;
-  private _specs: any;
+  private _specs: INESTConnectionMaskSpecs = {};
 
   constructor(connection: NESTConnection, maskProps?: INESTConnectionMaskProps) {
     super({
@@ -45,7 +80,7 @@ export class NESTConnectionMask extends BaseObj {
     return this._connection;
   }
 
-  get graph(): any {
+  get graph(): INESTConnectionMaskGraph {
     return this._graph;
   }
 
@@ -61,7 +96,7 @@ export class NESTConnectionMask extends BaseObj {
     return this._masktype;
   }
 
-  get specs(): any {
+  get specs(): INESTConnectionMaskSpecs {
     return this._specs;
   }
 
@@ -224,7 +259,7 @@ export class NESTConnectionMask extends BaseObj {
     } else {
       this._masktype = value;
       this._specs = {};
-      this.config?.localStorage.data[value].specs.forEach((spec: { id: string; value: any }) => {
+      this.config?.localStorage.data[value].specs.forEach((spec: { id: string; value: unknown }) => {
         this._specs[spec.id] = spec.value;
       });
     }
@@ -236,7 +271,7 @@ export class NESTConnectionMask extends BaseObj {
    * @return connection mask props
    */
   toJSON(): INESTConnectionMaskProps {
-    const maskProps: any = {
+    const maskProps: INESTConnectionMaskProps = {
       masktype: this._masktype,
       specs: this._specs,
     };

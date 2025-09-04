@@ -1,7 +1,7 @@
 // index.ts
 // https://stackoverflow.com/questions/73795753/how-to-import-custom-svg-icons-in-vuetify-3
 
-import { h } from "vue";
+import { Component, h } from "vue";
 
 import connection from "./connections/ConnectionIcon.vue";
 import flowchart from "./FlowchartIcon.vue";
@@ -18,7 +18,7 @@ import synapseRecorder from "./connections/SynapseRecorderIcon.vue";
 
 import type { IconSet, IconProps } from "vuetify";
 
-const networkSvgNameToComponent: Record<string, any> = {
+const networkSvgNameToComponent: Record<string, string | Component> = {
   neuron,
   "neuron-shape": neuronShape,
   "neuron-mixed": neuron,

@@ -89,7 +89,7 @@ export class BaseConnections extends BaseObj {
    * @param targetIdx node index
    */
   addConnection(sourceIdx: number, targetIdx: number): void {
-    this.logger.trace("connect nodes");
+    this.logger.trace("connect nodes", sourceIdx, targetIdx);
   }
 
   /**

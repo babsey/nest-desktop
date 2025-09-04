@@ -10,6 +10,7 @@ import {
   TextInputInterface,
   displayInSidebar,
   setType,
+  CalculationContext,
 } from "baklavajs";
 
 import { truncate } from "@/utils/truncate";
@@ -42,7 +43,7 @@ export abstract class DynamicCodeNode<I, O> extends CodeNode<Dynamic<I>, Dynamic
   // public calculate?: CalculateFunction<Dynamic<I>, Dynamic<O>>;
 }
 
-export type DynamicNodeDefinition = Record<string, (() => NodeInterface<any>) | undefined>;
+export type DynamicNodeDefinition = Record<string, (() => NodeInterface<unknown>) | undefined>;
 export interface DynamicNodeUpdateResult {
   inputs?: DynamicNodeDefinition;
   outputs?: DynamicNodeDefinition;
@@ -93,7 +94,7 @@ export function defineDynamicCodeNode<I, O>(
       this.executeFactory("output", definition.outputs);
 
       if (definition.calculate) {
-        this.calculate = (inputs: Dynamic<I>, globalValues: any) =>
+        this.calculate = (inputs: Dynamic<I>, globalValues: CalculationContext) =>
           definition.calculate?.call(this, inputs, globalValues);
       }
 
@@ -230,7 +231,7 @@ export function defineDynamicCodeNode<I, O>(
     }
 
     private getStaticValues<T>(keys: string[], interfaces: Record<string, NodeInterface>): T {
-      const values = {} as Record<string, any>;
+      const values = {} as Record<string, unknown>;
       for (const k of keys) {
         values[k] = interfaces[k].value;
       }

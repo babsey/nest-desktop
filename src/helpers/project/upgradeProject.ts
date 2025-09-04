@@ -17,6 +17,8 @@ const currentVersion = process.env.APP_VERSION as string;
 export function upgradeProject(projectProps: any): TProjectProps {
   if (Object.keys(projectProps).length === 0) return {};
   if (!("version" in projectProps)) return projectProps;
+
+  // TODO: Remove this for the production
   if (!projectProps.code?.graph && projectProps.version.startsWith("5.")) projectProps.version = "4.1";
 
   const oldVersion = projectProps.version;

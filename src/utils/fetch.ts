@@ -5,9 +5,9 @@ import { dumpYAML } from "./serialize";
 /**
  * Load data from file.
  * @param path string
- * @returns string or any
+ * @returns string or unknown
  */
-export const load = async (path: string): Promise<string | any> => {
+export const load = async (path: string): Promise<string | unknown> => {
   const pathList = path.split(".");
   const extension = pathList[pathList.length - 1];
   switch (extension) {
@@ -23,9 +23,9 @@ export const load = async (path: string): Promise<string | any> => {
 /**
  * Load data from json file.
  * @param path string
- * @returns any
+ * @returns unknown
  */
-export const loadJSON = async (path: string): Promise<any> => fetch(path).then((res: Response) => res.json());
+export const loadJSON = async (path: string): Promise<unknown> => fetch(path).then((res: Response) => res.json());
 
 /**
  * Load text from file.
@@ -40,6 +40,6 @@ export const loadText = async (path: string): Promise<string> =>
 /**
  * Load data from yaml file.
  * @param path
- * @returns any
+ * @returns unknown
  */
-export const loadYAML = async (path: string): Promise<any> => loadText(path).then((text: string) => dumpYAML(text));
+export const loadYAML = async (path: string): Promise<unknown> => loadText(path).then((text: string) => dumpYAML(text));

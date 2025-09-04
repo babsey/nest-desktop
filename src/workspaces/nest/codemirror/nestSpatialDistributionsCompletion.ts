@@ -1,4 +1,7 @@
 // Our list of completions (can be static, since the editor
+
+import { CompletionContext } from "@codemirror/autocomplete";
+
 /// will do filtering based on context).
 const completions = [
   {
@@ -27,7 +30,7 @@ const completions = [
   },
 ];
 
-export function nestSpatialDistributionsCompletions(context: any) {
+export function nestSpatialDistributionsCompletions(context: CompletionContext) {
   const before = context.matchBefore(/nest\.spatial_distributions\.\w*/);
   // If completion wasn't explicitly started and there
   // is no word before the cursor, don't open completions.

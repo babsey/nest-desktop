@@ -129,14 +129,14 @@ export class NodeGraph extends BaseObj {
     nodes
       .transition(t)
       .style("opacity", 1)
-      .style("color", (n: TNode | TNodeGroup | any) => "var(--colorNode" + n.idx + ")")
+      .style("color", (n: TNode | TNodeGroup | unknown) => "var(--colorNode" + n.idx + ")")
       .style("background-color", "rgb(var(--v-theme-background))")
-      .attr("transform", (n: TNode | TNodeGroup | any) => `translate(${n.state.position.x},${n.state.position.y})`);
+      .attr("transform", (n: TNode | TNodeGroup | unknown) => `translate(${n.state.position.x},${n.state.position.y})`);
 
     nodes
       .selectAll(".core")
       .transition(t)
-      .attr("transform", (n: TNode | TNodeGroup | any) => `scale( ${n.state.isFocused ? 1.2 : 1})`);
+      .attr("transform", (n: TNode | TNodeGroup | unknown) => `scale( ${n.state.isFocused ? 1.2 : 1})`);
   }
 
   /**
@@ -151,7 +151,7 @@ export class NodeGraph extends BaseObj {
     const nodes: TSelection = this._networkGraph.selector
       .select("g#nodes")
       .selectAll("g.node")
-      .data(this.network.nodes.allNodes, (n: TNode | TNodeGroup | any) => n.uuid);
+      .data(this.network.nodes.allNodes, (n: TNode | TNodeGroup | unknown) => n.uuid);
 
     const dragging: TDragBehavior = drag()
       .on("start", (e: MouseEvent) => this._networkGraph.dragStart(e))

@@ -115,7 +115,7 @@ export default defineDynamicCodeNode({
     this.node.view.codeNodes.spatial = spatialNode;
     this.node.view.spatial.codeNodes.node = spatialNode;
 
-    const responseNode = this.node.getConnectedNodeByInterface("positions", "outputs");
+    // const responseNode = this.node.getConnectedNodeByInterface("positions", "outputs");
 
     if (spatialNode) {
       if (!spatialNode.view) spatialNode.view = this.node.view.spatial;

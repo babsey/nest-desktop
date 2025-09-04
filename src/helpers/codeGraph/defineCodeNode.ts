@@ -1,7 +1,7 @@
 // defineCodeNode.ts
 // Adapted from https://github.com/newcat/baklavajs/blob/987018200389bd86c48544ac4afa7a393fe1e9bc/packages/core/src/defineNode.ts
 
-import { Node, NodeInterface, NodeInterfaceDefinition, INodeDefinition, setType } from "baklavajs";
+import { Node, NodeInterface, NodeInterfaceDefinition, INodeDefinition, setType, CalculationContext } from "baklavajs";
 
 import { truncate } from "@/utils/truncate";
 
@@ -51,7 +51,7 @@ export function defineCodeNode<I, O>(definition: ICodeNodeDefinition<I, O>): new
     }
 
     public calculate = definition.calculate
-      ? (inputs: I, globalValues: any) => {
+      ? (inputs: I, globalValues: CalculationContext) => {
           return definition.calculate!.call(this, inputs, globalValues);
         }
       : undefined;

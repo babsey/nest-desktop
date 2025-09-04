@@ -201,7 +201,7 @@ export class BaseNodes extends BaseObj {
    * @param view node view props
    */
   addNode(model?: string, view?: INodeViewProps): void {
-    this.logger.debug("create node");
+    this.logger.debug("create node", model, view);
   }
 
   // /**
@@ -251,7 +251,10 @@ export class BaseNodes extends BaseObj {
    * @param modelId string
    * @returns Array of node
    */
-  filterByModelId(modelId: string): TNode[] {}
+  filterByModelId(modelId: string): TNode[] {
+    this.logger.trace("filter by model id", modelId);
+    return [];
+  }
 
   // /**
   //  * Group selected nodes.
@@ -404,7 +407,7 @@ export class BaseNodes extends BaseObj {
    * @param networkProps network props
    */
   update(nodesProps?: (INodeProps | INodeGroupProps)[]): void {
-    this.logger.trace("update");
+    this.logger.trace("update", nodesProps);
 
     // if (nodesProps)
     //   nodesProps.forEach((nodeProps: INodeProps | INodeGroupProps) => {

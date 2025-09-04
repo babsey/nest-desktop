@@ -1,4 +1,4 @@
-import { h } from "vue";
+import { Component, h } from "vue";
 
 // import arbor from "./ArborIcon.vue";
 import nest from "./NESTIcon.vue";
@@ -8,7 +8,7 @@ import type { IconSet, IconProps } from "vuetify";
 
 // import pynn from "./PyNNIcon.vue";
 
-const simulatorSvgNameToComponent: Record<string, any> = {
+const simulatorSvgNameToComponent: Record<string, string | Component> = {
   nest,
   norse,
   // pynn,
