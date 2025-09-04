@@ -10,7 +10,7 @@ import { ActivityAnimationGraph } from "../../helpers/activityGraph/activityAnim
 const props = defineProps<{ graph: ActivityAnimationGraph }>();
 const activityAnimationGraph = ref<HTMLDivElement>();
 
-onMounted(() => props.graph.initScene(activityAnimationGraph.value));
+onMounted(() => props.graph.initScene(activityAnimationGraph.value as HTMLDivElement));
 onBeforeUnmount(() => props.graph.destroyScene());
 </script>
 
