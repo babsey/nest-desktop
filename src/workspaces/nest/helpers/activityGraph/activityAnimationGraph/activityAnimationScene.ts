@@ -16,7 +16,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+// import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { UnwrapRef, reactive } from "vue";
 
 import { darkMode } from "@/helpers/common/theme";
@@ -43,18 +43,18 @@ export class ActivityAnimationScene {
   private _camera: PerspectiveCamera;
   private _clippingPlanes: Plane[] = [];
   private _clock: Clock;
-  private _controls: OrbitControls;
+  // private _controls: OrbitControls;
   private _delta: number = 0;
   private _graph: ActivityAnimationGraph; // parent
   private _layerGraphGroup?: Group<Object3DEventMap>;
-  private _ref: any;
+  private _ref: unknown;
   private _renderer: WebGLRenderer;
   private _scene: Scene;
   private _state: UnwrapRef<IActivityAnimationSceneState>;
   private _stats: Stats;
   private _useStats = false;
 
-  constructor(graph: ActivityAnimationGraph, ref: any) {
+  constructor(graph: ActivityAnimationGraph, ref: unknown) {
     this._graph = graph;
     this._ref = ref;
 
@@ -75,7 +75,7 @@ export class ActivityAnimationScene {
     this._renderer = new WebGLRenderer({
       antialias: true,
     });
-    this._controls = new OrbitControls(this._camera, this._renderer.domElement);
+    // this._controls = new OrbitControls(this._camera, this._renderer.domElement);
     this._clock = new Clock();
     this._scene = new Scene();
     this.updateSceneBackground();
@@ -92,9 +92,9 @@ export class ActivityAnimationScene {
     return this._camera;
   }
 
-  get controls(): OrbitControls {
-    return this._controls;
-  }
+  // get controls(): OrbitControls {
+  //   return this._controls;
+  // }
 
   get layerGraphGroup(): Group<Object3DEventMap> | undefined {
     return this._layerGraphGroup;
