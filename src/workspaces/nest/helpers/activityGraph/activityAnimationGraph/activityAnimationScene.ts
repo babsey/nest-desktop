@@ -16,7 +16,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
-import { OrbitControls } from "@static/js/vendors/OrbitControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { UnwrapRef, reactive } from "vue";
 
 import { darkMode } from "@/helpers/common/theme";

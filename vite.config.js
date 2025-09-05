@@ -158,7 +158,6 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
-      "@static": fileURLToPath(new URL("./public/assets", import.meta.url)),
     },
     extensions: [".js", ".json", ".jsx", ".mjs", ".mustache", ".ts", ".tsx", ".vue"],
   },
