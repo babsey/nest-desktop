@@ -1,6 +1,13 @@
 // nestParameters.ts
 
-import { displayInSidebar, IntegerInterface, NodeInterface, setType, TextInputInterface } from "baklavajs";
+import {
+  CheckboxInterface,
+  displayInSidebar,
+  IntegerInterface,
+  NodeInterface,
+  setType,
+  TextInputInterface,
+} from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
@@ -8,7 +15,7 @@ import { IParamProps } from "@/helpers/common/parameter";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { TParameter } from "@/types";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
-import { numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { booleanType, numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 import nestParameters from "./nestParameters";
 import { INESTNodeCollection } from "./interfaceTypes";
@@ -44,6 +51,7 @@ export default defineDynamicCodeNode({
   },
   onUpdate() {
     if (!this.node) return {};
+
     const inputs: Record<string, () => NodeInterface> = {};
 
     if (this.node.view?.paramsAll) {
@@ -52,6 +60,8 @@ export default defineDynamicCodeNode({
 
       params.forEach((param: TParameter) => {
         const paramJSON = param.toJSON() as IParam;
+        const paramProps = this.node?.state.props?.find((paramProps: IParamProps) => paramProps.id == param.id);
+        if (paramProps) paramJSON.value = paramProps.value;
         paramJSON.hidden = !paramVisible.includes(param.id);
         inputs[param.id] = () => createParameterInterface(paramJSON);
       });
@@ -78,16 +88,31 @@ export const addNESTParameterNode = (
   graph: CodeGraph | NESTCodeGraph,
   position: { x: number; y: number } = { x: 0, y: 0 },
   idx: number = -1,
+  props: IParamProps[] = [],
 ): AbstractCodeNode => {
-  const codeNode = graph.addNodeAtCoordinates(nestParameters, position, idx);
+  const codeNode = graph.addNodeAtCoordinates(nestParameters, position, idx, props);
   codeNode.state.integrated = true;
   return codeNode;
 };
 
+export const cleanNESTParameterNode = (paramsNode: AbstractCodeNode, nodeView: unknown): void => {
+  if (!nodeView) return;
+  // console.log("clean parameter node", paramsNode.shortId, paramsNode.state.props);
+
+  nodeView.codeNodes.params = paramsNode;
+  nodeView.paramsAll.forEach((param) => (param.codeNodes.node = paramsNode));
+
+  if (!paramsNode.view) paramsNode.view = nodeView;
+  paramsNode.onUpdate();
+};
+
 export const createParameterInterface = (param: IParam): NodeInterface => {
   let paramInterface;
+
   if (typeof param.value == "number") {
     paramInterface = new IntegerInterface(param.id, param.value as number).use(setType, numberType);
+  } else if (typeof param.value == "boolean") {
+    paramInterface = new CheckboxInterface(param.id, param.value as boolean).use(setType, booleanType);
   } else {
     paramInterface = new TextInputInterface(param.id, JSON.stringify(param.value)).use(setType, stringType);
   }
@@ -98,46 +123,49 @@ export const createParameterInterface = (param: IParam): NodeInterface => {
   return paramInterface;
 };
 
-export const loadNESTParameterNode = (
-  graph: CodeGraph | NESTCodeGraph,
-  paramProps: IParamProps[] = [],
-  position: { x: number; y: number } = { x: 0, y: 0 },
-  idx: number = -1,
-): AbstractCodeNode => {
-  const paramsNode = addNESTParameterNode(graph, position, idx);
-  paramsNode.state.props = paramProps;
+// export const updateNESTParameterInterfaces = (paramNode: AbstractCodeNode, paramProps: IParamProps[] = []): void => {
+//   paramNode.state.props = paramProps;
 
-  paramProps.forEach((paramProp: IParamProps) => {
-    const paramInterface = createParameterInterface(paramProp);
-    paramsNode.addInput(paramProp.id, paramInterface);
-  });
+//   const paramIds = paramProps.map((paramProp) => paramProp.id);
+//   const inputKeys = Object.keys(paramNode.inputs);
 
-  return paramsNode;
-};
+//   inputKeys.forEach((inputKey: string) => {
+//     if (!paramIds.includes(inputKey)) delete paramNode.inputs[inputKey];
+//   });
+
+//   paramProps.forEach((paramProp: IParamProps) => {
+//     if (inputKeys.includes(paramProp.id)) return;
+//     const paramInterface = createParameterInterface(paramProp);
+//     paramNode.addInput(paramProp.id, paramInterface);
+//   });
+// };
 
 export const updateNESTParameterNode = (
   graph: CodeGraph | NESTCodeGraph,
   codeNode: AbstractCodeNode,
+  paramInterfaceName: string = "params",
   paramsProps: IParamProps[] = [],
 ): AbstractCodeNode | undefined => {
-  let paramsNode: AbstractCodeNode | null = codeNode.getConnectedNodeByInterface("params");
+  let paramsNode: AbstractCodeNode | null = codeNode.getConnectedNodeByInterface(paramInterfaceName, "inputs");
 
-  if (paramsProps && paramsProps.length === 0) {
+  if (paramsProps.length === 0) {
     if (paramsNode) paramsNode.remove();
     return;
-  }
-
-  if (!paramsNode) {
+  } else if (!paramsNode) {
     const position = { ...codeNode.position };
     position.x -= 400;
     position.y += 50;
-    const idx = graph.nodes.indexOf(codeNode);
-    paramsNode = loadNESTParameterNode(graph, paramsProps, position, idx);
+    paramsNode = addNESTParameterNode(graph, position, graph.nodes.indexOf(codeNode), paramsProps);
   }
   paramsNode.state.props = paramsProps;
 
-  if (codeNode.view?.codeNodes) codeNode.view.codeNodes.params = paramsNode;
-  graph.addConnection(paramsNode.outputs.out, codeNode.inputs.params);
+  // TODO: use state props to update param interfaces, for now use this.
+  paramsProps.forEach((paramProps: IParamProps) =>
+    paramsNode.addInput(paramProps.id, createParameterInterface(paramProps)),
+  );
+
+  if (!graph.hasConnection(paramsNode.outputs.out, codeNode.inputs[paramInterfaceName]))
+    graph.addConnection(paramsNode.outputs.out, codeNode.inputs[paramInterfaceName]);
 
   return paramsNode;
 };

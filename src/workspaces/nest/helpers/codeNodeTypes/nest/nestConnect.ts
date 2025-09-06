@@ -1,19 +1,12 @@
 // nestConnect.ts
 
-import {
-  displayInSidebar,
-  NodeInterface,
-  NumberInterface,
-  SelectInterface,
-  setType,
-  TextInputInterface,
-} from "baklavajs";
+import { displayInSidebar, SelectInterface, setType, TextInputInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
+import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestConnect from "./nestConnect";
 import { INESTConnectionProps, NESTConnection } from "../../connection/connection";
@@ -25,9 +18,9 @@ import {
 } from "./interfaceTypes";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";
 import { getNESTSimulateNode } from "./nestSimulate";
-import { loadNESTParameterNode } from "./nestParameters";
+import { updateNESTParameterNode } from "./nestParameters";
 
-export default defineDynamicCodeNode({
+export default defineCodeNode({
   type: "nest.Connect",
   title: "connect nodes",
   inputs: {
@@ -92,9 +85,15 @@ export default defineDynamicCodeNode({
       const targetNode = this.node.getConnectedNodeByInterface("post");
       if (targetNode) connectionProps.target = targetNode.view.idx;
 
-      const synParamNode = this.node.getConnectedNodeByInterface("syn_spec");
-      if (synParamNode) {
-        const paramProps = Object.entries(synParamNode.inputs).map(([k, v]) => ({ id: k, value: v.value }));
+      const connSpecNode = this.node.getConnectedNodeByInterface("conn_spec");
+      if (connSpecNode) {
+        const paramProps = Object.entries(connSpecNode.inputs).map(([k, v]) => ({ id: k, value: v.value }));
+        if (paramProps.length > 0) connectionProps = { params: paramProps };
+      }
+
+      const synSpecNode = this.node.getConnectedNodeByInterface("syn_spec");
+      if (synSpecNode) {
+        const paramProps = Object.entries(synSpecNode.inputs).map(([k, v]) => ({ id: k, value: v.value }));
         if (paramProps.length > 0) connectionProps.synapse = { params: paramProps };
       }
 
@@ -108,34 +107,41 @@ export default defineDynamicCodeNode({
       connection.init();
     }
 
-    const synParamNode = this.node.getConnectedNodeByInterface("syn_spec");
-    if (synParamNode) {
-      synParamNode.view = this.node.view;
-      this.node.view.synapse.codeNodes.params = synParamNode;
-      this.node.view.synapse.paramsAll.forEach((param) => (param.codeNodes.node = synParamNode));
+    const connSpecNode = this.node.getConnectedNodeByInterface("conn_spec");
+    if (connSpecNode) {
+      // cleanNESTParameterNode(connSpecNode, this.node.view);
+    } else {
+      this.node.inputs.conn_spec.setHidden(true);
+    }
+
+    const synSpecNode = this.node.getConnectedNodeByInterface("syn_spec");
+    if (synSpecNode) {
+      // cleanNESTParameterNode(synSpecNode, this.node.view.synapse);
+    } else {
+      this.node.inputs.syn_spec.setHidden(true);
     }
 
     // if (!this.node.view && !this.node.view.model && !this.node.view.model.isRecorder) return;
     // updateRecorderNode(this.node.graph, this.node.view.recorder.codeNode);
   },
-  onUpdate({ conn_spec }) {
-    const inputs: Record<string, () => NodeInterface> = {};
-    const outputs: Record<string, () => NodeInterface> = {};
+  // onUpdate({ conn_spec }) {
+  //   const inputs: Record<string, () => NodeInterface> = {};
+  //   const outputs: Record<string, () => NodeInterface> = {};
 
-    switch (conn_spec) {
-      case "pairwise_bernoulli":
-        inputs.p = () => new NumberInterface("p", 0.1, 0.01, 1).use(displayInSidebar, true);
-        break;
-      case "fixed_indegree":
-        inputs.indegree = () => new NumberInterface("indegree", 1).use(displayInSidebar, true);
-        break;
-      case "fixed_outdegree":
-        inputs.outdegree = () => new NumberInterface("outdegree", 1).use(displayInSidebar, true);
-        break;
-    }
+  //   switch (conn_spec) {
+  //     case "pairwise_bernoulli":
+  //       inputs.p = () => new NumberInterface("p", 0.1, 0.01, 1).use(displayInSidebar, true);
+  //       break;
+  //     case "fixed_indegree":
+  //       inputs.indegree = () => new NumberInterface("indegree", 1).use(displayInSidebar, true);
+  //       break;
+  //     case "fixed_outdegree":
+  //       inputs.outdegree = () => new NumberInterface("outdegree", 1).use(displayInSidebar, true);
+  //       break;
+  //   }
 
-    return { inputs, outputs };
-  },
+  //   return { inputs, outputs };
+  // },
 });
 
 export const addNESTConnectNode = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
@@ -152,22 +158,21 @@ export const loadNESTConnectNode = (
   idx: number = -1,
 ): AbstractCodeNode => {
   const codeNode = addNESTConnectNode(graph, idx);
-  codeNode.state.props = connectionProps;
+  if (connectionProps) codeNode.state.props = connectionProps;
 
   if (connectionProps.params) {
-    const params = connectionProps.params.filter((param: IParamProps) => ("visible" in param ? param.visible : true));
+    const conn_spec: IParamProps[] = [];
 
-    if (params && params.length > 0) {
-      const position = { ...codeNode.position };
-      position.x -= 400;
-      position.y += 75;
-      const paramsNode = loadNESTParameterNode(graph, params, position);
-      graph.addConnection(paramsNode.outputs.out, codeNode.inputs.conn_spec);
-    }
+    const connParams = connectionProps.params.filter((param: IParamProps) =>
+      "visible" in param ? param.visible : true,
+    );
+    if (connParams && connParams.length > 0) connParams.forEach((param: IParamProps) => conn_spec.push(param));
+    if (conn_spec.length > 0) updateNESTParameterNode(graph, codeNode, "conn_spec", conn_spec);
   }
 
   if (connectionProps.synapse) {
     const syn_spec: IParamProps[] = [];
+
     if (connectionProps.synapse.model && connectionProps.synapse.model !== "static_synapse") {
       syn_spec.push({
         id: "synapse_model",
@@ -179,18 +184,9 @@ export const loadNESTConnectNode = (
     const synParams = connectionProps.synapse.params?.filter((param: IParamProps) =>
       "visible" in param ? param.visible : true,
     );
-    if (synParams && synParams.length > 0)
-      synParams.forEach((param: IParamProps) => {
-        syn_spec.push(param);
-      });
 
-    if (syn_spec.length > 0) {
-      const position = { ...codeNode.position };
-      position.x -= 400;
-      position.y += 75;
-      const paramsNode = loadNESTParameterNode(graph, syn_spec, position);
-      graph.addConnection(paramsNode.outputs.out, codeNode.inputs.syn_spec);
-    }
+    if (synParams && synParams.length > 0) synParams.forEach((param: IParamProps) => syn_spec.push(param));
+    if (syn_spec.length > 0) updateNESTParameterNode(graph, codeNode, "syn_spec", syn_spec);
   }
 
   if (nodes) {

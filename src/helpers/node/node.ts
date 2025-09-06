@@ -294,7 +294,7 @@ export class BaseNode extends BaseObj {
       .filter((param: TParameter) => values.includes(param.id))
       .map((param: TParameter) => param.id);
 
-    this.updateParamsCodeNodeHidden();
+    this.updateParamsCodeNode();
   }
 
   get parentNodes(): TNodes {
@@ -815,7 +815,7 @@ export class BaseNode extends BaseObj {
     });
   }
 
-  updateParamsCodeNodeHidden(): void {
+  updateParamsCodeNode(): void {
     this.paramsAll.forEach((param: TParameter) => {
       if (!param.intf) return;
       param.intf[param.id].setHidden(!this._paramsVisible.includes(param.id));

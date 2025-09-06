@@ -1,8 +1,6 @@
 // types.ts
 
-import type { NESTActivityGraph } from "./helpers/activityGraph/activityGraph";
 import type { INESTConnectionProps, NESTConnection } from "./helpers/connection/connection";
-import type { NESTConnections } from "./helpers/connection/connections";
 import type { INESTCopyModelProps, NESTCopyModel } from "./helpers/model/copyModel";
 import type { INESTModelProps, NESTModel } from "./helpers/model/model";
 import type { INESTNetworkProps, NESTNetwork } from "./helpers/network/network";
@@ -12,6 +10,9 @@ import type { INESTNodeReceptorProps, NESTNodeReceptor } from "./helpers/node/no
 import type { INESTProjectProps, NESTProject } from "./helpers/project/project";
 import type { INESTSimulationProps, NESTSimulation } from "./helpers/simulation/simulation";
 import type { INESTSynapseProps, NESTSynapse } from "./helpers/synapse/synapse";
+import type { NESTActivityGraph } from "./helpers/activityGraph/activityGraph";
+import type { NESTConnectionParameter } from "./helpers/connection/connectionParameter";
+import type { NESTConnections } from "./helpers/connection/connections";
 import type { NESTCopyModelParameter } from "./helpers/model/copyModelParameter";
 import type { NESTModelDB } from "./helpers/model/modelDB";
 import type { NESTNetworkGraph } from "./helpers/network/networkGraph";
@@ -33,6 +34,7 @@ export {
   INESTSynapseProps,
   NESTActivityGraph,
   NESTConnection,
+  NESTConnectionParameter,
   NESTConnections,
   NESTCopyModel,
   NESTCopyModelParameter,

@@ -10,6 +10,7 @@ import { NESTModel } from "../model/model";
 import { NESTNetwork } from "../network/network";
 import { NESTSynapseParameter } from "./synapseParameter";
 import { TElementType } from "@/helpers/model/model";
+import { updateNESTParameterNode } from "../codeNodeTypes/nest/nestParameters";
 
 export interface INESTSynapseProps extends ISynapseProps {
   receptorIdx?: number;
@@ -265,5 +266,12 @@ export class NESTSynapse extends BaseSynapse {
     if (this._receptorIdx !== 0) synapseProps.receptorIdx = this._receptorIdx;
 
     return synapseProps;
+  }
+
+  updateParamsCodeNode(): void {
+    const params = this.filteredParams.map((param: NESTSynapseParameter) => param.toJSON());
+    updateNESTParameterNode(this.network.project.code.graph, this.connection.codeNode, "syn_spec", params);
+
+    super.updateParamsCodeNode();
   }
 }

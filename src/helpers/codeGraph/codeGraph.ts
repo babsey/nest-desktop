@@ -98,6 +98,7 @@ export class CodeGraph extends BaseObj {
    * @param to code node interface
    */
   addConnection(from: CodeNodeInterface | NodeInterface, to: CodeNodeInterface | NodeInterface): void {
+    // if (!from || !to) return
     if (from.type !== "node") from.hidden = false;
     if (to.type !== "node") to.hidden = false;
     this.graph.addConnection(from, to);

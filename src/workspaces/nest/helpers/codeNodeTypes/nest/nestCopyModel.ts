@@ -13,7 +13,7 @@ import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 import nestCopyModel from "./nestCopyModel";
 import { INESTCopyModelProps, NESTCopyModel } from "../../model/copyModel";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";
-import { loadNESTParameterNode } from "./nestParameters";
+import { updateNESTParameterNode } from "./nestParameters";
 
 export default defineDynamicCodeNode({
   type: "nest.CopyModel",
@@ -80,13 +80,7 @@ export const loadNESTCopyModelNode = (
 
   // params
   const params = modelProps.params?.filter((param: IParamProps) => ("visible" in param ? param.visible : true));
-  if (params && params.length > 0) {
-    const position = { ...codeNode.position };
-    position.x -= 400;
-    position.y += 100;
-    const paramsNode = loadNESTParameterNode(graph, params, position);
-    graph.addConnection(paramsNode.outputs.out, codeNode.inputs.params);
-  }
+  if (params && params.length > 0) updateNESTParameterNode(graph, codeNode, "params", params);
 
   return codeNode;
 };

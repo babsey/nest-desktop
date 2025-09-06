@@ -1,9 +1,8 @@
 // connection.ts
 
 import { BaseConnection, IConnectionProps } from "@/helpers/connection/connection";
-import { ConnectionParameter } from "@/helpers/connection/connectionParameter";
 import { IParamProps } from "@/helpers/common/parameter";
-import { TNodeGroup } from "@/types";
+import { TConnectionParameter, TNodeGroup } from "@/types";
 
 import { INESTConnectionMaskProps, NESTConnectionMask } from "./connectionMask";
 import { INESTSynapseProps, NESTSynapse } from "../synapse/synapse";
@@ -14,6 +13,8 @@ import { NESTNetwork } from "../network/network";
 import { NESTNode } from "../node/node";
 import { NESTNodeSlice } from "../node/nodeSlice";
 import { NESTSynapseParameter } from "../synapse/synapseParameter";
+import { updateNESTParameterNode } from "../codeNodeTypes/nest/nestParameters";
+import { NESTConnectionParameter } from "./connectionParameter";
 
 export interface INESTConnectionProps extends IConnectionProps {
   sourceSlice?: IParamProps[];
@@ -111,7 +112,7 @@ export class NESTConnection extends BaseConnection {
    */
   override resetParams(): void {
     // Reset connection parameter.
-    this.paramsAll.forEach((param: ConnectionParameter) => param.reset());
+    this.paramsAll.forEach((param: TConnectionParameter) => param.reset());
 
     // Reset synapse parameter.
     this.synapse.paramsAll.forEach((param: NESTSynapseParameter) => param.reset());
@@ -130,7 +131,7 @@ export class NESTConnection extends BaseConnection {
     if (this.rule.value !== "all_to_all") connectionProps.rule = this.rule.value;
 
     if (this.paramsVisible.length > 0)
-      connectionProps.params = this.filteredParams.map((param: ConnectionParameter) => param.toJSON());
+      connectionProps.params = this.filteredParams.map((param: TConnectionParameter) => param.toJSON());
 
     if (this.synapse.modelId !== "static_synapse" || this.synapse.paramsVisible.length > 0)
       connectionProps.synapse = this._synapse.toJSON();
@@ -140,5 +141,12 @@ export class NESTConnection extends BaseConnection {
     if (this.mask.hasMask) connectionProps.mask = this.mask.toJSON();
 
     return connectionProps;
+  }
+
+  updateParamsCodeNode(): void {
+    const params = this.filteredParams.map((param: NESTConnectionParameter) => param.toJSON());
+    updateNESTParameterNode(this.network.project.code.graph, this.codeNode, "conn_spec", params);
+
+    super.updateParamsCodeNode();
   }
 }

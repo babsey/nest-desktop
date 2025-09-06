@@ -360,11 +360,11 @@ export class NESTNode extends BaseNode {
     return nodeProps;
   }
 
-  updateParamsCodeNodeHidden(): void {
+  updateParamsCodeNode(): void {
     const params = this.filteredParams.map((param: NodeParameter) => param.toJSON());
-    updateNESTParameterNode(this.network.project.code.graph, this.codeNode, params);
+    updateNESTParameterNode(this.network.project.code.graph, this.codeNode, "params", params);
 
-    super.updateParamsCodeNodeHidden();
+    super.updateParamsCodeNode();
   }
 
   /**

@@ -113,7 +113,7 @@ export class NESTCodeGraph extends BaseObj {
     const space = 70;
 
     const node = new nodeType();
-    if (props) node.props = props;
+    if (props) node.state.props = props;
 
     this.addNode(node, idx);
     if (node.position) {
@@ -139,7 +139,7 @@ export class NESTCodeGraph extends BaseObj {
     props?: unknown,
   ): AbstractCodeNode {
     const node = new nodeType();
-    if (props) node.props = props;
+    if (props) node.state.props = props;
 
     this.addNode(node, idx);
     if (node.position) node.position = position;

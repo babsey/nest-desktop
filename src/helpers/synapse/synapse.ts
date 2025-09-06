@@ -104,8 +104,11 @@ export class BaseSynapse extends BaseObj {
   }
 
   set paramsVisible(values: string[]) {
-    this._paramsVisible = values;
-    this.onUpdate({ preventSimulation: true });
+    this._paramsVisible = this.paramsAll
+      .filter((param: TSynapseParameter) => values.includes(param.id))
+      .map((param: TSynapseParameter) => param.id);
+
+    this.updateParamsCodeNode();
   }
 
   get weight(): number {
@@ -279,5 +282,14 @@ export class BaseSynapse extends BaseObj {
 
   updateHash(): void {
     this._updateHash(this.toJSON());
+  }
+
+  updateParamsCodeNode(): void {
+    this.paramsAll.forEach((param: TSynapseParameter) => {
+      if (!param.intf) return;
+      param.intf[param.id].setHidden(!this._paramsVisible.includes(param.id));
+    });
+
+    this.codeNode?.code?.onUpdate();
   }
 }

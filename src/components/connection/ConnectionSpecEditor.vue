@@ -51,7 +51,7 @@
       v-for="(param, index) in connection.filteredParams"
       :key="index"
       :color="connection.sourceNode.color"
-      :param="(param as ConnectionParameter)"
+      :param="(param as TConnectionParameter)"
     />
   </v-list>
 </template>
@@ -61,8 +61,7 @@ import { computed } from "vue";
 
 import Menu from "../common/Menu.vue";
 import ParamListItem from "../parameter/ParamListItem.vue";
-import { ConnectionParameter } from "@/helpers/connection/connectionParameter";
-import { TConnection } from "@/types";
+import { TConnection, TConnectionParameter } from "@/types";
 
 const props = defineProps<{ connection: TConnection }>();
 const connection = computed(() => props.connection);

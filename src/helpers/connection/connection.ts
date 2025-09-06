@@ -1,6 +1,6 @@
 // connection.ts
 
-import { TConnections, TNetwork, TNode, TNodeGroup, TSynapse } from "@/types";
+import { TConnectionParameter, TConnections, TNetwork, TNode, TNodeGroup, TSynapse } from "@/types";
 
 import { BaseObj } from "../common/base";
 import { BaseSynapse, ISynapseProps } from "../synapse/synapse";
@@ -23,7 +23,7 @@ export class BaseConnection extends BaseObj {
   // private readonly _name = "Connection";
 
   // private _idx: number = -1; // generative
-  private _params: Record<string, ConnectionParameter> = {};
+  private _params: Record<string, TConnectionParameter> = {};
   private _paramsVisible: string[] = [];
   private _rule: ConnectionRule;
   private _source: TNode | TNodeGroup;
@@ -68,7 +68,7 @@ export class BaseConnection extends BaseObj {
   /**
    * Returns all visible parameters.
    */
-  get filteredParams(): ConnectionParameter[] {
+  get filteredParams(): TConnectionParameter[] {
     return this._paramsVisible.map((paramId: string) => this._params[paramId]);
   }
 
@@ -103,11 +103,11 @@ export class BaseConnection extends BaseObj {
     return this.connections.network;
   }
 
-  get params(): Record<string, ConnectionParameter> {
+  get params(): Record<string, TConnectionParameter> {
     return this._params;
   }
 
-  get paramsAll(): ConnectionParameter[] {
+  get paramsAll(): TConnectionParameter[] {
     return Object.values(this._params);
   }
 
@@ -116,8 +116,11 @@ export class BaseConnection extends BaseObj {
   }
 
   set paramsVisible(values: string[]) {
-    this._paramsVisible = values;
-    this.onUpdate({ preventSimulation: true });
+    this._paramsVisible = this.paramsAll
+      .filter((param: TConnectionParameter) => values.includes(param.id))
+      .map((param: TConnectionParameter) => param.id);
+
+    this.updateParamsCodeNode();
   }
 
   get parent(): TConnections {
@@ -227,7 +230,7 @@ export class BaseConnection extends BaseObj {
   //  */
   // hideAllParams(): void {
   //   Object.values(this._params).forEach(
-  //     (param: ConnectionParameter) => (param.visible = false)
+  //     (param: TConnectionParameter) => (param.visible = false)
   //   );
   // }
 
@@ -326,7 +329,7 @@ export class BaseConnection extends BaseObj {
    */
   resetParams(): void {
     // Reset connection parameter.
-    this.paramsAll.forEach((param: ConnectionParameter) => param.reset());
+    this.paramsAll.forEach((param: TConnectionParameter) => param.reset());
   }
 
   /**
@@ -341,7 +344,7 @@ export class BaseConnection extends BaseObj {
   //  */
   // showAllParams(): void {
   //   Object.values(this._params).forEach(
-  //     (param: ConnectionParameter) => (param.visible = true)
+  //     (param: TConnectionParameter) => (param.visible = true)
   //   );
   // }
 
@@ -358,7 +361,7 @@ export class BaseConnection extends BaseObj {
     if (this.rule.value !== "all_to_all") connectionProps.rule = this.rule.value;
 
     if (this.paramsVisible.length > 0)
-      connectionProps.params = this.filteredParams.map((param: ConnectionParameter) => param.toJSON());
+      connectionProps.params = this.filteredParams.map((param: TConnectionParameter) => param.toJSON());
 
     return connectionProps;
   }
@@ -383,7 +386,7 @@ export class BaseConnection extends BaseObj {
       targetModelId?: string;
     } = {
       idx: this.idx,
-      params: this.paramsAll.map((param: ConnectionParameter) => param.toJSON()),
+      params: this.paramsAll.map((param: TConnectionParameter) => param.toJSON()),
       synapse: this.synapse.hash,
     };
 
@@ -391,5 +394,14 @@ export class BaseConnection extends BaseObj {
     if (this.target?.isNode) hashProps.targetModelId = this.targetNode.modelId;
 
     this._updateHash(hashProps);
+  }
+
+  updateParamsCodeNode(): void {
+    this.paramsAll.forEach((param: TConnectionParameter) => {
+      if (!param.intf) return;
+      param.intf[param.id].setHidden(!this._paramsVisible.includes(param.id));
+    });
+
+    this.codeNode?.code?.onUpdate();
   }
 }

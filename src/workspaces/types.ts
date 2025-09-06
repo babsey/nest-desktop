@@ -8,6 +8,7 @@ export type TActivityGraph = nest.NESTActivityGraph;
 export type TConnection = nest.NESTConnection | norse.NorseConnection;
 export type TConnectionProps = nest.INESTConnectionProps | norse.INorseConnectionProps;
 export type TConnections = nest.NESTConnections | norse.NorseConnections;
+export type TConnectionParameter = nest.NESTConnectionParameter;
 export type TModel = nest.NESTModel | norse.NorseModel | pynn.PyNNModel;
 export type TModelParameter = nest.NESTCopyModelParameter;
 export type TModelDB = nest.NESTModelDB | norse.NorseModelDB | pynn.PyNNModelDB;

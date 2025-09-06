@@ -9,6 +9,7 @@ import {
   displayInSidebar,
   setType,
 } from "baklavajs";
+import { nextTick } from "vue";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatLabel } from "@/helpers/codeGraph/codeNode";
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
@@ -23,11 +24,10 @@ import { INESTNodeCollection, nestNodeCollectionType } from "./interfaceTypes";
 import { INESTNodeSpatialProps } from "../../node/nodeSpatial/nodeSpatial";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";
 import { NESTNode } from "../../node/node";
+import { cleanNESTParameterNode, updateNESTParameterNode } from "./nestParameters";
 import { getNESTDataResponseNode, loadNESTDataResponseNode } from "./nestDataResponse";
 import { loadNESTRandomUniform } from "./nestRandomUniform";
 import { loadNESTSpatialFree } from "./nestSpatialFree";
-import { updateNESTParameterNode } from "./nestParameters";
-import { nextTick } from "vue";
 
 export interface INESTNodeProps {
   model?: string;
@@ -87,40 +87,35 @@ export default defineDynamicCodeNode({
   onGraphUpdate() {
     if (!this.node) return;
 
-    if (!this.node.view) {
+    let nestNode: NESTNode | undefined = this.node.view as NESTNode;
+    if (!nestNode) {
       const idx = this.node.indexOfNodeType;
-      const node = new NESTNode(this.node.code?.project.network.nodes, {
+      nestNode = new NESTNode(this.node.code?.project.network.nodes, {
         view: { position: { x: 150 * idx, y: 0 + 50 * (idx % 2) } },
       });
 
-      this.node.view = node;
-      node.codeNodes.node = this.node;
+      this.node.view = nestNode;
+      nestNode.codeNodes.node = this.node;
 
-      node.init();
+      nestNode.init();
     }
 
-    // const paramsProps = this.node.view.paramJSON;
-    // const paramsNode = updateNESTParameterNode(this.node.graph, this.node, paramsProps);
-
-    const paramsNode = this.node.getConnectedNodeByInterface("params");
-    this.node.view.codeNodes.params = paramsNode;
-    this.node.view.paramsAll.forEach((param) => (param.codeNodes.node = paramsNode));
-
+    const paramsNode = this.node.getConnectedNodeByInterface("params", "inputs");
     if (paramsNode) {
-      if (!paramsNode.view) paramsNode.view = this.node.view;
-      paramsNode.onUpdate();
+      cleanNESTParameterNode(paramsNode, nestNode);
+    } else {
+      this.node.inputs.params.setHidden(true);
     }
 
     const spatialNode = this.node.getConnectedNodeByInterface("positions", "inputs");
-    this.node.view.codeNodes.spatial = spatialNode;
-    this.node.view.spatial.codeNodes.node = spatialNode;
-
-    // const responseNode = this.node.getConnectedNodeByInterface("positions", "outputs");
+    nestNode.codeNodes.spatial = spatialNode;
+    nestNode.spatial.codeNodes.node = spatialNode;
 
     if (spatialNode) {
-      if (!spatialNode.view) spatialNode.view = this.node.view.spatial;
-
+      if (!spatialNode.view) spatialNode.view = nestNode.spatial;
       spatialNode.onGraphUpdate();
+    } else {
+      this.node.inputs.positions.setHidden(true);
     }
   },
   onModelUpdate() {
@@ -201,7 +196,7 @@ export const loadNESTCreateNode = (
   idx: number = -1,
 ): AbstractCodeNode => {
   const codeNode = addNESTCreateNode(graph, idx);
-  codeNode.state.props = nodeProps;
+  if (nodeProps) codeNode.state.props = nodeProps;
 
   const codeNodeProps: Record<string, unknown> = { model: nodeProps.model };
   if (nodeProps.size) codeNodeProps.size = nodeProps.size;
@@ -210,7 +205,7 @@ export const loadNESTCreateNode = (
   // params
   if (nodeProps.params) {
     const paramsProps = nodeProps.params.filter((param: IParamProps) => ("visible" in param ? param.visible : true));
-    updateNESTParameterNode(graph, codeNode, paramsProps);
+    updateNESTParameterNode(graph, codeNode, "params", paramsProps);
   }
 
   // positions
@@ -265,27 +260,18 @@ export const updateNESTSpatialNode = (
     randNode = spatialNode.getConnectedNodeByInterface("pos");
     if (randNode) randNode.remove();
     delete spatialNode.view.codeNodes.node;
-    // delete spatialNode.view;
     spatialNode.remove();
-    codeNode.inputs.positions.setHidden(true);
   } else if (!spatialNode) {
     const randNode = loadNESTRandomUniform(graph, { min: -0.5, max: 0.5 }, graph.nodes.indexOf(codeNode));
     spatialNode = loadNESTSpatialFree(graph, graph.nodes.indexOf(codeNode));
 
     graph.addConnection(randNode.outputs.out, spatialNode.inputs.pos);
     graph.addConnection(spatialNode.outputs.out, codeNode.inputs.positions);
-
-    // if (codeNode.view) {
-    //   spatialNode.view = codeNode.view.spatial;
-    //   spatialNode.view.codeNodes.node = spatialNode;
-    // }
   }
+  codeNode.onUpdate(); // add/remove positions interface in outputs
 
   // spatialNode.updateValues(spatialProps);
-
   nextTick(() => {
-    codeNode.onUpdate();
-    spatialNode.onGraphUpdate();
     loadNESTDataResponseNode(graph);
   });
 };

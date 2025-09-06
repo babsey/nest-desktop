@@ -67,9 +67,9 @@ export const loadNESTDataResponseNode = (graph: CodeGraph | NESTCodeGraph): void
 
   responseNode.inputs.positions.setHidden(spatialNodes.length === 0);
   if (spatialNodes.length > 0 && responseNode.inputs.positions)
-    spatialNodes.forEach((spatialNode: AbstractCodeNode) =>
-      graph.addConnection(spatialNode.outputs.positions, responseNode.inputs.positions),
-    );
+    spatialNodes.forEach((spatialNode: AbstractCodeNode) => {
+      graph.addConnection(spatialNode.outputs.positions, responseNode.inputs.positions);
+    });
 
   const simulateNode = getNESTSimulateNode(graph);
   if (!graph.hasConnection(simulateNode.outputs._node, responseNode.inputs._node))

@@ -32,6 +32,7 @@ import type { INetworkProjectProps, NetworkProject } from "./helpers/project/net
 export type TActivityGraph = BaseActivityGraph | workspaces.TActivityGraph;
 export type TCode = BaseCode | TSimulationCode;
 export type TConnection = BaseConnection | workspaces.TConnection;
+export type TConnectionParameter = ConnectionParameter | workspaces.TConnectionParameter;
 export type TConnectionProps = IConnectionProps | workspaces.TConnectionProps;
 export type TConnections = BaseConnections | workspaces.TConnections;
 export type TModel = BaseModel | workspaces.TModel;
@@ -50,9 +51,9 @@ export type TNodeProps = INodeProps | workspaces.TNodeProps;
 export type TNodes = BaseNodes | workspaces.TNodes;
 export type TParameter =
   | ActivityChartPanelModelParameter
-  | ConnectionParameter
   | NodeParameter
   | BaseParameter
+  | TConnectionParameter
   | TModelParameter
   | TSynapseParameter;
 export type TProject = BaseProject | TNetworkProject;

@@ -280,7 +280,6 @@ export function defineDynamicCodeNode<I, O>(
     override save(): ICodeNodeState<I, O> {
       const state = super.save();
       saveNodeState(this.graph, state);
-
       return state;
     }
 
