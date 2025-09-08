@@ -18,7 +18,7 @@ import {
 } from "./interfaceTypes";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";
 import { getNESTSimulateNode } from "./nestSimulate";
-import { updateNESTParameterNode } from "./nestParameters";
+import { cleanNESTParameterNode, updateNESTParameterNode } from "./nestParameters";
 
 export default defineCodeNode({
   type: "nest.Connect",
@@ -76,7 +76,8 @@ export default defineCodeNode({
   onGraphUpdate() {
     if (!this.node) return;
 
-    if (!this.node.view) {
+    let nestConnection = this.node.view as NESTConnection;
+    if (!nestConnection) {
       const connectionProps: Record<string, unknown> = {};
 
       const sourceNode = this.node.getConnectedNodeByInterface("pre");
@@ -88,7 +89,7 @@ export default defineCodeNode({
       const connSpecNode = this.node.getConnectedNodeByInterface("conn_spec");
       if (connSpecNode) {
         const paramProps = Object.entries(connSpecNode.inputs).map(([k, v]) => ({ id: k, value: v.value }));
-        if (paramProps.length > 0) connectionProps = { params: paramProps };
+        if (paramProps.length > 0) connectionProps.params = paramProps;
       }
 
       const synSpecNode = this.node.getConnectedNodeByInterface("syn_spec");
@@ -97,14 +98,12 @@ export default defineCodeNode({
         if (paramProps.length > 0) connectionProps.synapse = { params: paramProps };
       }
 
-      const connection: NESTConnection = new NESTConnection(
-        this.node.code.project.network.connections,
-        connectionProps,
-      );
+      nestConnection = new NESTConnection(this.node.code.project.network.connections, connectionProps);
 
-      this.node.view = connection;
-      connection.codeNodes.node = this.node;
-      connection.init();
+      this.node.view = nestConnection;
+      nestConnection.codeNodes.node = this.node;
+
+      nestConnection.init();
     }
 
     const connSpecNode = this.node.getConnectedNodeByInterface("conn_spec");
@@ -116,7 +115,8 @@ export default defineCodeNode({
 
     const synSpecNode = this.node.getConnectedNodeByInterface("syn_spec");
     if (synSpecNode) {
-      // cleanNESTParameterNode(synSpecNode, this.node.view.synapse);
+      synSpecNode.view = nestConnection.synapse;
+      cleanNESTParameterNode(synSpecNode, nestConnection);
     } else {
       this.node.inputs.syn_spec.setHidden(true);
     }

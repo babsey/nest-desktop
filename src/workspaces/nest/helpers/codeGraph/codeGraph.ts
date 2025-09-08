@@ -249,6 +249,7 @@ export class NESTCodeGraph extends BaseObj {
     nodeStates.forEach((nodeState: INodeState<unknown, unknown>, nodeIdx) => {
       const node = this.nodes[nodeIdx] as AbstractCodeNode;
       nodeState.integrated = node.state.integrated;
+      nodeState.props = node.state.props;
 
       Object.entries(nodeState.inputs).forEach(([inputKey]) => {
         if (node.inputs[inputKey]) nodeState.inputs[inputKey].hidden = node.inputs[inputKey].hidden;

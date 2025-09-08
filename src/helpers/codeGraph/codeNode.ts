@@ -39,6 +39,7 @@ export interface ICodeNodeState<I, O> {
   inputs: NodeInterfaceDefinitionStates<I> & NodeInterfaceDefinitionStates<Record<string, NodeInterface<unknown>>>;
   integrated: boolean;
   outputs: NodeInterfaceDefinitionStates<O> & NodeInterfaceDefinitionStates<Record<string, NodeInterface<unknown>>>;
+  props: unknown;
 }
 
 export interface CodeNodeInterface extends NodeInterface<unknown> {
@@ -67,6 +68,7 @@ export abstract class AbstractCodeNode extends AbstractNode {
     script: "",
     token: null,
   });
+  private _inputProps: Record<string, unknown> = {};
 
   public logger = mainLogger.getSubLogger({
     name: `[${truncate(this.id)}] ${this.constructor.name}`,
@@ -485,7 +487,10 @@ export const loadNodeState = (
   if (!node) return;
 
   if (!node.subgraph) {
-    if (node.state) node.state.integrated = nodeState.integrated;
+    if (node.state) {
+      node.state.integrated = nodeState.integrated;
+      node.state.props = nodeState.props;
+    }
 
     Object.entries(nodeState.inputs).forEach(([inputKey, inputItem]) => {
       if (inputKey === "_node") return;

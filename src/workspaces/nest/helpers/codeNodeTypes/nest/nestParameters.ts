@@ -97,7 +97,6 @@ export const addNESTParameterNode = (
 
 export const cleanNESTParameterNode = (paramsNode: AbstractCodeNode, nodeView: unknown): void => {
   if (!nodeView) return;
-  // console.log("clean parameter node", paramsNode.shortId, paramsNode.state.props);
 
   nodeView.codeNodes.params = paramsNode;
   nodeView.paramsAll.forEach((param) => (param.codeNodes.node = paramsNode));
@@ -123,23 +122,6 @@ export const createParameterInterface = (param: IParam): NodeInterface => {
   return paramInterface;
 };
 
-// export const updateNESTParameterInterfaces = (paramNode: AbstractCodeNode, paramProps: IParamProps[] = []): void => {
-//   paramNode.state.props = paramProps;
-
-//   const paramIds = paramProps.map((paramProp) => paramProp.id);
-//   const inputKeys = Object.keys(paramNode.inputs);
-
-//   inputKeys.forEach((inputKey: string) => {
-//     if (!paramIds.includes(inputKey)) delete paramNode.inputs[inputKey];
-//   });
-
-//   paramProps.forEach((paramProp: IParamProps) => {
-//     if (inputKeys.includes(paramProp.id)) return;
-//     const paramInterface = createParameterInterface(paramProp);
-//     paramNode.addInput(paramProp.id, paramInterface);
-//   });
-// };
-
 export const updateNESTParameterNode = (
   graph: CodeGraph | NESTCodeGraph,
   codeNode: AbstractCodeNode,
@@ -158,11 +140,6 @@ export const updateNESTParameterNode = (
     paramsNode = addNESTParameterNode(graph, position, graph.nodes.indexOf(codeNode), paramsProps);
   }
   paramsNode.state.props = paramsProps;
-
-  // TODO: use state props to update param interfaces, for now use this.
-  paramsProps.forEach((paramProps: IParamProps) =>
-    paramsNode.addInput(paramProps.id, createParameterInterface(paramProps)),
-  );
 
   if (!graph.hasConnection(paramsNode.outputs.out, codeNode.inputs[paramInterfaceName]))
     graph.addConnection(paramsNode.outputs.out, codeNode.inputs[paramInterfaceName]);

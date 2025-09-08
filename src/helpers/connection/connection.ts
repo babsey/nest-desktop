@@ -398,7 +398,7 @@ export class BaseConnection extends BaseObj {
 
   updateParamsCodeNode(): void {
     this.paramsAll.forEach((param: TConnectionParameter) => {
-      if (!param.intf) return;
+      if (!param.intf || !param.intf[param.id]) return;
       param.intf[param.id].setHidden(!this._paramsVisible.includes(param.id));
     });
 
