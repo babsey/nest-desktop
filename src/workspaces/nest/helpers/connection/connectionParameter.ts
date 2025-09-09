@@ -4,6 +4,7 @@ import { ConnectionParameter } from "@/helpers/connection/connectionParameter";
 import { IParamProps, IParamType } from "@/helpers/common/parameter";
 
 import { NESTConnection } from "./connection";
+import { NESTNetwork } from "../network/network";
 
 const PyNNParamIds: Record<string, string> = {
   N: "n",
@@ -19,6 +20,10 @@ export class NESTConnectionParameter extends ConnectionParameter {
 
   override get connection(): NESTConnection {
     return this._connection as NESTConnection;
+  }
+
+  get network(): NESTNetwork {
+    return this.connection.network;
   }
 
   /**

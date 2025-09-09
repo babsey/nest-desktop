@@ -3,7 +3,12 @@
 import { displayInSidebar, NumberInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import {
+  addNodeAtCoordinates,
+  CodeGraph,
+  getPositionAtColumn,
+  getPositionBeforeNode,
+} from "@/helpers/codeGraph/codeGraph";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
@@ -45,8 +50,16 @@ export default defineCodeNode({
 });
 
 export const addNESTRandomUniform = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
-  const typeIdx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.random.uniform").length;
-  const codeNode = graph.addNodeAtColumn(nestRandomUniform, -2, 900 + 240 * typeIdx, idx);
+  let position: { x: number; y: number };
+
+  if (idx !== -1) {
+    position = getPositionBeforeNode(graph, idx);
+  } else {
+    const typeIdx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.random.uniform").length;
+    position = getPositionAtColumn(-2, 900 + 240 * typeIdx);
+  }
+
+  const codeNode = addNodeAtCoordinates(graph, nestRandomUniform, position);
   codeNode.state.integrated = true;
   return codeNode;
 };

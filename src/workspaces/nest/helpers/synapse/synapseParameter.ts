@@ -6,6 +6,7 @@ import { ModelParameter } from "@/helpers/model/modelParameter";
 
 import { NESTCopyModelParameter } from "../model/copyModelParameter";
 import { NESTSynapse } from "./synapse";
+import { NESTNetwork } from "../network/network";
 
 export class NESTSynapseParameter extends BaseSynapseParameter {
   constructor(synapse: NESTSynapse, paramProps: IParamProps) {
@@ -14,6 +15,10 @@ export class NESTSynapseParameter extends BaseSynapseParameter {
 
   override get modelParam(): ModelParameter | NESTCopyModelParameter {
     return this.synapse.model.params[this.id];
+  }
+
+  get network(): NESTNetwork {
+    return this.synapse.connection.network;
   }
 
   override get parent(): NESTSynapse {

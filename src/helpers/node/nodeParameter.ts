@@ -1,6 +1,6 @@
 // nodeParameter.ts
 
-import { TNodeParameterParent } from "@/types";
+import { TNetwork, TNodeParameterParent } from "@/types";
 
 import { BaseParameter, IParamProps } from "../common/parameter";
 import { ModelParameter } from "../model/modelParameter";
@@ -18,6 +18,10 @@ export class NodeParameter extends BaseParameter {
    */
   override get modelParam(): ModelParameter {
     return this.node.model?.params[this.id];
+  }
+
+  get network(): TNetwork {
+    return this.node.network;
   }
 
   get node(): TNodeParameterParent {

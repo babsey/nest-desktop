@@ -3,7 +3,7 @@
 import { displayInSidebar, SelectInterface, setType, TextInputInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
@@ -124,29 +124,11 @@ export default defineCodeNode({
     // if (!this.node.view && !this.node.view.model && !this.node.view.model.isRecorder) return;
     // updateRecorderNode(this.node.graph, this.node.view.recorder.codeNode);
   },
-  // onUpdate({ conn_spec }) {
-  //   const inputs: Record<string, () => NodeInterface> = {};
-  //   const outputs: Record<string, () => NodeInterface> = {};
-
-  //   switch (conn_spec) {
-  //     case "pairwise_bernoulli":
-  //       inputs.p = () => new NumberInterface("p", 0.1, 0.01, 1).use(displayInSidebar, true);
-  //       break;
-  //     case "fixed_indegree":
-  //       inputs.indegree = () => new NumberInterface("indegree", 1).use(displayInSidebar, true);
-  //       break;
-  //     case "fixed_outdegree":
-  //       inputs.outdegree = () => new NumberInterface("outdegree", 1).use(displayInSidebar, true);
-  //       break;
-  //   }
-
-  //   return { inputs, outputs };
-  // },
 });
 
 export const addNESTConnectNode = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
   if (idx === -1) idx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.Connect").length;
-  const codeNode = graph.addNodeAtColumn(nestConnect, 3, 100 + 200 * idx, -1);
+  const codeNode = addNodeAtCoordinates(graph, nestConnect, getPositionAtColumn(3, 100 + 200 * idx));
   if (idx === 0) codeNode.state.comments = "Connect nodes";
   return codeNode;
 };

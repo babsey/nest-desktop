@@ -12,7 +12,7 @@ import {
 import { nextTick } from "vue";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
@@ -185,7 +185,7 @@ export default defineDynamicCodeNode({
 
 export const addNESTCreateNode = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
   if (idx === -1) idx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.Create").length;
-  const codeNode = graph.addNodeAtColumn(nestCreate, 1, 100 + 290 * idx);
+  const codeNode = addNodeAtCoordinates(graph, nestCreate, getPositionAtColumn(1, 100 + 290 * idx));
   if (idx === 0) codeNode.state.comments = "Create nodes";
   return codeNode;
 };
@@ -252,9 +252,7 @@ export const updateNESTSpatialNode = (
   if (!codeNode.view) return;
 
   let randNode: AbstractCodeNode | null;
-  let spatialNode: AbstractCodeNode | null;
-
-  spatialNode = codeNode.getConnectedNodeByInterface("positions");
+  let spatialNode: AbstractCodeNode | null = codeNode.getConnectedNodeByInterface("positions");
 
   if (spatialNode && !spatialProps) {
     randNode = spatialNode.getConnectedNodeByInterface("pos");
@@ -262,16 +260,15 @@ export const updateNESTSpatialNode = (
     delete spatialNode.view.codeNodes.node;
     spatialNode.remove();
   } else if (!spatialNode) {
-    const randNode = loadNESTRandomUniform(graph, { min: -0.5, max: 0.5 }, graph.nodes.indexOf(codeNode));
-    spatialNode = loadNESTSpatialFree(graph, graph.nodes.indexOf(codeNode));
-
-    graph.addConnection(randNode.outputs.out, spatialNode.inputs.pos);
+    spatialNode = loadNESTSpatialFree(graph, graph.nodeIds.indexOf(codeNode.id));
     graph.addConnection(spatialNode.outputs.out, codeNode.inputs.positions);
+
+    const randNode = loadNESTRandomUniform(graph, { min: -0.5, max: 0.5 }, graph.nodeIds.indexOf(spatialNode.id));
+    graph.addConnection(randNode.outputs.out, spatialNode.inputs.pos);
   }
+
   codeNode.onUpdate(); // add/remove positions interface in outputs
 
   // spatialNode.updateValues(spatialProps);
-  nextTick(() => {
-    loadNESTDataResponseNode(graph);
-  });
+  nextTick(() => loadNESTDataResponseNode(graph));
 };

@@ -1,16 +1,7 @@
 // codeGraph.ts
 
 import toposort from "toposort";
-import {
-  AbstractNode,
-  Connection,
-  Graph,
-  IBaklavaViewModel,
-  IEditorState,
-  INodeState,
-  NodeInterface,
-  useBaklava,
-} from "baklavajs";
+import { Connection, Graph, IBaklavaViewModel, IEditorState, INodeState, NodeInterface, useBaklava } from "baklavajs";
 
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 import { BaseObj } from "@/helpers/common/base";
@@ -56,6 +47,10 @@ export class NESTCodeGraph extends BaseObj {
     return this._viewModel.displayedGraph;
   }
 
+  get nodeIds(): string[] {
+    return this.nodes.map((node: AbstractCodeNode) => node.id);
+  }
+
   get nodes(): AbstractCodeNode[] {
     return this.graph.nodes as AbstractCodeNode[];
   }
@@ -72,79 +67,6 @@ export class NESTCodeGraph extends BaseObj {
     from.hidden = false;
     to.hidden = false;
     this.graph.addConnection(from, to);
-  }
-
-  /**
-   * Add code node to graph.
-   * @param node code node
-   * @param idx number
-   */
-  addNode(node: AbstractCodeNode, idx: number = -1): AbstractCodeNode {
-    const codeNode = this.graph.addNode(node as AbstractNode) as AbstractCodeNode;
-
-    if (idx != -1) {
-      const nodes = [...this.graph.nodes];
-      nodes.pop();
-      nodes.splice(idx, 0, codeNode);
-      this.graph._nodes = nodes;
-    }
-
-    return codeNode;
-  }
-
-  /**
-   * Add code node at column.
-   * @param nodeType
-   * @param col column
-   * @param offset number
-   * @param idx number
-   * @param props optional
-   * @returns Abstract code node
-   */
-  addNodeAtColumn(
-    nodeType: new () => AbstractCodeNode,
-    col: number = 0,
-    offset: number = 100,
-    idx: number = -1,
-    props?: unknown,
-  ): AbstractCodeNode {
-    const left = 300;
-    const width = 350;
-    const space = 70;
-
-    const node = new nodeType();
-    if (props) node.state.props = props;
-
-    this.addNode(node, idx);
-    if (node.position) {
-      node.position.x = left + col * (width + space);
-      node.position.y = offset;
-    }
-
-    return node;
-  }
-
-  /**
-   * Add code node at coordinates.
-   * @param nodeType
-   * @param position position
-   * @param idx number
-   * @param props optional
-   * @returns Abstract code node
-   */
-  addNodeAtCoordinates(
-    nodeType: new () => AbstractCodeNode,
-    position: { x: number; y: number } = { x: 0, y: 0 },
-    idx: number = -1,
-    props?: unknown,
-  ): AbstractCodeNode {
-    const node = new nodeType();
-    if (props) node.state.props = props;
-
-    this.addNode(node, idx);
-    if (node.position) node.position = position;
-
-    return node;
   }
 
   findNodeByType(nodeType: string): AbstractCodeNode | undefined {
@@ -233,11 +155,9 @@ export class NESTCodeGraph extends BaseObj {
 
     this.sortNodes();
 
-    // const graphState = this.graph.save();
-    // this.saveNodeStates(graphState.nodes);
-
     const editorState = this._viewModel.editor.save();
     this.saveNodeStates(editorState.graph.nodes);
+
     return editorState;
   }
 
@@ -270,19 +190,20 @@ export class NESTCodeGraph extends BaseObj {
 
     try {
       // Get a list of edges
-      const edges: [string, string | undefined][] = this.connections
-        // .filter(
-        //   (connection: Connection) =>
-        //     this.graph.findNodeById(connection.from.nodeId).outputs.node.id === connection.from.id &&
-        //     this.graph.findNodeById(connection.to.nodeId).inputs.node.id === connection.to.id,
-        // )
-        .map((connection: Connection) => [connection.from.nodeId, connection.to.nodeId]);
+      const edges: [string, string | undefined][] = this.connections.map((connection: Connection) => [
+        connection.to.nodeId,
+        connection.from.nodeId,
+      ]);
 
       // Get a list of node
-      const nodes = this.nodes.map((node: AbstractCodeNode) => node.id);
+      let nodeIds = [...this.nodeIds];
+
+      nodeIds.reverse();
 
       // Get sorted node ids
-      const nodeIds = toposort.array(nodes, edges);
+      nodeIds = toposort.array(nodeIds, edges);
+
+      nodeIds.reverse();
 
       // Update sorted nodes
       this.nodes = nodeIds.map((nodeId: string) => this.graph.findNodeById(nodeId)) as AbstractCodeNode[];

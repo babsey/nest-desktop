@@ -3,7 +3,7 @@
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph, findNodeByType } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, CodeGraph, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
@@ -43,7 +43,7 @@ export default defineCodeNode({
 });
 
 export const addNESTSimulateNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  const codeNode = graph.addNodeAtColumn(nestSimulate, 4, 100);
+  const codeNode = addNodeAtCoordinates(graph, nestSimulate, getPositionAtColumn(4, 100));
   codeNode.state.comments = "Run simulation";
   return codeNode;
 };

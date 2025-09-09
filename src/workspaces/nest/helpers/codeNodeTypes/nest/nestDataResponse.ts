@@ -4,7 +4,7 @@ import { displayInSidebar } from "baklavajs";
 
 import functionNode from "@/helpers/codeNodeTypes/base/function";
 import { AbstractCodeNode, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph, findNodeByType } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, CodeGraph, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
@@ -37,7 +37,7 @@ export default defineCodeNode({
 });
 
 export const addNESTDataResponseNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  return graph.addNodeAtColumn(nestDataResponse, 4, 900);
+  return addNodeAtCoordinates(graph, nestDataResponse, getPositionAtColumn(4, 900));
 };
 
 export const getNESTDataResponseNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
@@ -60,7 +60,7 @@ export const loadNESTDataResponseNode = (graph: CodeGraph | NESTCodeGraph): void
   if (spatialNodes.length === 0 && funcNode) {
     funcNode.remove();
   } else if (spatialNodes.length > 0 && !funcNode) {
-    funcNode = graph.addNodeAtColumn(functionNode, 3, 900);
+    funcNode = addNodeAtCoordinates(graph, functionNode, getPositionAtColumn(3, 900));
     funcNode.inputs.code.value = "pos = lambda n: dict(zip(n.global_id, nest.GetPosition(n)))";
     graph.addConnection(funcNode.outputs._node, responseNode.inputs._node);
   }

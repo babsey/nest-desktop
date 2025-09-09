@@ -102,6 +102,7 @@ import ParamPopover from "../parameter/ParamPopover.vue";
 import RangeSlider from "../controls/RangeSlider.vue";
 import TickSlider from "../controls/TickSlider.vue";
 import ValueSlider from "../controls/ValueSlider.vue";
+import { updateNESTParameterInterface } from "@/workspaces/nest/helpers/codeNodeTypes/nest/nestParameters";
 
 // const emit = defineEmits(["update:paramValue"]);
 const props = defineProps({
@@ -111,20 +112,15 @@ const props = defineProps({
 });
 const param = computed(() => props.param as TParameter);
 
-// const update = () => {
-//   nextTick(() => {
-//     emit("update:paramValue", param.intf.value);
-//   });
-// };
-
 const items = [
   {
     onClick: () => {
-      param.value.state.random = !param.value.state.random;
-      param.value.onUpdate();
+      // param.value.state.random = !param.value.state.random;
+      // param.value.onUpdate();
+      updateNESTParameterInterface(param.value.network.project.code.graph, param.value.codeNode, param.value.id);
     },
     prependIcon: "custom:dice-multiple-outline",
-    title: "Toggle view",
+    title: "Toggle value mode",
   },
   {
     icon: { class: "mdi-flip-h", icon: "mdi:mdi-reload" },

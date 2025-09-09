@@ -10,7 +10,7 @@ import {
 } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, CodeGraph, getPositionBeforeNode } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { TParameter } from "@/types";
@@ -20,10 +20,19 @@ import { booleanType, numberType, stringType } from "@/helpers/codeNodeTypes/bas
 import nestParameters from "./nestParameters";
 import { INESTNodeCollection } from "./interfaceTypes";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";
+import { addNESTRandomNormal } from "./nestRandomNormal";
+import { addNESTRandomUniform } from "./nestRandomUniform";
 
 interface IParam extends IParamProps {
   hidden?: boolean;
 }
+
+type TRandomTypes = "uniform" | "normal";
+
+const randomTypes: Record<TRandomTypes, (graph: CodeGraph | NESTCodeGraph, idx?: number) => AbstractCodeNode> = {
+  uniform: addNESTRandomUniform,
+  normal: addNESTRandomNormal,
+};
 
 export default defineDynamicCodeNode({
   type: "nest/Parameters",
@@ -87,10 +96,9 @@ export default defineDynamicCodeNode({
 export const addNESTParameterNode = (
   graph: CodeGraph | NESTCodeGraph,
   position: { x: number; y: number } = { x: 0, y: 0 },
-  idx: number = -1,
   props: IParamProps[] = [],
 ): AbstractCodeNode => {
-  const codeNode = graph.addNodeAtCoordinates(nestParameters, position, idx, props);
+  const codeNode = addNodeAtCoordinates(graph, nestParameters, position, props);
   codeNode.state.integrated = true;
   return codeNode;
 };
@@ -134,10 +142,8 @@ export const updateNESTParameterNode = (
     if (paramsNode) paramsNode.remove();
     return;
   } else if (!paramsNode) {
-    const position = { ...codeNode.position };
-    position.x -= 400;
-    position.y += 50;
-    paramsNode = addNESTParameterNode(graph, position, graph.nodes.indexOf(codeNode), paramsProps);
+    const position = getPositionBeforeNode(graph, graph.nodes.indexOf(codeNode));
+    paramsNode = addNESTParameterNode(graph, position, paramsProps);
   }
   paramsNode.state.props = paramsProps;
 
@@ -145,4 +151,22 @@ export const updateNESTParameterNode = (
     graph.addConnection(paramsNode.outputs.out, codeNode.inputs[paramInterfaceName]);
 
   return paramsNode;
+};
+
+export const updateNESTParameterInterface = (
+  graph: CodeGraph | NESTCodeGraph,
+  codeNode: AbstractCodeNode,
+  paramIntfName: string,
+  randomType: TRandomTypes | undefined = "uniform",
+): AbstractCodeNode | null => {
+  let randomNode: AbstractCodeNode | null = codeNode.getConnectedNodeByInterface(paramIntfName, "inputs");
+
+  if (randomNode && !randomNode.type.includes(randomType)) randomNode.remove();
+
+  if (!randomNode && randomType) {
+    randomNode = randomTypes[randomType](graph, graph.nodes.indexOf(codeNode));
+    graph.addConnection(randomNode.outputs.out, codeNode.inputs[paramIntfName]);
+  }
+
+  return randomNode;
 };

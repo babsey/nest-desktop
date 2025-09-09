@@ -1,10 +1,10 @@
 // nestPrepare.ts
 
-import { CodeGraph, findNodeByType } from "@/helpers/codeGraph/codeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NESTCodeGraph } from "../../codeGraph/codeGraph";
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
+import { addNodeAtCoordinates, CodeGraph, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
+import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
+import { NESTCodeGraph } from "../../codeGraph/codeGraph";
 import nestPrepare from "./nestPrepare";
 
 export default defineCodeNode({
@@ -14,7 +14,7 @@ export default defineCodeNode({
 });
 
 export const addNESTPrepareNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  return graph.addNodeAtColumn(nestPrepare, 4, 100);
+  return addNodeAtCoordinates(graph, nestPrepare, getPositionAtColumn(4, 100));
 };
 
 export const getNESTPrepareNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {

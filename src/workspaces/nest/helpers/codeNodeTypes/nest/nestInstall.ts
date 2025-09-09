@@ -3,7 +3,7 @@
 import { displayInSidebar, setType, TextInputInterface } from "baklavajs";
 
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
@@ -25,7 +25,7 @@ export default defineCodeNode({
 
 export const addNESTInstallNode = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
   if (idx === -1) idx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.Install").length;
-  const codeNode = graph.addNodeAtColumn(nestInstall, -2, 500 + 290 * idx, 1 + idx);
+  const codeNode = addNodeAtCoordinates(graph, nestInstall, getPositionAtColumn(-2, 500 + 290 * idx));
   if (idx === 0) codeNode.state.comments = "Install modules";
   return codeNode;
 };

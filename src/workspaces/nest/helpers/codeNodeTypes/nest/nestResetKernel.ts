@@ -1,7 +1,7 @@
 // nestResetKernel.ts
 
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph, findNodeByType } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, CodeGraph, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestResetKernel from "./nestResetKernel";
@@ -14,7 +14,7 @@ export default defineCodeNode({
 });
 
 export const addNESTResetKernelNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  return graph.addNodeAtColumn(nestResetKernel, -2, 100);
+  return addNodeAtCoordinates(graph, nestResetKernel, getPositionAtColumn(-2, 100));
 };
 
 export const getNESTResetKernelNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {

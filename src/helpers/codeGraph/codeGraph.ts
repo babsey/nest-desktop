@@ -72,6 +72,10 @@ export class CodeGraph extends BaseObj {
     return Array.from(new Set(categories.map((category: string) => this.codeGraphStore.state.modules[category])));
   }
 
+  get nodeIds(): string[] {
+    return this.nodes.map((node: AbstractCodeNode) => node.id);
+  }
+
   get nodes(): AbstractCodeNode[] {
     return this.graph.nodes as AbstractCodeNode[];
   }
@@ -102,81 +106,6 @@ export class CodeGraph extends BaseObj {
     if (from.type !== "node") from.hidden = false;
     if (to.type !== "node") to.hidden = false;
     this.graph.addConnection(from, to);
-  }
-
-  /**
-   * Add code node to graph.
-   * @param node code node
-   * @param idx number
-   */
-  addNode(node: AbstractCodeNode, idx: number = -1): AbstractCodeNode | undefined {
-    if (this.code) node.code = this.code;
-
-    const codeNode = this.graph.addNode(node as AbstractNode) as AbstractCodeNode;
-
-    if (idx != -1) {
-      const nodes = [...this.graph.nodes];
-      nodes.pop();
-      nodes.splice(idx, 0, codeNode);
-      this.graph._nodes = nodes;
-    }
-
-    return codeNode;
-  }
-
-  /**
-   * Add code node at specific column.
-   * @param nodeType
-   * @param col column
-   * @param offset number
-   * @param idx number
-   * @param props optional
-   * @returns Abstract code node
-   */
-  addNodeAtColumn(
-    nodeType: new () => AbstractCodeNode,
-    col: number = 0,
-    offset: number = 100,
-    idx: number = -1,
-    props?: unknown,
-  ): AbstractCodeNode {
-    const left = 300;
-    const width = 350;
-    const space = 70;
-
-    const node = new nodeType();
-    if (props) node.state.props = props;
-
-    this.addNode(node, idx);
-    if (node.position) {
-      node.position.x = left + col * (width + space);
-      node.position.y = offset;
-    }
-
-    return node;
-  }
-
-  /**
-   * Add code node at coordinates.
-   * @param nodeType
-   * @param position
-   * @param idx number
-   * @param props optional
-   * @returns Abstract code node
-   */
-  addNodeAtCoordinates(
-    nodeType: new () => AbstractCodeNode,
-    position: { x: number; y: number } = { x: 0, y: 0 },
-    idx: number = -1,
-    props?: unknown,
-  ): AbstractCodeNode {
-    const node = new nodeType();
-    if (props) node.state.props = props;
-
-    this.addNode(node, idx);
-    if (node.position) node.position = position;
-
-    return node;
   }
 
   /**
@@ -283,8 +212,7 @@ export class CodeGraph extends BaseObj {
    * @param codeNode AbstractCodeNode
    */
   removeNode(codeNode: AbstractCodeNode): void {
-    codeNode.remove();
-    // this.graph.removeNode(codeNode as AbstractNode);
+    this.graph.removeNode(codeNode as AbstractNode);
   }
 
   /**
@@ -322,19 +250,20 @@ export class CodeGraph extends BaseObj {
     if (codeGraphStore.state.autosort) {
       try {
         // Get a list of edges
-        const edges: [string, string | undefined][] = this.connections
-          // .filter(
-          //   (connection: Connection) =>
-          //     this.graph.findNodeById(connection.from.nodeId).outputs.node.id === connection.from.id &&
-          //     this.graph.findNodeById(connection.to.nodeId).inputs.node.id === connection.to.id,
-          // )
-          .map((connection: Connection) => [connection.from.nodeId, connection.to.nodeId]);
+        const edges: [string, string | undefined][] = this.connections.map((connection: Connection) => [
+          connection.to.nodeId,
+          connection.from.nodeId,
+        ]);
 
         // Get a list of node
-        const nodes = this.nodes.map((node: AbstractCodeNode) => node.id);
+        let nodeIds = [...this.nodeIds];
+
+        nodeIds.reverse();
 
         // Get sorted node ids
-        const nodeIds = toposort.array(nodes, edges);
+        nodeIds = toposort.array(nodeIds, edges);
+
+        nodeIds.reverse();
 
         // Update sorted nodes
         this.graph._nodes = nodeIds.map((nodeId: string) => this.graph.findNodeById(nodeId)) as AbstractCodeNode[];
@@ -360,6 +289,45 @@ export class CodeGraph extends BaseObj {
   }
 }
 
+/**
+ * Add code node to graph.
+ * @param graph code graph
+ * @param node code node
+ */
+export const addNode = (graph: CodeGraph, node: AbstractCodeNode): AbstractCodeNode | undefined => {
+  if (graph.code) node.code = graph.code;
+  return graph.graph.addNode(node as AbstractNode) as AbstractCodeNode;
+};
+
+/**
+ * Add code node at coordinates.
+ * @param graph code graph
+ * @param nodeType
+ * @param position
+ * @param idx number
+ * @param props optional
+ * @returns Abstract code node
+ */
+export const addNodeAtCoordinates = (
+  graph: CodeGraph,
+  nodeType: new () => AbstractCodeNode,
+  position: { x: number; y: number } = { x: 0, y: 0 },
+  props?: unknown,
+): AbstractCodeNode => {
+  const node = new nodeType();
+  if (props) node.state.props = props;
+
+  addNode(graph, node);
+  if (node.position) node.position = position;
+
+  return node;
+};
+
+export const findNodeByType = (graph: CodeGraph | Graph, nodeType: string): AbstractCodeNode | undefined => {
+  const codeNodes = getCodeNodes(graph);
+  return codeNodes.find((codeNode: AbstractCodeNode) => codeNode.type === nodeType);
+};
+
 export const getCodeNodes = (graph: CodeGraph | Graph): AbstractCodeNode[] => {
   let nodes: AbstractCodeNode[] = [];
 
@@ -374,7 +342,29 @@ export const getCodeNodes = (graph: CodeGraph | Graph): AbstractCodeNode[] => {
   return nodes;
 };
 
-export const findNodeByType = (graph: CodeGraph | Graph, nodeType: string): AbstractCodeNode | undefined => {
-  const codeNodes = getCodeNodes(graph);
-  return codeNodes.find((codeNode: AbstractCodeNode) => codeNode.type === nodeType);
+/**
+ * Get position at specific column.
+ * @param col column
+ * @param offset number
+ * @returns position
+ */
+export const getPositionAtColumn = (col: number = 0, offset: number = 100): { x: number; y: number } => {
+  const left = 300;
+  const width = 350;
+  const space = 70;
+
+  return {
+    x: left + col * (width + space),
+    y: offset,
+  };
+};
+
+export const getPositionBeforeNode = (graph: CodeGraph, idx: number): { x: number; y: number } => {
+  const targetNode = graph.nodes[idx];
+  const position = { ...targetNode.position };
+
+  position.x -= 400;
+  position.y += 50;
+
+  return position;
 };

@@ -3,8 +3,8 @@
 import { displayInSidebar, NumberInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
+import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestRandomNormal from "./nestRandomNormal";
@@ -45,7 +45,7 @@ export default defineCodeNode({
 });
 
 export const addNESTRandomNormal = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  const codeNode = graph.addNodeAtColumn(nestRandomNormal, -2, 900);
+  const codeNode = addNodeAtCoordinates(graph, nestRandomNormal, getPositionAtColumn(-2, 900));
   codeNode.state.integrated = true;
   return codeNode;
 };

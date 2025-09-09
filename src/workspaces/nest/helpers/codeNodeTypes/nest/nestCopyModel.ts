@@ -3,10 +3,10 @@
 import { displayInSidebar, NodeInterface, setType, TextInputInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { DictInputInterface } from "@/helpers/codeGraph/interface/dictInputInterface";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
+import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
@@ -63,8 +63,7 @@ export default defineDynamicCodeNode({
 
 export const addNESTCopyModelNode = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
   if (idx === -1) idx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.CopyModel").length;
-  const codeNode = graph.addNodeAtColumn(nestCopyModel, 0 - 1, 100 + 250 * idx);
-  return codeNode;
+  return addNodeAtCoordinates(graph, nestCopyModel, getPositionAtColumn(-1, 100 + 250 * idx));
 };
 
 export const loadNESTCopyModelNode = (
