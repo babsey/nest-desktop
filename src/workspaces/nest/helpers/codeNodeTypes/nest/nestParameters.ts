@@ -10,12 +10,13 @@ import {
 } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { addNodeAtCoordinates, CodeGraph, getPositionBeforeNode } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { TParameter } from "@/types";
-import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
+import { addNodeAtCoordinates, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
 import { booleanType, numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 
 import nestParameters from "./nestParameters";
 import { INESTNodeCollection } from "./interfaceTypes";

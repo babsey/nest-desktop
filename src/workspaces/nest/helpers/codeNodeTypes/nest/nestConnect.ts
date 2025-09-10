@@ -3,9 +3,10 @@
 import { displayInSidebar, SelectInterface, setType, TextInputInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
+import { addNodeAtCoordinates, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestConnect from "./nestConnect";

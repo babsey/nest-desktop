@@ -3,8 +3,9 @@
 import { displayInSidebar, IntegerInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
+import { addNodeAtCoordinates, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestRandomUniformInt from "./nestRandomUniformInt";

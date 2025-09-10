@@ -4,8 +4,9 @@ import { displayInSidebar } from "baklavajs";
 
 import functionNode from "@/helpers/codeNodeTypes/base/function";
 import { AbstractCodeNode, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { addNodeAtCoordinates, CodeGraph, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
+import { addNodeAtCoordinates, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestDataResponse from "./nestDataResponse";

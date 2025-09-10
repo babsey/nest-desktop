@@ -3,14 +3,10 @@
 import { CheckboxInterface, displayInSidebar, IntegerInterface, NumberInterface } from "baklavajs";
 
 import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
+import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import {
-  addNodeAtCoordinates,
-  CodeGraph,
-  getPositionAtColumn,
-  getPositionBeforeNode,
-} from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestSpatialFree from "./nestSpatialFree";

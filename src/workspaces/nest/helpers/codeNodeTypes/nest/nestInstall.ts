@@ -3,7 +3,8 @@
 import { displayInSidebar, setType, TextInputInterface } from "baklavajs";
 
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-import { addNodeAtCoordinates, CodeGraph, getPositionAtColumn } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { addNodeAtCoordinates, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
