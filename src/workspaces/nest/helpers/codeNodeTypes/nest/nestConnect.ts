@@ -6,7 +6,7 @@ import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { addNodeAtCoordinates, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestConnect from "./nestConnect";
@@ -129,7 +129,7 @@ export default defineCodeNode({
 
 export const addNESTConnectNode = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
   if (idx === -1) idx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.Connect").length;
-  const codeNode = addNodeAtCoordinates(graph, nestConnect, getPositionAtColumn(3, 100 + 200 * idx));
+  const codeNode = graph.addNodeAtCoordinates(nestConnect, getPositionAtColumn(3, 100 + 200 * idx));
   if (idx === 0) codeNode.state.comments = "Connect nodes";
   return codeNode;
 };

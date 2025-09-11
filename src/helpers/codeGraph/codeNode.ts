@@ -68,7 +68,6 @@ export abstract class AbstractCodeNode extends AbstractNode {
     script: "",
     token: null,
   });
-  private _inputProps: Record<string, unknown> = {};
 
   public logger = mainLogger.getSubLogger({
     name: `[${truncate(this.id)}] ${this.constructor.name}`,

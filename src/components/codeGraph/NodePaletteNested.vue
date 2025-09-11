@@ -47,7 +47,6 @@ import { usePointer } from "@vueuse/core";
 import { useViewModel, useTransform, useNodeCategories } from "@baklavajs/renderer-vue";
 
 import PaletteEntry from "./PaletteEntry.vue";
-// import { useViewModel, useTransform, useNodeCategories } from "../utility";
 
 interface IDraggedNode {
   type: string;

@@ -18,13 +18,10 @@
 </template>
 
 <script setup lang="ts">
-import { Editor, useBaklava } from "baklavajs";
+import { IBaklavaViewModel } from "baklavajs";
 // import { computed } from "vue";
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
-const codeGraphStore = useCodeGraphStore();
-
-const viewModel = useBaklava(codeGraphStore.editor as Editor);
+defineProps<{ viewModel: IBaklavaViewModel }>();
 
 // const commands = computed(() => viewModel.value.settings.toolbar.commands);
 </script>

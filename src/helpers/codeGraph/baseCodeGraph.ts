@@ -11,21 +11,24 @@ import {
   NodeInterface,
   useBaklava,
 } from "baklavajs";
+import { v4 as uuidv4 } from "uuid";
 
 import { setViewSettings } from "@/plugins/baklava";
-import { truncate } from "@/utils/truncate";
 
 import { AbstractCodeNode } from "./codeNode";
-import { BaseObj } from "../common/base";
 import { CodeNodeInterface } from "./interface/codeNodeInterface";
 
-export class BaseCodeGraph extends BaseObj {
+interface IPosition {
+  x: number;
+  y: number;
+}
+
+export class BaseCodeGraph {
+  private _uuid: string;
   private _viewModel: IBaklavaViewModel;
 
   constructor() {
-    super();
-    this.logger.settings.name = `[${this.shortUuid}] code graph`;
-    // this.logger.settings.minLevel = 1;
+    this._uuid = uuidv4();
 
     this._viewModel = useBaklava();
     setViewSettings(this._viewModel);
@@ -51,12 +54,20 @@ export class BaseCodeGraph extends BaseObj {
     return this.graph.nodes as AbstractCodeNode[];
   }
 
+  set nodes(values: AbstractCodeNode[]) {
+    this.graph._nodes = values;
+  }
+
   get nodeCodes(): string[] {
     return this.nodes.map((node: AbstractCodeNode) => node.script);
   }
 
   get nodesSegregated(): AbstractCodeNode[] {
     return this.codeNodes.filter((node: AbstractCodeNode) => !node.state?.integrated) as AbstractCodeNode[];
+  }
+
+  get uuid(): string {
+    return this._uuid;
   }
 
   get viewModel(): IBaklavaViewModel {
@@ -74,6 +85,27 @@ export class BaseCodeGraph extends BaseObj {
   addNode(node: AbstractCodeNode): AbstractCodeNode | undefined {
     return this.graph.addNode(node as AbstractNode) as AbstractCodeNode;
   }
+
+  /**
+   * Add code node at coordinates.
+   * @param nodeType
+   * @param position
+   * @param props optional
+   * @returns code node
+   */
+  addNodeAtCoordinates = (
+    nodeType: new () => AbstractCodeNode,
+    position: IPosition = { x: 0, y: 0 },
+    props?: unknown,
+  ): AbstractCodeNode => {
+    const node = new nodeType();
+    if (props) node.state.props = props;
+
+    this.addNode(node);
+    if (node.position) node.position = position;
+
+    return node;
+  };
 
   /**
    * Add connection of code nodes
@@ -101,15 +133,17 @@ export class BaseCodeGraph extends BaseObj {
   }
 
   findNodeByType(nodeType: string): AbstractCodeNode | undefined {
-    return findNodeByType(this, nodeType);
+    return this.codeNodes.find((codeNode: AbstractCodeNode) => codeNode.type === nodeType);
   }
 
   getNodesBySameType(type: string): AbstractCodeNode[] {
-    return this.codeNodes.filter((node: AbstractCodeNode) => node.type === type) as AbstractCodeNode[];
+    return this.codeNodes.filter((codeNode: AbstractCodeNode) => codeNode.type === type) as AbstractCodeNode[];
   }
 
   getNodesBySameVariableNames(variableName: string): AbstractCodeNode[] {
-    return this.codeNodes.filter((node: AbstractCodeNode) => node.variableName === variableName) as AbstractCodeNode[];
+    return this.codeNodes.filter(
+      (codeNode: AbstractCodeNode) => codeNode.variableName === variableName,
+    ) as AbstractCodeNode[];
   }
 
   /**
@@ -128,19 +162,22 @@ export class BaseCodeGraph extends BaseObj {
    * Triggers on code graph update.
    */
   onUpdate() {
-    this.logger.trace("on update:", truncate(this.uuid), truncate(this.graph.id));
     if (this.uuid !== this.graph.id) return;
 
     if (this.nodes.length > 0 && this.connections.length > 0) this.sortNodes();
   }
 
+  /**
+   * Remove connection from the graph
+   * @param connection connection between code nodes
+   */
   removeConnection(connection: Connection): void {
     this.graph.removeConnection(connection);
   }
 
   /**
    * Remove node from the graph.
-   * @param codeNode AbstractCodeNode
+   * @param codeNode code node
    */
   removeNode(codeNode: AbstractCodeNode): void {
     this.graph.removeNode(codeNode as AbstractNode);
@@ -151,14 +188,12 @@ export class BaseCodeGraph extends BaseObj {
    * @returns graph state
    */
   save(): IEditorState {
-    this.logger.trace("save");
-
-    // this.sortNodes();
+    this.sortNodes();
 
     const editorState = this.viewModel.editor.save();
     editorState.graph.id = this.uuid;
 
-    // this.saveNodeStates(editorState.graph.nodes);
+    this.saveNodeStates(editorState.graph.nodes);
 
     return JSON.parse(JSON.stringify(editorState));
   }
@@ -188,7 +223,6 @@ export class BaseCodeGraph extends BaseObj {
    */
   sortNodes(): void {
     if (this.nodes.length === 0 || this.connections.length === 0) return;
-    this.logger.trace("sort nodes");
 
     this.unsubscribe();
     try {
@@ -209,55 +243,33 @@ export class BaseCodeGraph extends BaseObj {
       nodeIds.reverse();
 
       // Update sorted nodes
-      this.graph._nodes = nodeIds.map((nodeId: string) => this.graph.findNodeById(nodeId)) as AbstractCodeNode[];
+      this.nodes = nodeIds.map((nodeId: string) => this.graph.findNodeById(nodeId)) as AbstractCodeNode[];
     } catch {
-      this.logger.warn("Sorting nodes failed.");
+      console.warn("Failed to sort nodes.");
     }
     this.subscribe();
   }
 
-  subscribe(): void {
-    this.logger.trace("subscribe");
-  }
+  /**
+   * Subscribe on update.
+   */
+  subscribe(): void {}
 
-  unsubscribe(): void {
-    this.logger.trace("unsubscribe");
-  }
+  /**
+   * Unsubscribe on update.
+   */
+  unsubscribe(): void {}
 }
 
 /**
- * Add code node at coordinates.
- * @param graph code graph
- * @param nodeType
- * @param position
- * @param idx number
- * @param props optional
- * @returns Abstract code node
+ * Get nodes of current graph.
+ * @param graph graph / subgraph
+ * @returns list of code nodes
  */
-export const addNodeAtCoordinates = (
-  graph: CodeGraph,
-  nodeType: new () => AbstractCodeNode,
-  position: { x: number; y: number } = { x: 0, y: 0 },
-  props?: unknown,
-): AbstractCodeNode => {
-  const node = new nodeType();
-  if (props) node.state.props = props;
-
-  graph.addNode(node);
-  if (node.position) node.position = position;
-
-  return node;
-};
-
-export const findNodeByType = (graph: CodeGraph | Graph, nodeType: string): AbstractCodeNode | undefined => {
-  const codeNodes = getCodeNodes(graph);
-  return codeNodes.find((codeNode: AbstractCodeNode) => codeNode.type === nodeType);
-};
-
 export const getCodeNodes = (graph: CodeGraph | Graph): AbstractCodeNode[] => {
   let nodes: AbstractCodeNode[] = [];
 
-  graph.nodes.forEach((node) => {
+  graph.nodes.forEach((node: AbstractCodeNode) => {
     if (node.subgraph) {
       nodes = nodes.concat(getCodeNodes(node.subgraph));
     } else {
@@ -274,7 +286,7 @@ export const getCodeNodes = (graph: CodeGraph | Graph): AbstractCodeNode[] => {
  * @param offset number
  * @returns position
  */
-export const getPositionAtColumn = (col: number = 0, offset: number = 100): { x: number; y: number } => {
+export const getPositionAtColumn = (col: number = 0, offset: number = 100): IPosition => {
   const left = 300;
   const width = 350;
   const space = 70;
@@ -285,8 +297,12 @@ export const getPositionAtColumn = (col: number = 0, offset: number = 100): { x:
   };
 };
 
-export const getPositionBeforeNode = (graph: CodeGraph, idx: number): { x: number; y: number } => {
-  const targetNode = graph.nodes[idx];
+/**
+ * Get position before target node.
+ * @param node code node
+ * @returns position
+ */
+export const getPositionBeforeNode = (targetNode: AbstractCodeNode): IPosition => {
   const position = { ...targetNode.position };
 
   position.x -= 400;

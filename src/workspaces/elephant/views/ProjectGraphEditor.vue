@@ -1,9 +1,12 @@
 <template>
   <v-layout full-height>
-    <CodeGraphEditor />
+    <CodeGraphEditor v-if="codeGraphStore" :view-model="codeGraphStore.viewModel" />
   </v-layout>
 </template>
 
 <script setup lang="ts">
 import CodeGraphEditor from "@/components/codeGraph/CodeGraphEditor.vue";
+
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+const codeGraphStore = useCodeGraphStore();
 </script>

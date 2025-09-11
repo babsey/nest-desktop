@@ -6,7 +6,7 @@ import functionNode from "@/helpers/codeNodeTypes/base/function";
 import { AbstractCodeNode, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { addNodeAtCoordinates, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestDataResponse from "./nestDataResponse";
@@ -38,11 +38,11 @@ export default defineCodeNode({
 });
 
 export const addNESTDataResponseNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  return addNodeAtCoordinates(graph, nestDataResponse, getPositionAtColumn(4, 900));
+  return graph.addNodeAtCoordinates(nestDataResponse, getPositionAtColumn(4, 900));
 };
 
 export const getNESTDataResponseNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  const codeNode = findNodeByType(graph, "nest/response");
+  const codeNode = graph.findNodeByType("nest/response");
   if (!codeNode) return addNESTDataResponseNode(graph);
   return codeNode;
 };
@@ -61,7 +61,7 @@ export const loadNESTDataResponseNode = (graph: CodeGraph | NESTCodeGraph): void
   if (spatialNodes.length === 0 && funcNode) {
     funcNode.remove();
   } else if (spatialNodes.length > 0 && !funcNode) {
-    funcNode = addNodeAtCoordinates(graph, functionNode, getPositionAtColumn(3, 900));
+    funcNode = graph.addNodeAtCoordinates(functionNode, getPositionAtColumn(3, 900));
     funcNode.inputs.code.value = "pos = lambda n: dict(zip(n.global_id, nest.GetPosition(n)))";
     graph.addConnection(funcNode.outputs._node, responseNode.inputs._node);
   }

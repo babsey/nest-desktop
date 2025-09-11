@@ -14,7 +14,7 @@ import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { TParameter } from "@/types";
-import { addNodeAtCoordinates, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
 import { booleanType, numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 
@@ -99,7 +99,7 @@ export const addNESTParameterNode = (
   position: { x: number; y: number } = { x: 0, y: 0 },
   props: IParamProps[] = [],
 ): AbstractCodeNode => {
-  const codeNode = addNodeAtCoordinates(graph, nestParameters, position, props);
+  const codeNode = graph.addNodeAtCoordinates(nestParameters, position, props);
   codeNode.state.integrated = true;
   return codeNode;
 };
@@ -143,7 +143,7 @@ export const updateNESTParameterNode = (
     if (paramsNode) paramsNode.remove();
     return;
   } else if (!paramsNode) {
-    const position = getPositionBeforeNode(graph, graph.nodes.indexOf(codeNode));
+    const position = getPositionBeforeNode(codeNode);
     paramsNode = addNESTParameterNode(graph, position, paramsProps);
   }
   paramsNode.state.props = paramsProps;

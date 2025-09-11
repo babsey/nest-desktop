@@ -1,5 +1,3 @@
-<!-- DictInputComponent.vue -->
-
 <template>
   <button>{{ intf.name }}</button>
 </template>

@@ -20,7 +20,6 @@ import { loadNESTSimulationNode } from "../codeNodeTypes/nest/nestSimulate";
 export class NESTCodeGraph extends BaseCodeGraph {
   constructor(projectProps: INESTProjectProps) {
     super();
-    // this.logger.settings.minLevel = 1;
 
     this.loadByProject(projectProps);
   }
@@ -52,7 +51,6 @@ export class NESTCodeGraph extends BaseCodeGraph {
    * load code nodes from network props.
    */
   loadNetworkNodes(networkProps: INESTNetworkProps): void {
-    this.logger.trace("add network code nodes");
     if (!networkProps) return;
 
     if (networkProps.models) {
@@ -86,22 +84,5 @@ export class NESTCodeGraph extends BaseCodeGraph {
       networkProps.connections.forEach((connectionProps: INESTConnectionProps) =>
         loadNESTConnectNode(this, connectionProps, nestNodes),
       );
-  }
-
-  /**
-   * Save code graph.
-   * @returns graph state
-   */
-  override save(): IEditorState {
-    this.logger.trace("save");
-
-    this.sortNodes();
-
-    const editorState = this.viewModel.editor.save();
-    editorState.graph.id = this.uuid;
-
-    this.saveNodeStates(editorState.graph.nodes);
-
-    return JSON.parse(JSON.stringify(editorState));
   }
 }

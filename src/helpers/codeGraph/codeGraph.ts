@@ -4,7 +4,6 @@ import { AbstractNode, IBaklavaViewModel, IEditorState, IGraphState } from "bakl
 import { nextTick, reactive, UnwrapRef } from "vue";
 
 import { setViewSettings } from "@/plugins/baklava";
-import { truncate } from "@/utils/truncate";
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import { AbstractCodeNode } from "./codeNode";
@@ -17,19 +16,14 @@ interface ICodeGraphState {
 }
 
 export class CodeGraph extends BaseCodeGraph {
-  codeGraphStore = useCodeGraphStore();
-
+  public codeGraphStore = useCodeGraphStore();
   public _code: BaseCode | undefined;
   private _state: UnwrapRef<ICodeGraphState>;
 
   constructor(code?: BaseCode, editorState?: IGraphState) {
     super();
-    // this.logger.settings.minLevel = 1;
-
-    setViewSettings(this.viewModel);
 
     this._code = code;
-
     this._state = reactive({
       editor: editorState ?? null,
       token: null,
@@ -81,7 +75,7 @@ export class CodeGraph extends BaseCodeGraph {
    * Initialize code graph.
    */
   init(): void {
-    this.logger.trace("init");
+    setViewSettings(this.viewModel);
 
     if (this.state.token) this.graph.editor.graphEvents.beforeAddNode.unsubscribe(this.state.token);
     this.state.token = Symbol("token");
@@ -94,11 +88,9 @@ export class CodeGraph extends BaseCodeGraph {
 
   /**
    * Load code graph.
-   * @param state graph state.
+   * @param state graph state
    */
   load(state: IEditorState): string[] {
-    this.logger.trace("load:", truncate(state.graph.id));
-
     if (!state) return [];
     this.unsubscribe();
 
@@ -114,7 +106,6 @@ export class CodeGraph extends BaseCodeGraph {
    * Triggers on code graph update.
    */
   override onUpdate = () => {
-    this.logger.trace("on update:", truncate(this.uuid), truncate(this.graph.id));
     if (this.uuid !== this.graph.id) return;
 
     if (this.codeGraphStore.state.autosort && this.nodes.length > 0 && this.connections.length > 0) this.sortNodes();
@@ -125,9 +116,9 @@ export class CodeGraph extends BaseCodeGraph {
       });
 
       try {
-        this._state.editor = this.save();
+        this.state.editor = this.save();
       } catch {
-        this.logger.warn("Save editor state failed.");
+        console.warn("Failed to save editor state.");
       }
 
       this.code?.generate();
@@ -138,14 +129,11 @@ export class CodeGraph extends BaseCodeGraph {
    * Render node codes.
    */
   renderNodeCodes(): void {
-    this.logger.trace("render node codes");
-
     if (this.codeNodes.length === 0) return;
     this.codeNodes.forEach((node) => (node.renderCode ? node.renderCode() : null));
   }
 
   override subscribe(): void {
-    this.logger.trace("subscribe");
     this.codeGraphStore.subscribe(this.onUpdate);
   }
 
@@ -154,7 +142,6 @@ export class CodeGraph extends BaseCodeGraph {
   }
 
   override unsubscribe(): void {
-    this.logger.trace("unsubscribe");
     this.codeGraphStore.unsubscribe();
   }
 }

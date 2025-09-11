@@ -5,7 +5,7 @@ import { displayInSidebar, NumberInterface } from "baklavajs";
 import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { addNodeAtCoordinates, getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestRandomUniform from "./nestRandomUniform";
@@ -49,13 +49,13 @@ export const addNESTRandomUniform = (graph: CodeGraph | NESTCodeGraph, idx: numb
   let position: { x: number; y: number };
 
   if (idx !== -1) {
-    position = getPositionBeforeNode(graph, idx);
+    position = getPositionBeforeNode(graph.nodes[idx]);
   } else {
     const typeIdx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.random.uniform").length;
     position = getPositionAtColumn(-2, 900 + 240 * typeIdx);
   }
 
-  const codeNode = addNodeAtCoordinates(graph, nestRandomUniform, position);
+  const codeNode = graph.addNodeAtCoordinates(nestRandomUniform, position);
   codeNode.state.integrated = true;
   return codeNode;
 };

@@ -2,7 +2,7 @@
 
 import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { addNodeAtCoordinates, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestResetKernel from "./nestResetKernel";
@@ -15,11 +15,11 @@ export default defineCodeNode({
 });
 
 export const addNESTResetKernelNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  return addNodeAtCoordinates(graph, nestResetKernel, getPositionAtColumn(-2, 100));
+  return graph.addNodeAtCoordinates(nestResetKernel, getPositionAtColumn(-2, 100));
 };
 
 export const getNESTResetKernelNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  const codeNode = findNodeByType(graph, "nest.ResetKernel");
+  const codeNode = graph.findNodeByType("nest.ResetKernel");
   if (!codeNode) return addNESTResetKernelNode(graph);
   return codeNode;
 };

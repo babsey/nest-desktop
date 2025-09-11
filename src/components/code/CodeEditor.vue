@@ -20,22 +20,24 @@
     </v-btn-group>
   </v-toolbar>
 
-  <CodeTreeview v-if="state.showTree" :code />
+  <CodeNodeList v-if="state.showTree" :nodes="code.graph.nodes" @change="onChange" />
   <CodeMirror v-if="code" :disabled="state.disabled" :code="code" />
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 
 import { TCode } from "@/types";
 
-import CodeTreeview from "../codeGraph/CodeTreeview.vue";
+import CodeNodeList from "../codeGraph/CodeNodeList.vue";
 import CodeMirror from "./CodeMirror.vue";
 
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 const codeGraphStore = useCodeGraphStore();
 
-defineProps<{ code: TCode }>();
+const props = defineProps<{ code: TCode }>();
+const code = computed(() => props.code);
 
 const state = reactive<{
   disabled: boolean;
@@ -44,4 +46,10 @@ const state = reactive<{
   disabled: false,
   showTree: false,
 });
+
+const onChange = (nodes: AbstractCodeNode[]) => {
+  codeGraphStore.state.autosort = false;
+  code.value.graph.nodes = nodes;
+  code.value.generate();
+};
 </script>

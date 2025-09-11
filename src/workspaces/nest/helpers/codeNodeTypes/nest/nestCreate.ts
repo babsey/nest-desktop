@@ -16,7 +16,7 @@ import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { addNodeAtCoordinates, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 import { numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
@@ -186,7 +186,7 @@ export default defineDynamicCodeNode({
 
 export const addNESTCreateNode = (graph: CodeGraph | NESTCodeGraph, idx: number = -1): AbstractCodeNode => {
   if (idx === -1) idx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.Create").length;
-  const codeNode = addNodeAtCoordinates(graph, nestCreate, getPositionAtColumn(1, 100 + 290 * idx));
+  const codeNode = graph.addNodeAtCoordinates(nestCreate, getPositionAtColumn(1, 100 + 290 * idx));
   if (idx === 0) codeNode.state.comments = "Create nodes";
   return codeNode;
 };

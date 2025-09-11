@@ -4,7 +4,7 @@ import { displayInSidebar, IntegerInterface, NumberInterface, setType } from "ba
 
 import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { addNodeAtCoordinates, findNodeByType, getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
@@ -63,13 +63,13 @@ export default defineCodeNode({
 });
 
 export const addNESTSetKernelStatusNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  const codeNode = addNodeAtCoordinates(graph, nestSetKernelStatus, getPositionAtColumn(-2, 200));
+  const codeNode = graph.addNodeAtCoordinates(nestSetKernelStatus, getPositionAtColumn(-2, 200));
   codeNode.state.comments = "Set simulation kernel";
   return codeNode;
 };
 
 export const getNESTSetKernelStatusNode = (graph: CodeGraph | NESTCodeGraph): AbstractCodeNode => {
-  const codeNode = findNodeByType(graph, "nest.SetKernelStatus");
+  const codeNode = graph.findNodeByType("nest.SetKernelStatus");
   if (!codeNode) return addNESTSetKernelStatusNode(graph);
   return codeNode;
 };

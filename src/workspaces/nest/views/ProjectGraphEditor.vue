@@ -18,7 +18,10 @@
       <NESTNetworkGraph :key="currentProject.id" :network="currentProject.network" />
     </template>
 
-    <CodeGraphEditor v-if="projectViewStore.state.views.graph === 'code'" />
+    <CodeGraphEditor
+      v-if="codeGraphStore && projectViewStore.state.views.graph === 'code'"
+      :view-model="codeGraphStore.viewModel"
+    />
   </v-layout>
 </template>
 
@@ -39,4 +42,7 @@ import { currentProject } from "../stores/project/projectStore";
 import { useAppStore } from "@/stores/appStore";
 const appStore = useAppStore();
 const projectViewStore = appStore.currentWorkspace.views.project;
+
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+const codeGraphStore = useCodeGraphStore();
 </script>

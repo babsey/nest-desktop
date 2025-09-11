@@ -6,7 +6,7 @@ import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@
 import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
 import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
 import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { addNodeAtCoordinates, getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
+import { getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
 import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestSpatialFree from "./nestSpatialFree";
@@ -73,13 +73,13 @@ export const addNESTSpatialFree = (graph: CodeGraph | NESTCodeGraph, idx: number
   let position: { x: number; y: number };
 
   if (idx !== -1) {
-    position = getPositionBeforeNode(graph, idx);
+    position = getPositionBeforeNode(graph.nodes[idx]);
   } else {
     const typeIdx = graph.nodes.filter((node: AbstractCodeNode) => node.type === "nest.spatial.free").length;
     position = getPositionAtColumn(-1, 900 + 240 * typeIdx);
   }
 
-  const codeNode = addNodeAtCoordinates(graph, nestSpatialFree, position);
+  const codeNode = graph.addNodeAtCoordinates(nestSpatialFree, position);
   codeNode.state.integrated = true;
   return codeNode;
 };
