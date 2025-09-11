@@ -45,6 +45,7 @@ export type TNetworkProject = NetworkProject | workspaces.TNetworkProject;
 export type TNetworkProps = INetworkProps | workspaces.TNetworkProps;
 export type TNode = BaseNode | workspaces.TNode;
 export type TNodeGroup = NodeGroup;
+export type TNodeParameter = NodeParameter | workspaces.TNodeParameter;
 export type TNodeParameterParent = BaseNode | workspaces.TNodeParameterParent;
 export type TNodeParameterComponentProps = INodeProps | workspaces.TNodeParameterComponentProps;
 export type TNodeProps = INodeProps | workspaces.TNodeProps;

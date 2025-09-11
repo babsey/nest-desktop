@@ -18,6 +18,7 @@ export type TNetworkGraph = nest.NESTNetworkGraph;
 export type TNetworkProject = nest.NESTProject | norse.NorseProject | pynn.PyNNProject;
 export type TNetworkProps = nest.INESTNetworkProps | norse.INorseNetworkProps;
 export type TNode = nest.NESTNode | norse.NorseNode;
+export type TNodeParameter = nest.NESTNodeParameter;
 export type TNodeParameterParent =
   | nest.NESTNode
   | nest.NESTCopyModel

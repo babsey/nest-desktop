@@ -17,6 +17,7 @@ import type { NESTCopyModelParameter } from "./helpers/model/copyModelParameter"
 import type { NESTModelDB } from "./helpers/model/modelDB";
 import type { NESTNetworkGraph } from "./helpers/network/networkGraph";
 import type { NESTNodes } from "./helpers/node/nodes";
+import type { NESTNodeParameter } from "./helpers/node/nodeParameter";
 import type { NESTProjectDB } from "./helpers/project/projectDB";
 import type { NESTSimulationCode } from "./helpers/simulation/simulationCode";
 import type { NESTSynapseParameter } from "./helpers/synapse/synapseParameter";
@@ -45,6 +46,7 @@ export {
   NESTNode,
   NESTNodeCompartment,
   NESTNodeReceptor,
+  NESTNodeParameter,
   NESTNodes,
   NESTProject,
   NESTProjectDB,

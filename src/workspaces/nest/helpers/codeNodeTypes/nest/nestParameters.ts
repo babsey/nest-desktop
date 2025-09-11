@@ -157,17 +157,19 @@ export const updateNESTParameterNode = (
 export const updateNESTParameterInterface = (
   graph: CodeGraph | NESTCodeGraph,
   codeNode: AbstractCodeNode,
-  paramIntfName: string,
-  randomType: TRandomTypes | undefined = "uniform",
+  paramId: string,
+  randomType?: TRandomTypes,
 ): AbstractCodeNode | null => {
-  let randomNode: AbstractCodeNode | null = codeNode.getConnectedNodeByInterface(paramIntfName, "inputs");
+  let randomNode: AbstractCodeNode | null = codeNode.getConnectedNodeByInterface(paramId, "inputs");
 
   if (randomNode && !randomNode.type.includes(randomType)) randomNode.remove();
 
   if (!randomNode && randomType) {
     randomNode = randomTypes[randomType](graph, graph.nodes.indexOf(codeNode));
-    graph.addConnection(randomNode.outputs.out, codeNode.inputs[paramIntfName]);
+    graph.addConnection(randomNode.outputs.out, codeNode.inputs[paramId]);
   }
+
+  codeNode.view.params[paramId].state.random = randomType != undefined;
 
   return randomNode;
 };

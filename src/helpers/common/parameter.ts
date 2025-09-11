@@ -441,6 +441,14 @@ export class BaseParameter extends BaseObj {
   }
 
   /**
+   * Toggle random state.
+   */
+  toggleRandom(): void {
+    this.state.random = !this.state.random;
+    this.onUpdate();
+  }
+
+  /**
    * Serialize parameter type for JSON.
    * @return parameter type props
    */

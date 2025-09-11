@@ -14,12 +14,13 @@ import { NodeGraph } from "./nodeGraph/nodeGraph";
 import { BaseProject } from "./project/project";
 import { BaseProjectDB } from "./project/projectDB";
 import { BaseSimulation } from "./simulation/simulation";
-import { BaseSimulationCode } from "./code/code";
+import { BaseCode } from "./code/code";
 import { BaseSynapse } from "./synapse/synapse";
 
 export default {
   activity: Activity,
   activityGraph: BaseActivityGraph,
+  code: BaseCode,
   connection: BaseConnection,
   connections: BaseConnections,
   model: BaseModel,
@@ -32,6 +33,5 @@ export default {
   project: BaseProject,
   projectDB: BaseProjectDB,
   simulation: BaseSimulation,
-  simulationCode: BaseSimulationCode,
   synapse: BaseSynapse,
 };

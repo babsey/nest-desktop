@@ -1,16 +1,6 @@
 // node.ts
 
-import {
-  TConnection,
-  TModel,
-  TNetwork,
-  TNetworkProject,
-  TNode,
-  TNodeGroup,
-  TNodes,
-  TParameter,
-  TSimulation,
-} from "@/types";
+import { TConnection, TModel, TNetwork, TNetworkProject, TNode, TNodeGroup, TNodes, TSimulation } from "@/types";
 
 import { BaseModel, IModelStateProps, TElementType } from "../model/model";
 import { BaseNodes } from "./nodes";
@@ -42,7 +32,7 @@ export interface INodeProps {
 export class BaseNode extends BaseObj {
   private _activity?: NodeSpikeActivity | NodeAnalogSignalActivity | NodeActivity | undefined;
   private _annotations: string[] = [];
-  private _params: Record<string, NodeParameter> = {};
+  private _params: Record<string, TNodeParameter> = {};
   private _paramsVisible: string[] = [];
   private _recordables: NodeRecord[] = [];
   private _records: NodeRecord[] = [];
@@ -63,6 +53,10 @@ export class BaseNode extends BaseObj {
     this._annotations = nodeProps.annotations || [];
 
     this._view = new NodeViewState(this, nodeProps.view);
+  }
+
+  get NodeParameter() {
+    return NodeParameter;
   }
 
   get activity(): NodeSpikeActivity | NodeAnalogSignalActivity | NodeActivity | undefined {
@@ -133,7 +127,7 @@ export class BaseNode extends BaseObj {
     return this.model?.elementType;
   }
 
-  get filteredParams(): NodeParameter[] {
+  get filteredParams(): TNodeParameter[] {
     return this.paramsVisible.map((paramId) => this.params[paramId]);
   }
 
@@ -271,17 +265,17 @@ export class BaseNode extends BaseObj {
     return this.nodes.allNodes.indexOf(this);
   }
 
-  get params(): Record<string, NodeParameter> {
+  get params(): Record<string, TNodeParameter> {
     return this._params;
   }
 
-  set params(values: Record<string, NodeParameter>) {
-    Object.values(values).forEach((value: NodeParameter) => {
-      this._params[value.id] = new NodeParameter(this, value);
+  set params(values: Record<string, TNodeParameter>) {
+    Object.values(values).forEach((value: TNodeParameter) => {
+      this._params[value.id] = new this.NodeParameter(this, value);
     });
   }
 
-  get paramsAll(): NodeParameter[] {
+  get paramsAll(): TNodeParameter[] {
     return Object.values(this.params);
   }
 
@@ -291,8 +285,8 @@ export class BaseNode extends BaseObj {
 
   set paramsVisible(values: string[]) {
     this._paramsVisible = this.paramsAll
-      .filter((param: TParameter) => values.includes(param.id))
-      .map((param: TParameter) => param.id);
+      .filter((param: TNodeParameter) => values.includes(param.id))
+      .map((param: TNodeParameter) => param.id);
 
     this.updateParamsCodeNode();
   }
@@ -412,7 +406,7 @@ export class BaseNode extends BaseObj {
   addParameter(paramProps: IParamProps, visible: boolean = false): void {
     this.logger.trace("add parameter", paramProps.id);
 
-    this.params[paramProps.id] = new NodeParameter(this, paramProps);
+    this.params[paramProps.id] = new this.NodeParameter(this, paramProps);
     if (visible) this.paramsVisible.push(paramProps.id);
   }
 
@@ -512,7 +506,7 @@ export class BaseNode extends BaseObj {
    * @param paramId parameter ID
    * @return parameter component
    */
-  getParameter(paramId: string): NodeParameter {
+  getParameter(paramId: string): TNodeParameter {
     return this._params[paramId];
   }
 
@@ -702,7 +696,7 @@ export class BaseNode extends BaseObj {
   resetParams(): void {
     this.logger.trace("reset parameters");
 
-    this.paramsAll.forEach((param: NodeParameter) => param.reset());
+    this.paramsAll.forEach((param: TNodeParameter) => param.reset());
   }
 
   /**
@@ -741,7 +735,7 @@ export class BaseNode extends BaseObj {
     if (this.size > 1) nodeProps.size = this.size;
 
     if (this.filteredParams.length > 0)
-      nodeProps.params = this.filteredParams.map((param: NodeParameter) => param.toJSON());
+      nodeProps.params = this.filteredParams.map((param: TNodeParameter) => param.toJSON());
 
     // Add annotations if provided.
     if (this.annotations.length > 0) nodeProps.annotations = this.annotations;
@@ -801,7 +795,7 @@ export class BaseNode extends BaseObj {
     this._updateHash({
       idx: this.idx,
       model: this.modelId,
-      params: this.paramsAll.map((param: NodeParameter) => param.toJSON()),
+      params: this.paramsAll.map((param: TNodeParameter) => param.toJSON()),
       recordables: this.recordables.map((recordable: NodeRecord) => recordable.uuid),
       size: this.size,
     });
@@ -810,13 +804,13 @@ export class BaseNode extends BaseObj {
   updateParamsVisibility(): void {
     if (!this.codeNode) return;
 
-    this.paramsAll.forEach((param: NodeParameter) => {
+    this.paramsAll.forEach((param: TNodeParameter) => {
       if (param.intf && param.intf[param.id]) param.visible = !param.intf[param.id].hidden;
     });
   }
 
   updateParamsCodeNode(): void {
-    this.paramsAll.forEach((param: TParameter) => {
+    this.paramsAll.forEach((param: TNodeParameter) => {
       if (!param.intf) return;
       param.intf[param.id].setHidden(!this._paramsVisible.includes(param.id));
     });

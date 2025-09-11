@@ -4,7 +4,6 @@ import { BaseParameter, IParamProps } from "@/helpers/common/parameter";
 import { IModelStateProps, TElementType } from "@/helpers/model/model";
 import { ModelParameter } from "@/helpers/model/modelParameter";
 import { BaseNode, INodeProps } from "@/helpers/node/node";
-import { NodeParameter } from "@/helpers/node/nodeParameter";
 import { INodeRecordProps, NodeRecord } from "@/helpers/node/nodeRecord";
 import { onlyUnique, sortString } from "@/utils/array";
 
@@ -18,6 +17,7 @@ import { NESTNetwork } from "../network/network";
 import { NESTNodes } from "./nodes";
 import { updateNESTParameterNode } from "../codeNodeTypes/nest/nestParameters";
 import { updateNESTSpatialNode } from "../codeNodeTypes/nest/nestCreate";
+import { NESTNodeParameter } from "./nodeParameter";
 
 export interface INESTNodeProps extends INodeProps {
   compartments?: INESTNodeCompartmentProps[];
@@ -49,6 +49,10 @@ export class NESTNode extends BaseNode {
     if (nodeProps.receptors) {
       this.addReceptors(nodeProps.receptors);
     }
+  }
+
+  get NodeParameter() {
+    return NESTNodeParameter;
   }
 
   get assignedModels(): NESTCopyModel[] {
@@ -290,7 +294,7 @@ export class NESTNode extends BaseNode {
   override resetParams(emitOnUpdate: boolean = true): void {
     this.logger.trace("reset parameters");
 
-    this.paramsAll.forEach((param: NodeParameter) => param.reset());
+    this.paramsAll.forEach((param: NESTNodeParameter) => param.reset());
 
     if (this.modelId === "cm_default") {
       this.compartments.forEach((comp: NESTNodeCompartment) => comp.resetParameters());
@@ -340,7 +344,7 @@ export class NESTNode extends BaseNode {
     if (this.size > 1) nodeProps.size = this.size;
 
     if (this.filteredParams.length > 0)
-      nodeProps.params = this.filteredParams.map((param: NodeParameter) => param.toJSON());
+      nodeProps.params = this.filteredParams.map((param: NESTNodeParameter) => param.toJSON());
 
     // Add annotations if provided.
     if (this.annotations.length > 0) nodeProps.annotations = this.annotations;
@@ -361,7 +365,7 @@ export class NESTNode extends BaseNode {
   }
 
   updateParamsCodeNode(): void {
-    const params = this.filteredParams.map((param: NodeParameter) => param.toJSON());
+    const params = this.filteredParams.map((param: NESTNodeParameter) => param.toJSON());
     updateNESTParameterNode(this.network.project.code.graph, this.codeNode, "params", params);
 
     super.updateParamsCodeNode();
