@@ -10,6 +10,7 @@
   },
   "scripts": {
     "app:build": "vue-tsc && vite build --outDir ./dist && electron-builder",
+    "app:build:appimage": "vue-tsc && vite build --outDir ./dist && electron-builder --linux appimage",
     "app:dev": "vite",
     "app:preview:AppImage": "./release/nest-desktop-*.AppImage",
     "build": "vue-tsc --noEmit && vite build",
@@ -58,7 +59,7 @@
     "vue-codemirror": "~6.1",
     "vue-router": "~4.5",
     "vuedraggable": "~4.1",
-    "vuetify": "~3.9",
+    "vuetify": "~3.10",
     "vuetify3-dialog": "~1.5",
     "webfontloader": "~1.6"
   },
@@ -87,7 +88,7 @@
     "@vue/eslint-config-typescript": "~14.6",
     "@vue/test-utils": "~2.4",
     "@vue/tsconfig": "~0.8",
-    "electron": "~38.0",
+    "electron": "~38.1",
     "electron-builder": "~26.0",
     "electron-devtools-installer": "~4.0",
     "eslint": "~9.35",

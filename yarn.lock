@@ -1076,9 +1076,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -4539,10 +4539,10 @@ electron-to-chromium@^1.5.211:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.215.tgz#200c8d69b1270af6126837b6b1f95077c3a347b1"
   integrity sha512-TIvGp57UpeNetj/wV/xpFNpWGb0b/ROw372lHPx5Aafx02gjTBtWnEEcaSX3W2dLM3OSdGGyHX/cHl01JQsLaQ==
 
-electron@~38.0:
-  version "38.0.0"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-38.0.0.tgz#e51803f62c8d4c368f77642a1b1b05444c687fba"
-  integrity sha512-egljptiPJqbL/oamFCEY+g3RNeONWTVxZSGeyLqzK8xq106JhzuxnhJZ3sxt4DzJFaofbGyGJA37Oe9d+gVzYw==
+electron@~38.1:
+  version "38.1.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-38.1.0.tgz#caebed7f3d7b1d43a9d01811db1f62744a753aa4"
+  integrity sha512-ypA8GF8RU4HD5pA1sa0/2U8k+92EPP2c7pX+3XbgB760F7OmqrFXtYkOilVw6HfV4+lk88XxqigmsUKTACQYoQ==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^22.7.7"
@@ -8622,10 +8622,10 @@ vuetify3-dialog@~1.5:
   resolved "https://registry.yarnpkg.com/vuetify3-dialog/-/vuetify3-dialog-1.5.6.tgz#b58c5d074fc85ed789cf5df6cc5c36b7a43044e0"
   integrity sha512-Nny8AJpSKKLf4+Q4VFSpFFGQcbWAOdFsIwv5717FhgzdI5mKi8TN2GQnIyghZ55PEwOVnRSfGArFsCN6axdNmg==
 
-vuetify@~3.9:
-  version "3.9.7"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-3.9.7.tgz#aea996f35111f25dd7e31ab956fbb40911841c24"
-  integrity sha512-Ib8PB3ItcguCol8f0DXLpoGyy7FvoOYW23SEWqXX+in1CSItJZHxUXXGSus94m5JWqYqQrFiwCykbHm7UWPi4Q==
+vuetify@~3.10:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-3.10.0.tgz#1171ed0339968cca1c59d9a0be58e4f518e61903"
+  integrity sha512-cgtssO0yriqwEdOd6jGfUqUUztunxYPDhyY+iog0Q8i5WEa+3+eQ/dGpXeFoU80qMVm0k6uPd8aJpc5wEVXu3g==
 
 vuvuzela@1.0.3:
   version "1.0.3"
