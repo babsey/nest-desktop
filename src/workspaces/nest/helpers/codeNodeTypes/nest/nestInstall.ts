@@ -1,12 +1,9 @@
 // nestInstall.ts
 
 import { displayInSidebar, setType, TextInputInterface } from "baklavajs";
+import { AbstractCodeNode, defineCodeNode, getPositionAtColumn, stringType } from "@/codeGraph";
 
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import nestInstall from "./nestInstall";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";

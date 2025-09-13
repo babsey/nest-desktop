@@ -1,12 +1,9 @@
 // nestSetKernelStatus.ts
 
 import { displayInSidebar, IntegerInterface, NumberInterface, setType } from "baklavajs";
+import { AbstractCodeNode, defineCodeNode, formatInterfaceLabel, getPositionAtColumn, numberType } from "@/codeGraph";
 
-import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import nestSetKernelStatus from "./nestSetKernelStatus";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";

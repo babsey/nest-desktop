@@ -2,7 +2,8 @@
 
 import { useAppStore } from "@/stores/appStore";
 import { NESTCodeGraph } from "@/workspaces/nest/helpers/codeGraph/codeGraph";
-import { CodeGraph } from "../codeGraph/codeGraph";
+
+import { CodeGraph } from "../code/codeGraph";
 
 const validateVersion = (version: string) => /^4\.1(\.\d+)?(\w+)?$/.test(version);
 

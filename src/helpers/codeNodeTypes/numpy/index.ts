@@ -1,8 +1,6 @@
 // codeNodeTypes/numpy
 
-import { IBaklavaViewModel } from "baklavajs";
-
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import numpyArange from "./numpyArange";
 import numpyArgwhere from "./numpyArgwhere";
@@ -19,13 +17,14 @@ import numpyRandomSeed from "./numpyRandomSeed";
 import numpyRandomUniform from "./numpyRandomUniform";
 import { addNumpyTypes } from "./interfaceTypes";
 
-export const registerNumpyNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  codeGraphStore.state.modules["numpy"] = "import numpy as np";
-  codeGraphStore.state.modules["numpy.random"] = "import numpy as np";
-  addNumpyTypes(codeGraphStore.viewModel as IBaklavaViewModel);
+export const registerNumpyNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  const editor = codeGraphStore.editor;
+  viewModel.state.modules["numpy"] = "import numpy as np";
+  viewModel.state.modules["numpy.random"] = "import numpy as np";
+  addNumpyTypes(viewModel);
+
+  const editor = viewModel.editor;
   editor.registerNodeType(numpyArange, { category: "numpy" });
   editor.registerNodeType(numpyArgwhere, { category: "numpy" });
   editor.registerNodeType(numpyConcatenate, { category: "numpy" });

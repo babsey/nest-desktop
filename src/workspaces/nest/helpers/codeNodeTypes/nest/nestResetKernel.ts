@@ -1,9 +1,8 @@
 // nestResetKernel.ts
 
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { AbstractCodeNode, getPositionAtColumn, defineCodeNode } from "@/codeGraph";
+
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import nestResetKernel from "./nestResetKernel";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";

@@ -1,9 +1,7 @@
 // norseSequentialState.ts
 
 import { IntegerInterface, NodeInterface } from "baklavajs";
-
-import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
+import { defineDynamicCodeNode, NodeOutputInterface } from "@/codeGraph";
 
 export default defineDynamicCodeNode({
   type: "norse.torch.SequentialState",

@@ -1,12 +1,16 @@
 // nestSpatialGrid.ts
 
 import { CheckboxInterface, displayInSidebar, TextInputInterface } from "baklavajs";
-
-import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import {
+  AbstractCodeNode,
+  NodeOutputInterface,
+  defineCodeNode,
+  formatInterfaceLabel,
+  formatInterfaceLabels,
+  getPositionAtColumn,
+  getPositionBeforeNode,
+} from "@/codeGraph";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import nestSpatialGrid from "./nestSpatialGrid";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";
@@ -23,6 +27,20 @@ export default defineCodeNode({
   },
   outputs: {
     out: () => new NodeOutputInterface(),
+  },
+  onGraphUpdate() {
+    if (!this.node) return;
+
+    if (!this.node.view) {
+      const codeNode = this.node.getConnectedNodeByInterface("out");
+
+      if (!codeNode || !codeNode.view) return;
+
+      this.node.view = codeNode.view.spatial;
+      this.node.view.codeNodes.node = this.node;
+    }
+
+    this.node.view.init();
   },
   codeTemplate() {
     if (!this.node) return this.type;

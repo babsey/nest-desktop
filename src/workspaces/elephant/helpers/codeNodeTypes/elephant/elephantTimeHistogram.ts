@@ -2,11 +2,14 @@
 
 import { displayInSidebar, IntegerInterface, SelectInterface, setType } from "baklavajs";
 
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import {
+  NodeInputInterface,
+  NodeOutputInterface,
+  defineCodeNode,
+  formatInterfaceLabel,
+  formatInterfaceLabels,
+  numberType,
+} from "@/codeGraph";
 
 export default defineCodeNode({
   type: "elephant.statistics.time_histogram",

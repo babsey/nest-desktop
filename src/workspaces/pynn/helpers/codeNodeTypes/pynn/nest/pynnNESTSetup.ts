@@ -1,10 +1,7 @@
 // pynnNESTSetup.ts
 
-import { displayInSidebar, IntegerInterface } from "baklavajs";
-import { setType } from "@baklavajs/interface-types";
-
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
+import { defineCodeNode, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "pyNN.nest.setup",

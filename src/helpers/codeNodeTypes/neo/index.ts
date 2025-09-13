@@ -1,16 +1,16 @@
 // neo/codeNodeTypes
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import neoSize from "./neoSize";
 import neoSpikeTrain from "./neoSpikeTrain";
 
-export const registerNeoNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  const editor = codeGraphStore.editor;
+export const registerNeoNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  codeGraphStore.state.modules["neo.core"] = "import neo";
+  viewModel.state.modules["neo.core"] = "import neo";
 
+  const editor = viewModel.editor;
   editor.registerNodeType(neoSpikeTrain, { category: "neo.core" });
   editor.registerNodeType(neoSize, { category: "neo" });
 };

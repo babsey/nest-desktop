@@ -1,7 +1,10 @@
 // pynn/index.ts
 
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
+
 import { defineViewStore } from "@/stores/defineViewStore";
 import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import iconSet from "./components/iconSet";
 import route from "./routes";
@@ -57,7 +60,9 @@ export const pynn: IWorkspaceProps = {
       })(),
     };
 
-    registerCodeNodeTypes(["pynn"]);
+    const codeGraphStore = useCodeGraphStore();
+    const viewModel: ICodeGraphViewModel = codeGraphStore.viewModel as ICodeGraphViewModel;
+    registerCodeNodeTypes(viewModel, ["pynn"]);
   },
   route,
   stores: {},

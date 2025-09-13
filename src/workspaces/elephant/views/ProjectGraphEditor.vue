@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import CodeGraphEditor from "@/components/codeGraph/CodeGraphEditor.vue";
+import CodeGraphEditor from "@/codeGraph/components/CodeGraphEditor.vue";
 
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 const codeGraphStore = useCodeGraphStore();

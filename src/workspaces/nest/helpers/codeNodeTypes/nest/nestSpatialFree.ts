@@ -1,13 +1,18 @@
 // nestSpatialFree.ts
 
-import { CheckboxInterface, displayInSidebar, IntegerInterface, NumberInterface } from "baklavajs";
+import { CheckboxInterface, IntegerInterface, NumberInterface, displayInSidebar } from "baklavajs";
+import {
+  AbstractCodeNode,
+  NodeInputInterface,
+  NodeOutputInterface,
+  defineCodeNode,
+  formatInterfaceLabel,
+  formatInterfaceLabels,
+  getPositionAtColumn,
+  getPositionBeforeNode,
+} from "@/codeGraph";
 
-import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import nestSpatialFree from "./nestSpatialFree";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";

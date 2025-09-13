@@ -2,9 +2,7 @@
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-
-import { numberType } from "../base/interfaceTypes";
+import { defineCodeNode, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "numpy.random.seed",

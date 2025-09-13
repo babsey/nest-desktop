@@ -1,9 +1,7 @@
 // pynnNESTIFCurrAlpha.ts
 
 import { displayInSidebar, NumberInterface } from "baklavajs";
-
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
+import { defineCodeNode, NodeOutputInterface } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "pyNN.nest.IF_curr_alpha",

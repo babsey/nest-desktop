@@ -27,13 +27,14 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
 
+import CodeNodeList from "@/codeGraph/codeNode/CodeNodeList.vue";
+import type { AbstractCodeNode } from "@/codeGraph";
+
 import { TCode } from "@/types";
 
-import CodeNodeList from "../codeGraph/CodeNodeList.vue";
 import CodeMirror from "./CodeMirror.vue";
 
 import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
 const codeGraphStore = useCodeGraphStore();
 
 const props = defineProps<{ code: TCode }>();

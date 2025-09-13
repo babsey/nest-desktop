@@ -2,14 +2,14 @@
 
 import Mustache from "mustache";
 import axios, { AxiosHeaders, AxiosResponse } from "axios";
-import { IGraphState, IGraphTemplateState } from "baklavajs";
+import { IEditorState, IGraphState, IGraphTemplateState } from "baklavajs";
 import { UnwrapRef, nextTick, reactive } from "vue";
 
 import { IAxiosErrorData, IAxiosResponseData } from "@/stores/defineBackendStore";
 import { TProject } from "@/types";
 
 import { BaseObj } from "../common/base";
-import { CodeGraph } from "../codeGraph/codeGraph";
+import { CodeGraph } from "./codeGraph";
 import { download } from "../../utils/download";
 
 export interface IResponseProps {
@@ -21,9 +21,9 @@ export interface IResponseProps {
   statusText: string;
 }
 
-export interface ICodeProps {
-  graph?: IGraphState;
-  graphTemplates?: IGraphTemplateState[];
+export interface ICodeProps extends IEditorState {
+  graph: IGraphState;
+  graphTemplates: IGraphTemplateState[];
   templateFilename?: string;
 }
 
@@ -32,6 +32,7 @@ interface ICodeState {
   script: string;
   template?: string;
   templateFilename: string;
+  props: ICodeProps | undefined;
 }
 
 export class BaseCode extends BaseObj {
@@ -51,7 +52,8 @@ export class BaseCode extends BaseObj {
       },
       script: "",
       template: "",
-      templateFilename: "code",
+      templateFilename: codeProps?.templateFilename ?? "code",
+      props: codeProps,
     });
 
     if (codeProps) this._state.templateFilename = codeProps?.templateFilename ?? "code";

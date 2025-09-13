@@ -1,4 +1,4 @@
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
+import type { AbstractCodeNode } from "@/codeGraph";
 
 export const getPlotlyExpressArgs = (codeNode: AbstractCodeNode): string[] => {
   if (!codeNode || !codeNode.node) return [];

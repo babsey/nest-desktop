@@ -14,7 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import CodeGraphEditor from "@/components/codeGraph/CodeGraphEditor.vue";
+import CodeGraphEditor from "@/codeGraph/components/CodeGraphEditor.vue";
+
 import NetworkGraph from "@/components/network/NetworkGraph.vue";
 import NetworkEditorToolbar from "@/components/network/NetworkEditorToolbar.vue";
 

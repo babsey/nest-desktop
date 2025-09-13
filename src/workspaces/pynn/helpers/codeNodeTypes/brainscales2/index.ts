@@ -1,6 +1,6 @@
 // codeNodeTypes/brainscales2
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import brainscales2AllToAllConnector from "./brainscales2AllToAllConnector";
 import brainscales2End from "./brainscales2End";
@@ -10,12 +10,12 @@ import brainscales2Projection from "./brainscales2Projection";
 import brainscales2Run from "./brainscales2Run";
 import brainscales2Setup from "./brainscales2Setup";
 
-export const registerBrainScales2NodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  const editor = codeGraphStore.editor;
+export const registerBrainScales2NodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  codeGraphStore.state.modules["brainscales2"] = "import pynn_brainscales.brainscales2 as pynn";
+  viewModel.state.modules["brainscales2"] = "import pynn_brainscales.brainscales2 as pynn";
 
+  const editor = viewModel.editor;
   editor.registerNodeType(brainscales2AllToAllConnector, { category: "brainscales2" });
   editor.registerNodeType(brainscales2End, { category: "brainscales2" });
   editor.registerNodeType(brainscales2HxNeuron, { category: "brainscales2.cells" });

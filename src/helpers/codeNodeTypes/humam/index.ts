@@ -1,6 +1,6 @@
 // humam/codeNodeTypes
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import humamAnalysis from "./humamAnalysis";
 import humamNetwork from "./humamNetwork";
@@ -8,12 +8,12 @@ import humamNeuronNumbers from "./humamNeuronNumbers";
 import humamSimulation from "./humamSimulation";
 import humamSynapseNumbers from "./humamSynapseNumbers";
 
-export const registerHumamNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  const editor = codeGraphStore.editor;
+export const registerHumamNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  codeGraphStore.state.modules["humam"] = "import humam";
+  viewModel.state.modules["humam"] = "import humam";
 
+  const editor = viewModel.editor;
   editor.registerNodeType(humamAnalysis, { category: "humam" });
   editor.registerNodeType(humamNetwork, { category: "humam" });
   editor.registerNodeType(humamNeuronNumbers, { category: "humam" });

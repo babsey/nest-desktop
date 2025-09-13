@@ -2,10 +2,13 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
+import {
+  NodeInputInterface,
+  NodeOutputInterface,
+  defineCodeNode,
+  formatInterfaceLabel,
+  formatInterfaceLabels,
+} from "@/codeGraph";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
 

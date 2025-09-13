@@ -2,11 +2,11 @@
 
 import { UnwrapRef, reactive } from "vue";
 
+import type { AbstractCodeNode } from "@/codeGraph";
 import { TConnection, TNetwork, TNode, TNodeGroup } from "@/types";
 
 import { BaseConnection, IConnectionProps } from "./connection";
 import { BaseObj } from "../common/base";
-import { AbstractCodeNode } from "../codeGraph/codeNode";
 
 interface IConnectionsState {
   focusedConnection: TConnection | null;

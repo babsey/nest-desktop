@@ -6,14 +6,10 @@ import { Component, h } from "vue";
 import diceMultipleOutlineIcon from "./DiceMultipleOutlineIcon.vue";
 import dotsGridIcon from "./DotsGridIcon.vue";
 import sliderIcon from "./SliderIcon.vue";
-import DeleteEmptyOutlineIcon from "./DeleteEmptyOutlineIcon.vue";
-import MapIcon from "./MapIcon.vue";
 
 const customSvgNameToComponent: Record<string, string | Component> = {
   "dice-multiple-outline": diceMultipleOutlineIcon,
-  "delete-empty-outline": DeleteEmptyOutlineIcon,
   "dots-grid": dotsGridIcon,
-  map: MapIcon,
   slider: sliderIcon,
 };
 

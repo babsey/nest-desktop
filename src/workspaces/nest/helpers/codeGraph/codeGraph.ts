@@ -1,7 +1,8 @@
 // codeGraph.ts
 
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-import { BaseCodeGraph } from "@/helpers/codeGraph/baseCodeGraph";
+import type { AbstractCodeNode } from "@/codeGraph";
+
+import { CodeGraph as BaseCodeGraph } from "@/codeGraph";
 
 import { INESTConnectionProps } from "../connection/connection";
 import { INESTCopyModelProps } from "../model/copyModel";

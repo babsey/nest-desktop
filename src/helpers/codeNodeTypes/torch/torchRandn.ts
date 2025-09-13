@@ -2,9 +2,7 @@
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { NodeOutputInterface, defineCodeNode, numberType } from "@/codeGraph";
 
 import { ITorchTensor, torchTensorType } from "./interfaceTypes";
 

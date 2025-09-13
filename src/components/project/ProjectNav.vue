@@ -126,14 +126,8 @@
                 <span v-if="project.doc" class="mx-1">
                   {{ truncate(project.docId) }}
                 </span>
-                <span
-                  v-if="
-                    project.code && project.code.graph && project.code.graph.state && project.code.graph.state.editor
-                  "
-                  class="mx-1"
-                >
-                  {{ truncate(project.code.graph.uuid) }}
-                  {{ truncate(project.code.graph.state.editor.graph.id) }}
+                <span v-if="project.code && project.code.graph" class="mx-1">
+                  {{ truncate(project.code.graph.id) }}
                 </span>
               </v-list-item-subtitle>
             </template>

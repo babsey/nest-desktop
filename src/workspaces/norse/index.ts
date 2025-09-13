@@ -2,6 +2,7 @@
 
 import { defineViewStore } from "@/stores/defineViewStore";
 import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import iconSet from "./components/iconSet";
 import route from "./routes";
@@ -59,7 +60,10 @@ export const norse: IWorkspaceProps = {
       })(),
     };
 
-    registerCodeNodeTypes(["norse", "torch"]);
+    const codeGraphStore = useCodeGraphStore();
+    const viewModel = codeGraphStore.viewModel;
+
+    registerCodeNodeTypes(viewModel, ["norse", "torch"]);
   },
   route,
   stores: {},

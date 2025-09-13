@@ -1,10 +1,7 @@
 // pynnNESTProjection.ts
 
 import { SelectInterface } from "baklavajs";
-
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
+import { NodeInputInterface, defineCodeNode, formatInterfaceLabels } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "pyNN.nest.Projection",
@@ -27,7 +24,7 @@ export default defineCodeNode({
       formatInterfaceLabels(postsynapticNeurons).join("+") as string,
     ];
 
-    args.push(this.node.inputs.connector.value);
+    args.push(this.node.inputs.connector.value as string);
 
     return `pyNN.nest.Projection(${args.join(", ")})`;
   },

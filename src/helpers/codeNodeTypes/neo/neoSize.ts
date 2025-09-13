@@ -1,8 +1,6 @@
 // neoSpiketrain.ts
 
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "neo.core.spikeTrain",

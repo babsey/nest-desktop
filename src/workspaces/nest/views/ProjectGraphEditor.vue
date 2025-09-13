@@ -26,7 +26,8 @@
 </template>
 
 <script setup lang="ts">
-import CodeGraphEditor from "@/components/codeGraph/CodeGraphEditor.vue";
+import CodeGraphEditor from "@/codeGraph/components/CodeGraphEditor.vue";
+
 import ConnectionMenuList from "@/components/connection/ConnectionMenuList.vue";
 import NetworkEditorToolbar from "@/components/network/NetworkEditorToolbar.vue";
 import NodeGroupMenuList from "@/components/node/NodeGroupMenuList.vue";

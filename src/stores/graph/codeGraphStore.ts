@@ -1,41 +1,22 @@
 // codeGraphStore.ts
 
-import { Editor, IBaklavaViewModel, IEditorState, useBaklava } from "baklavajs";
+import { Editor, IEditorState } from "baklavajs";
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import { useCodeGraph } from "@/codeGraph";
+
 export const useCodeGraphStore = defineStore("code-graph", () => {
   const state = reactive<{
-    autosort: boolean;
     editor: IEditorState;
-    modules: Record<string, string>;
     token: symbol | null;
   }>({
-    autosort: true,
     editor: new Editor().save(),
     token: null,
-    modules: {},
   });
 
-  const viewModel = useBaklava() as IBaklavaViewModel;
+  const viewModel = useCodeGraph();
   const editor: Editor = viewModel.editor;
-
-  // editor.nodeHooks.afterSave.subscribe(state.token, (state) => {
-  //   saveNodeState(editor.graph, state);
-  //   return state;
-  // });
-
-  // editor.nodeHooks.beforeLoad.subscribe(state.token, (state) => {
-  //   loadNodeState(editor.graph, state);
-  // });
-
-  // const displayedGraph = viewModel.displayedGraph;
-  // if (displayedGraph)
-  //   registerCreateSubgraphCommand(ref(displayedGraph), viewModel.commandHandler, viewModel.switchGraph);
-
-  // const newGraph = () => {
-  //   if (state.token) unsubscribe();
-  // };
 
   const subscribe = (call: () => void): void => {
     if (state.token) unsubscribe();
@@ -61,10 +42,6 @@ export const useCodeGraphStore = defineStore("code-graph", () => {
 
     state.token = null;
   };
-
-  // const registerGraph = (graph: CodeGraph) => {
-  //   editor.registerGraph(graph);
-  // };
 
   return { editor, state, subscribe, unsubscribe, viewModel };
 });

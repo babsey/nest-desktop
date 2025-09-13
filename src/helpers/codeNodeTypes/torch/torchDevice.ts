@@ -2,9 +2,7 @@
 
 import { TextInputInterface } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
+import { NodeOutputInterface, defineCodeNode, formatInterfaceLabels } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "torch.device",

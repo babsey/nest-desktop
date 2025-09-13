@@ -1,6 +1,6 @@
 // elephant/codeNodeTypes
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import elephantCV from "./elephantCV";
 import elephantHomogeneousGammaProcess from "./elephantHomogeneousGammaProcess";
@@ -10,14 +10,15 @@ import elephantInstantaneousRate from "./elephantInstantaneousRate";
 import elephantMeanFiringRate from "./elephantMeanFiringRate";
 import elephantTimeHistogram from "./elephantTimeHistogram";
 
-export const registerElephantNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  codeGraphStore.state.modules["elephant"] = "import elephant";
-  codeGraphStore.state.modules["elephant.spike_train_generation"] = "import elephant";
-  codeGraphStore.state.modules["elephant.statistics"] = "import elephant";
-  codeGraphStore.state.modules["quantities"] = "import quantities as pq";
+export const registerElephantNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  const editor = codeGraphStore.editor;
+  viewModel.state.modules["elephant"] = "import elephant";
+  viewModel.state.modules["elephant.spike_train_generation"] = "import elephant";
+  viewModel.state.modules["elephant.statistics"] = "import elephant";
+  viewModel.state.modules["quantities"] = "import quantities as pq";
+
+  const editor = viewModel.editor;
   editor.registerNodeType(elephantHomogeneousGammaProcess, { category: "elephant.spike_train_generation" });
   editor.registerNodeType(elephantHomogeneousPoissonProcess, { category: "elephant.spike_train_generation" });
   editor.registerNodeType(elephantCV, { category: "elephant.statistics" });

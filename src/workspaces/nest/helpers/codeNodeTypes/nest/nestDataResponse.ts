@@ -1,13 +1,17 @@
 // nestDataResponse.ts
 
 import { displayInSidebar } from "baklavajs";
+import {
+  AbstractCodeNode,
+  formatInterfaceLabels,
+  NodeInputInterface,
+  getPositionAtColumn,
+  defineCodeNode,
+} from "@/codeGraph";
 
-import functionNode from "@/helpers/codeNodeTypes/base/function";
-import { AbstractCodeNode, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import functionNode from "@/codeGraph/codeNodeTypes/default/function";
+
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import nestDataResponse from "./nestDataResponse";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";

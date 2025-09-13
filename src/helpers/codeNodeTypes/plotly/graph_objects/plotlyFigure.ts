@@ -1,9 +1,6 @@
 // plotlyFigure.ts
 
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabels } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Figure",

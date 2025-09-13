@@ -5,12 +5,11 @@ import { ILogObj, ISettingsParam, Logger } from "tslog";
 import { sha1 } from "object-hash";
 import { v4 as uuidv4 } from "uuid";
 
+import type { AbstractCodeNode, CodeNodeInterface } from "@/codeGraph";
 import { logger as mainLogger } from "@/utils/logger";
 import { truncate } from "@/utils/truncate";
 
 import { Config } from "./config";
-import { AbstractCodeNode } from "../codeGraph/codeNode";
-import { CodeNodeInterface } from "../codeGraph/interface/codeNodeInterface";
 
 export class BaseObj {
   private _codeNodes: Record<string, AbstractCodeNode> = {};

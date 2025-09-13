@@ -2,11 +2,14 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import {
+  NodeInputInterface,
+  NodeOutputInterface,
+  defineCodeNode,
+  formatInterfaceLabel,
+  formatInterfaceLabels,
+  numberType,
+} from "@/codeGraph";
 
 export default defineCodeNode({
   type: "elephant.statistics.instantaneous_rate",

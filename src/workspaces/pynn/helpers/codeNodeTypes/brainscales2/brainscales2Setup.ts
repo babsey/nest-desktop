@@ -1,11 +1,7 @@
 // brainscales2Setup.ts
 
-import { displayInSidebar, NumberInterface } from "baklavajs";
-import { setType } from "@baklavajs/interface-types";
-
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { displayInSidebar, NumberInterface, setType } from "baklavajs";
+import { defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "brainscales2.setup",

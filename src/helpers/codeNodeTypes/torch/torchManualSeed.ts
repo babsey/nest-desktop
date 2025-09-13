@@ -2,8 +2,7 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { defineCodeNode, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "torch.manual_seed",

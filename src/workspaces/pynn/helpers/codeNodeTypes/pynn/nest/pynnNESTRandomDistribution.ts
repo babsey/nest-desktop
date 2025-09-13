@@ -1,8 +1,7 @@
 // pynnNESTRandomDistribution.ts
 
 import { SelectInterface } from "baklavajs";
-
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "pyNN.nest.RandomDistribution",

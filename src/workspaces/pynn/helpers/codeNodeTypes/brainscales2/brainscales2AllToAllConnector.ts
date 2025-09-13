@@ -1,6 +1,6 @@
 // brainscales2AllToAllConnector.ts
 
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "brainscales2.AllToAllConnector",

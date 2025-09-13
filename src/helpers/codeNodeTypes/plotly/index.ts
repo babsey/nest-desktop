@@ -1,6 +1,6 @@
 // codeNodeTypes/plotly
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import plotlyBar from "./express/plotlyBar";
 import plotlyDataResponse from "./plotlyDataResponse";
@@ -17,14 +17,15 @@ import plotlyLine from "./express/plotlyLine";
 import plotlyMakeSubplots from "./plotlyMakeSubplots";
 import plotlyScatter from "./express/plotlyScatter";
 
-export const registerPlotlyNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  codeGraphStore.state.modules["plotly"] = "import plotly";
-  codeGraphStore.state.modules["plotly.express"] = "import plotly.express as px";
-  codeGraphStore.state.modules["plotly.graph_objects"] = "import plotly.graph_objects as go";
-  codeGraphStore.state.modules["plotly.subplots"] = "from plotly import subplots";
+export const registerPlotlyNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  const editor = codeGraphStore.editor;
+  viewModel.state.modules["plotly"] = "import plotly";
+  viewModel.state.modules["plotly.express"] = "import plotly.express as px";
+  viewModel.state.modules["plotly.graph_objects"] = "import plotly.graph_objects as go";
+  viewModel.state.modules["plotly.subplots"] = "from plotly import subplots";
+
+  const editor = viewModel.editor;
   editor.registerNodeType(plotlyBar, { category: "plotly.express" });
   editor.registerNodeType(plotlyDataResponse, { category: "plotly" });
   editor.registerNodeType(plotlyFigureAddTrace, { category: "plotly" });

@@ -1,12 +1,16 @@
 // nestRandomUniform.ts
 
 import { displayInSidebar, NumberInterface } from "baklavajs";
+import {
+  AbstractCodeNode,
+  NodeOutputInterface,
+  defineCodeNode,
+  formatInterfaceLabel,
+  getPositionAtColumn,
+  getPositionBeforeNode,
+} from "@/codeGraph";
 
-import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { getPositionAtColumn, getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import nestRandomUniform from "./nestRandomUniform";
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";

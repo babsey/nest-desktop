@@ -1,13 +1,14 @@
 // codeNodeTypes/pynn
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
+
 import pynnRandomDistribution from "./pynnRandomDistribution";
 
-export const registerPyNNRandmNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  const editor = codeGraphStore.editor;
+export const registerPyNNRandmNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  codeGraphStore.state.modules["pyNN.random"] = "import pyNN.random";
+  viewModel.state.modules["pyNN.random"] = "import pyNN.random";
 
+  const editor = viewModel.editor;
   editor.registerNodeType(pynnRandomDistribution, { category: "pynn.random" });
 };

@@ -1,7 +1,10 @@
 // elephant/index.ts
 
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
+
 import { defineViewStore } from "@/stores/defineViewStore";
 import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import iconSet from "./components/iconSet";
 import route from "./routes";
@@ -55,8 +58,9 @@ export const elephant: IWorkspaceProps = {
         },
       })(),
     };
-
-    registerCodeNodeTypes(["elephant", "neo"]);
+    const codeGraphStore = useCodeGraphStore();
+    const viewModel = codeGraphStore.viewModel as ICodeGraphViewModel;
+    registerCodeNodeTypes(viewModel, ["elephant", "neo"]);
   },
   route,
   stores: {},

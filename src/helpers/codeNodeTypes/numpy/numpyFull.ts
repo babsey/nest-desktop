@@ -2,12 +2,9 @@
 
 import { IntegerInterface, NumberInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
+import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
-import { numberType } from "../base/interfaceTypes";
 
 export default defineCodeNode({
   type: "numpy.full",

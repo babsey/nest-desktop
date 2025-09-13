@@ -2,13 +2,9 @@
 
 import { SelectInterface, setType } from "baklavajs";
 
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel, stringType } from "@/codeGraph";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
-import { stringType } from "../base/interfaceTypes";
 
 export default defineCodeNode({
   type: "numpy.convolve",

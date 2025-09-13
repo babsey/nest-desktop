@@ -1,6 +1,6 @@
 // codeNodeTypes/torch
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import torchApplyModel from "./torchApplyModel";
 import torchCat from "./torchCat";
@@ -20,13 +20,14 @@ import torchTensor from "./torchTensor";
 import torchTrainModel from "./torchTrainModel";
 import torchZeros from "./torchZeros";
 
-export const registerTorchNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  codeGraphStore.state.modules["torch"] = "import torch";
-  codeGraphStore.state.modules["torch.nn"] = "import torch.nn as nn";
-  codeGraphStore.state.modules["torch.optim"] = "import torch.optim as optim";
+export const registerTorchNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  const editor = codeGraphStore.editor;
+  viewModel.state.modules["torch"] = "import torch";
+  viewModel.state.modules["torch.nn"] = "import torch.nn as nn";
+  viewModel.state.modules["torch.optim"] = "import torch.optim as optim";
+
+  const editor = viewModel.editor;
   editor.registerNodeType(torchApplyModel, { category: "torch" });
   editor.registerNodeType(torchCat, { category: "torch" });
   editor.registerNodeType(torchConv2d, { category: "torch.nn" });

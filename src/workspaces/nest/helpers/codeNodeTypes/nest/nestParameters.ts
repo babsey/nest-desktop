@@ -2,21 +2,27 @@
 
 import {
   CheckboxInterface,
-  displayInSidebar,
   IntegerInterface,
   NodeInterface,
-  setType,
   TextInputInterface,
+  displayInSidebar,
+  setType,
 } from "baklavajs";
+import {
+  AbstractCodeNode,
+  NodeOutputInterface,
+  booleanType,
+  defineDynamicCodeNode,
+  formatInterfaceLabel,
+  formatInterfaceLabels,
+  getPositionBeforeNode,
+  numberType,
+  stringType,
+} from "@/codeGraph";
 
-import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
 import { TParameter } from "@/types";
-import { getPositionBeforeNode } from "@/helpers/codeGraph/baseCodeGraph";
-import { booleanType, numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
-import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
 
 import nestParameters from "./nestParameters";
 import { INESTNodeCollection } from "./interfaceTypes";

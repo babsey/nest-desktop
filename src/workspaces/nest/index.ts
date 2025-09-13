@@ -1,8 +1,11 @@
 // nest/index.ts
 
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
+
 import { defineViewStore } from "@/stores/defineViewStore";
 import { logger as mainLogger } from "@/utils/logger";
 import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
+import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 import nestIconSet from "./components/iconSet";
 import route from "./routes";
@@ -90,7 +93,9 @@ export const nest: IWorkspaceProps = {
       })(),
     };
 
-    registerCodeNodeTypes(["nest", "humam"]);
+    const codeGraphStore = useCodeGraphStore();
+    const viewModel = codeGraphStore.viewModel as ICodeGraphViewModel;
+    registerCodeNodeTypes(viewModel, ["nest", "humam"]);
   },
   route,
   stores: {},

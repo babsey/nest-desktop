@@ -10,15 +10,20 @@ import {
   setType,
 } from "baklavajs";
 import { nextTick } from "vue";
+import {
+  AbstractCodeNode,
+  NodeInputInterface,
+  NodeOutputInterface,
+  defineDynamicCodeNode,
+  formatInterfaceLabel,
+  formatLabel,
+  getPositionAtColumn,
+  numberType,
+  stringType,
+} from "@/codeGraph";
 
-import { AbstractCodeNode, formatInterfaceLabel, formatLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
-import { numberType, stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 import nestCreate from "./nestCreate";
 import { INESTNodeCollection, nestNodeCollectionType } from "./interfaceTypes";
@@ -211,8 +216,8 @@ export const loadNESTCreateNode = (
 
   // positions
   if (nodeProps.spatial) {
-    const randNode = loadNESTRandomUniform(graph, { min: -0.5, max: 0.5 }, graph.nodes.indexOf(codeNode));
     const spatialNode = loadNESTSpatialFree(graph, graph.nodes.indexOf(codeNode));
+    const randNode = loadNESTRandomUniform(graph, { min: -0.5, max: 0.5 }, graph.nodes.indexOf(spatialNode));
 
     graph.addConnection(randNode.outputs.out, spatialNode.inputs.pos);
     graph.addConnection(spatialNode.outputs.out, codeNode.inputs.positions);

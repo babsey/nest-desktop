@@ -1,8 +1,6 @@
 // norseDataResponse.ts
 
-import { AbstractCodeNode, formatLabels } from "@/helpers/codeGraph/codeNode";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { AbstractCodeNode, NodeInputInterface, defineCodeNode, formatLabels } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "norse/response",

@@ -1,6 +1,6 @@
 // codeNodeTypes/norse
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import norseDataResponse from "./norseDataResponse";
 import norseIAF from "./norseIAF";
@@ -13,12 +13,13 @@ import norseLIParameters from "./norseLIParameters";
 import norseModelApply from "./norseModelApply";
 import norseSequentialState from "./norseSequentialState";
 
-export const registerNorseNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  codeGraphStore.state.modules["norse"] = "import norse";
-  codeGraphStore.state.modules["norse.torch"] = "import norse";
+export const registerNorseNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  const editor = codeGraphStore.editor;
+  viewModel.state.modules["norse"] = "import norse";
+  viewModel.state.modules["norse.torch"] = "import norse";
+
+  const editor = viewModel.editor;
   editor.registerNodeType(norseDataResponse, { category: "norse" });
   editor.registerNodeType(norseIAF, { category: "norse.torch" });
   editor.registerNodeType(norseIAFCell, { category: "norse.torch" });

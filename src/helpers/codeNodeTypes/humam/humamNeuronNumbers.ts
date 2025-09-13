@@ -2,9 +2,7 @@
 
 import { CheckboxInterface, displayInSidebar, NumberInterface, TextInputInterface } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
+import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
 import { parseBoolean } from "@/utils/boolean";
 
 export default defineCodeNode({

@@ -1,12 +1,7 @@
 // pynnNESTPopulation.ts
 
-import { IntegerInterface, SelectInterface } from "baklavajs";
-import { setType } from "@baklavajs/interface-types";
-
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
+import { IntegerInterface, SelectInterface, setType } from "baklavajs";
+import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "pyNN.Population",

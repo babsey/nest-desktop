@@ -1,15 +1,17 @@
 // nestCopyModel.ts
 
 import { displayInSidebar, NodeInterface, setType, TextInputInterface } from "baklavajs";
+import {
+  AbstractCodeNode,
+  NodeInputInterface,
+  defineDynamicCodeNode,
+  formatInterfaceLabel,
+  getPositionAtColumn,
+  stringType,
+} from "@/codeGraph";
 
-import { AbstractCodeNode, formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { DictInputInterface } from "@/helpers/codeGraph/interface/dictInputInterface";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineDynamicCodeNode } from "@/helpers/codeGraph/dynamicCodeNode";
-import { stringType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
 
 import nestCopyModel from "./nestCopyModel";
 import { INESTCopyModelProps, NESTCopyModel } from "../../model/copyModel";
@@ -22,7 +24,7 @@ export default defineDynamicCodeNode({
   inputs: {
     existing: () => new TextInputInterface("existing", "iaf_psc_alpha").use(setType, stringType),
     new: () => new TextInputInterface("new", "new").use(setType, stringType),
-    params: () => new DictInputInterface("params", {}).use(displayInSidebar, true).setHidden(true),
+    params: () => new NodeInputInterface("params").use(displayInSidebar, true).setHidden(true),
   },
   codeTemplate() {
     if (!this.node) return this.type;

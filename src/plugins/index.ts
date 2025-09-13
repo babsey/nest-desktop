@@ -14,7 +14,7 @@ import pinia from "@/stores";
 // Plugins
 import codeMirror, { basicSetup } from "./codemirror";
 import configs from "./configs";
-import { baklavajs } from "./baklava";
+import { codeGraph } from "./codeGraph";
 import { loadFonts } from "./webfontloader";
 import { vuetify } from "./vuetify";
 
@@ -28,7 +28,13 @@ export function registerPlugins(app: App) {
   // Use pinia store
   app.use(pinia);
 
-  app.use(baklavajs);
+  app.use(codeGraph, {
+    viewSettings: {
+      nodes: {
+        defaultWidth: 200,
+      },
+    },
+  });
 
   // Register workspaces
   registerWorkspaces(app);

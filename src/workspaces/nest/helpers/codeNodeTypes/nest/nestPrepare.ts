@@ -1,9 +1,8 @@
 // nestPrepare.ts
 
-import { AbstractCodeNode } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { AbstractCodeNode, getPositionAtColumn, defineCodeNode } from "@/codeGraph";
+
+import { CodeGraph } from "@/helpers/code/codeGraph";
 
 import { NESTCodeGraph } from "../../codeGraph/codeGraph";
 import nestPrepare from "./nestPrepare";

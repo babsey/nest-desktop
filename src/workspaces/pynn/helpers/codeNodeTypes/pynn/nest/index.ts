@@ -1,6 +1,6 @@
 // codeNodeTypes/pynn/nest
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
 
 import pynnNESTEnd from "./pynnNESTEnd";
 import pynnNESTPopulation from "./pynnNESTPopulation";
@@ -10,12 +10,12 @@ import pynnNESTRandomDistribution from "./pynnNESTRandomDistribution";
 import pynnNESTProjection from "./pynnNESTProjection";
 import pynnNESTIFCurrAlpha from "./pynnNESTIFCurrAlpha";
 
-export const registerPyNNNESTNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  const editor = codeGraphStore.editor;
+export const registerPyNNNESTNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
 
-  codeGraphStore.state.modules["pyNN.nest"] = "import pyNN.nest";
+  viewModel.state.modules["pyNN.nest"] = "import pyNN.nest";
 
+  const editor = viewModel.editor;
   editor.registerNodeType(pynnNESTEnd, { category: "pyNN.nest" });
   editor.registerNodeType(pynnNESTIFCurrAlpha, { category: "pyNN.nest" });
   editor.registerNodeType(pynnNESTPopulation, { category: "pyNN.nest" });

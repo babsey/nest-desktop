@@ -1,6 +1,8 @@
 // codeNodeTypes
 
-import { registerBaseNodeTypes } from "./base";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
+import { registerDefaultNodeTypes, registerPythonNodeTypes } from "@/codeGraph/codeNodeTypes";
+
 import { registerHumamNodeTypes } from "./humam";
 import { registerNeoNodeTypes } from "./neo";
 import { registerNumpyNodeTypes } from "./numpy";
@@ -14,17 +16,19 @@ import { registerNESTNodeTypes } from "@/workspaces/nest/helpers/codeNodeTypes/n
 import { registerNorseNodeTypes } from "@/workspaces/norse/helpers/codeNodeTypes/norse";
 import { registerPyNNNodeTypes } from "@/workspaces/pynn/helpers/codeNodeTypes/pynn";
 
-export const registerCodeNodeTypes = (nodeTypes: string[]) => {
-  if (nodeTypes.includes("base")) registerBaseNodeTypes();
-  if (nodeTypes.includes("brainscales2")) registerBrainScales2NodeTypes();
-  if (nodeTypes.includes("elephant")) registerElephantNodeTypes();
-  if (nodeTypes.includes("neo")) registerNeoNodeTypes();
-  if (nodeTypes.includes("nest")) registerNESTNodeTypes();
-  if (nodeTypes.includes("norse")) registerNorseNodeTypes();
-  if (nodeTypes.includes("numpy")) registerNumpyNodeTypes();
-  if (nodeTypes.includes("pandas")) registerPandasNodeTypes();
-  if (nodeTypes.includes("humam")) registerHumamNodeTypes();
-  if (nodeTypes.includes("plotly")) registerPlotlyNodeTypes();
-  if (nodeTypes.includes("pynn")) registerPyNNNodeTypes();
-  if (nodeTypes.includes("torch")) registerTorchNodeTypes();
+export const registerCodeNodeTypes = (viewModel: ICodeGraphViewModel, nodeTypes: string[]) => {
+  registerDefaultNodeTypes(viewModel);
+
+  if (nodeTypes.includes("python")) registerPythonNodeTypes(viewModel);
+  if (nodeTypes.includes("brainscales2")) registerBrainScales2NodeTypes(viewModel);
+  if (nodeTypes.includes("elephant")) registerElephantNodeTypes(viewModel);
+  if (nodeTypes.includes("neo")) registerNeoNodeTypes(viewModel);
+  if (nodeTypes.includes("nest")) registerNESTNodeTypes(viewModel);
+  if (nodeTypes.includes("norse")) registerNorseNodeTypes(viewModel);
+  if (nodeTypes.includes("numpy")) registerNumpyNodeTypes(viewModel);
+  if (nodeTypes.includes("pandas")) registerPandasNodeTypes(viewModel);
+  if (nodeTypes.includes("humam")) registerHumamNodeTypes(viewModel);
+  if (nodeTypes.includes("plotly")) registerPlotlyNodeTypes(viewModel);
+  if (nodeTypes.includes("pynn")) registerPyNNNodeTypes(viewModel);
+  if (nodeTypes.includes("torch")) registerTorchNodeTypes(viewModel);
 };

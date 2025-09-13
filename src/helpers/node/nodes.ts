@@ -2,12 +2,12 @@
 
 import { UnwrapRef, reactive } from "vue";
 
+import type { AbstractCodeNode } from "@/codeGraph";
 import { TActivityGraph, TNetwork, TNode, TNodeGroup } from "@/types";
 
 import { BaseNode, INodeProps } from "./node";
 import { BaseObj } from "../common/base";
 import { INodeGroupProps, NodeGroup } from "./nodeGroup";
-import { AbstractCodeNode } from "../codeGraph/codeNode";
 import { INodeViewProps } from "./nodeViewState";
 
 interface INodesState {

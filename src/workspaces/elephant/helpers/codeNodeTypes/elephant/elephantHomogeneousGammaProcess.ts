@@ -2,10 +2,7 @@
 
 import { CheckboxInterface, displayInSidebar, IntegerInterface, NumberInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { booleanType, numberType } from "@/helpers/codeNodeTypes/base/interfaceTypes";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
+import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "elephant.spike_train_generation.homogeneous_gamma_process",

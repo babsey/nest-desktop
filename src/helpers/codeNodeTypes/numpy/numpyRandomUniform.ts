@@ -2,11 +2,9 @@
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface } from "@/helpers/codeGraph/interface/nodeOutputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
+import { NodeOutputInterface, defineCodeNode, numberType } from "@/codeGraph";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
-import { numberType } from "../base/interfaceTypes";
 
 export default defineCodeNode({
   type: "numpy.random.uniform",

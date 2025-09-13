@@ -1,13 +1,17 @@
 // nestConnect.ts
 
 import { displayInSidebar, SelectInterface, setType, TextInputInterface } from "baklavajs";
+import {
+  AbstractCodeNode,
+  NodeInputInterface,
+  defineCodeNode,
+  formatInterfaceLabel,
+  formatInterfaceLabels,
+  getPositionAtColumn,
+} from "@/codeGraph";
 
-import { AbstractCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
-import { CodeGraph } from "@/helpers/codeGraph/codeGraph";
+import { CodeGraph } from "@/helpers/code/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { getPositionAtColumn } from "@/helpers/codeGraph/baseCodeGraph";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
 
 import nestConnect from "./nestConnect";
 import { INESTConnectionProps, NESTConnection } from "../../connection/connection";

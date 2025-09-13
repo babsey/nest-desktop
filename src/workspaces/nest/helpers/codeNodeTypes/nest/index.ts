@@ -1,6 +1,7 @@
 // codeNodeTypes/nest
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
+import { ICodeGraphViewModel } from "@/codeGraph/viewModel";
+import { registerNumpyNodeTypes } from "@/helpers/codeNodeTypes/numpy";
 
 import nestConnect from "./nestConnect";
 import nestCopyModel from "./nestCopyModel";
@@ -21,12 +22,13 @@ import nestSimulate from "./nestSimulate";
 import nestSpatialFree from "./nestSpatialFree";
 import nestSpatialGrid from "./nestSpatialGrid";
 
-export const registerNESTNodeTypes = () => {
-  const codeGraphStore = useCodeGraphStore();
-  const editor = codeGraphStore.editor;
+export const registerNESTNodeTypes = (viewModel: ICodeGraphViewModel) => {
+  if (!viewModel) return;
+  registerNumpyNodeTypes(viewModel);
 
-  codeGraphStore.state.modules["nest"] = "import nest";
+  viewModel.state.modules["nest"] = "import nest";
 
+  const editor = viewModel.editor;
   editor.registerNodeType(nestConnect, { category: "nest" });
   editor.registerNodeType(nestCopyModel, { category: "nest" });
   editor.registerNodeType(nestCreate, { category: "nest" });

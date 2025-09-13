@@ -2,9 +2,7 @@
 
 import { IntegerInterface } from "baklavajs";
 
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel } from "@/helpers/codeGraph/codeNode";
+import { NodeInputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "plotly.fig.add_trace",

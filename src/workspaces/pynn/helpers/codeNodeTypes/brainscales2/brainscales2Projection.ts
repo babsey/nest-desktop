@@ -1,10 +1,7 @@
 // brainscales2Projection.ts
 
 import { SelectInterface } from "baklavajs";
-
-import { NodeInputInterface } from "@/helpers/codeGraph/interface/nodeInputInterface";
-import { defineCodeNode } from "@/helpers/codeGraph/defineCodeNode";
-import { formatInterfaceLabel, formatInterfaceLabels } from "@/helpers/codeGraph/codeNode";
+import { NodeInputInterface, defineCodeNode, formatInterfaceLabel, formatInterfaceLabels } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "brainscales2.Projection",
