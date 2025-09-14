@@ -1,7 +1,7 @@
 // norseLIFCell.ts
 
 import { CheckboxInterface, displayInSidebar, setType } from "baklavajs";
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 import { lifParametersType } from "./interfaceTypes";
 
@@ -19,8 +19,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args = [];
 
-    const p = this.node.getConnectedOutputInterfaceByInterface("p");
-    if (p != undefined) args.push(`p=${formatInterfaceLabel(p)}`);
+    const p = this.node.getConnectedNodeByInterface("p");
+    if (p != undefined) args.push(`p=${p.value}`);
 
     if (this.node.inputs.record_states.value) args.push(`record_states=True`);
 

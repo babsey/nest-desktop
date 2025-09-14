@@ -1,7 +1,7 @@
 // nestSetKernelStatus.ts
 
 import { displayInSidebar, IntegerInterface, NumberInterface, setType } from "baklavajs";
-import { AbstractCodeNode, defineCodeNode, formatInterfaceLabel, getPositionAtColumn, numberType } from "@/codeGraph";
+import { AbstractCodeNode, defineCodeNode, getPositionAtColumn, numberType } from "@/codeGraph";
 
 import { CodeGraph } from "@/helpers/code/codeGraph";
 
@@ -35,17 +35,17 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const localNumThreads = this.node.getConnectedOutputInterfaceByInterface("local_num_threads");
-    if (localNumThreads != undefined) args.push(`"local_num_threads": ${formatInterfaceLabel(localNumThreads)}`);
+    const localNumThreads = this.node.getConnectedNodeByInterface("local_num_threads");
+    if (localNumThreads != undefined) args.push(`"local_num_threads": ${localNumThreads.value}`);
     else if (!this.node.inputs.local_num_threads.hidden)
       args.push(`"local_num_threads": ${this.node.inputs.local_num_threads.value}`);
 
-    const resolution = this.node.getConnectedOutputInterfaceByInterface("resolution");
-    if (resolution != undefined) args.push(`"resolution": ${formatInterfaceLabel(resolution)}`);
+    const resolution = this.node.getConnectedNodeByInterface("resolution");
+    if (resolution != undefined) args.push(`"resolution": ${resolution.value}`);
     else if (!this.node.inputs.resolution.hidden) args.push(`"resolution": ${this.node.inputs.resolution.value}`);
 
-    const rngSeed = this.node.getConnectedOutputInterfaceByInterface("rng_seed");
-    if (rngSeed) args.push(`"rng_seed": ${formatInterfaceLabel(rngSeed)}`);
+    const rngSeed = this.node.getConnectedNodeByInterface("rng_seed");
+    if (rngSeed) args.push(`"rng_seed": ${rngSeed.value}`);
     else if (!this.node.inputs.rng_seed.hidden) args.push(`"rng_seed": ${this.node.inputs.rng_seed.value}`);
 
     return args.length > 0 ? `nest.SetKernelStatus({\n\t${args.join(",\n\t")}\n})` : "";

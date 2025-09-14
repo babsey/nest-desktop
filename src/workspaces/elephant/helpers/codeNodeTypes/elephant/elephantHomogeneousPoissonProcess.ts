@@ -2,7 +2,7 @@
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
+import { NodeOutputInterface, defineCodeNode, formatLabels, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "elephant.spike_train_generation.homogeneous_poisson_process",
@@ -25,17 +25,17 @@ export default defineCodeNode({
     const args: string[] = [];
     let keyword: string = "";
 
-    const rate = this.node.getConnectedOutputInterfaceByInterface("rate");
-    if (rate != undefined) args.push(`${formatInterfaceLabel(rate)}*pq.Hz`);
+    const rate = this.node.getConnectedNodeByInterface("rate");
+    if (rate != undefined) args.push(`${rate.value}*pq.Hz`);
     else args.push(`${this.node.inputs.rate.value}*pq.Hz`);
 
-    const t_start = this.node.getConnectedOutputInterfacesByInterface("t_start");
-    if (t_start != undefined) args.push(`${formatInterfaceLabels(t_start)}*pq.ms`);
+    const t_start = this.node.getConnectedNodesByInterface("t_start");
+    if (t_start != undefined) args.push(`${formatLabels(t_start)}*pq.ms`);
     else if (this.node.inputs.t_start.value > 0) args.push(`${this.node.inputs.t_start.value}*pq.ms`);
 
     keyword = args.length < 2 ? "t_stop=" : "";
-    const t_stop = this.node.getConnectedOutputInterfacesByInterface("t_stop");
-    if (t_stop != undefined) args.push(`${keyword}${formatInterfaceLabels(t_stop)}*pq.ms`);
+    const t_stop = this.node.getConnectedNodesByInterface("t_stop");
+    if (t_stop != undefined) args.push(`${keyword}${formatLabels(t_stop)}*pq.ms`);
     else if (this.node.inputs.t_stop.value !== 1000) args.push(`${keyword}${this.node.inputs.t_stop.value}*pq.ms`);
 
     return `elephant.spike_train_generation.homogeneous_poisson_process(${args.join(", ")})`;

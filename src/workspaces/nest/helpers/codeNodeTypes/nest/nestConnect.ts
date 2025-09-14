@@ -1,14 +1,7 @@
 // nestConnect.ts
 
 import { displayInSidebar, SelectInterface, setType, TextInputInterface } from "baklavajs";
-import {
-  AbstractCodeNode,
-  NodeInputInterface,
-  defineCodeNode,
-  formatInterfaceLabel,
-  formatInterfaceLabels,
-  getPositionAtColumn,
-} from "@/codeGraph";
+import { AbstractCodeNode, NodeInputInterface, defineCodeNode, formatLabels, getPositionAtColumn } from "@/codeGraph";
 
 import { CodeGraph } from "@/helpers/code/codeGraph";
 import { IParamProps } from "@/helpers/common/parameter";
@@ -45,10 +38,10 @@ export default defineCodeNode({
   },
   codeTemplate() {
     if (!this.node) return this.type;
-    const pre = this.node.getConnectedOutputInterfacesByInterface("pre");
-    const post = this.node.getConnectedOutputInterfacesByInterface("post");
+    const pre = this.node.getConnectedNodesByInterface("pre");
+    const post = this.node.getConnectedNodesByInterface("post");
     if (pre.length === 0 || post.length === 0) return this.type;
-    const args = [formatInterfaceLabels(pre).join("+"), formatInterfaceLabels(post).join("+")];
+    const args = [formatLabels(pre).join("+"), formatLabels(post).join("+")];
     let keyword = "";
 
     const connSpecs = [];
@@ -69,8 +62,8 @@ export default defineCodeNode({
 
     let synSpec = "";
     if (!this.node.inputs.syn_spec.hidden) {
-      const synSpecNode = this.node.getConnectedOutputInterfaceByInterface("syn_spec");
-      if (synSpecNode != undefined) synSpec = `${formatInterfaceLabel(synSpecNode)}`;
+      const synSpecNode = this.node.getConnectedNodeByInterface("syn_spec");
+      if (synSpecNode != undefined) synSpec = `${synSpecNode.value}`;
       else synSpec = `"${this.node.inputs.syn_spec.value}"`;
     }
     if (args.length === 2) keyword = "syn_spec=";

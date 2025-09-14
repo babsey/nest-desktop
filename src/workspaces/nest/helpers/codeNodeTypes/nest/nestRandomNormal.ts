@@ -1,13 +1,7 @@
 // nestRandomNormal.ts
 
 import { displayInSidebar, NumberInterface } from "baklavajs";
-import {
-  AbstractCodeNode,
-  NodeOutputInterface,
-  defineCodeNode,
-  formatInterfaceLabel,
-  getPositionAtColumn,
-} from "@/codeGraph";
+import { AbstractCodeNode, NodeOutputInterface, defineCodeNode, getPositionAtColumn } from "@/codeGraph";
 
 import { CodeGraph } from "@/helpers/code/codeGraph";
 
@@ -35,13 +29,13 @@ export default defineCodeNode({
     const args: string[] = [];
     let keyword: string = "";
 
-    const mean = this.node.getConnectedOutputInterfaceByInterface("mean");
-    if (mean != undefined) args.push(`${formatInterfaceLabel(mean)}`);
+    const mean = this.node.getConnectedNodeByInterface("mean");
+    if (mean != undefined) args.push(`${mean.value}`);
     else if (!this.node.inputs.mean.hidden) args.push(`${this.node.inputs.mean.value}`);
 
     keyword = args.length < 1 ? "std=" : "";
-    const std = this.node.getConnectedOutputInterfaceByInterface("std");
-    if (std != undefined) args.push(`${keyword}${formatInterfaceLabel(std)}`);
+    const std = this.node.getConnectedNodeByInterface("std");
+    if (std != undefined) args.push(`${keyword}${std.value}`);
     else if (!this.node.inputs.std.hidden) args.push(`${keyword}${this.node.inputs.std.value}`);
 
     return `nest.random.normal(${args.join(", ")})`;

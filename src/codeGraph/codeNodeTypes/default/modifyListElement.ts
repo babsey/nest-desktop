@@ -14,7 +14,7 @@ export default defineCodeNode({
   },
   codeTemplate() {
     if (!this.node) return this.type;
-    const lists = this.node.getConnectedOutputInterfacesByInterface("list");
+    const lists = this.node.getConnectedNodesByInterface("list");
     if (lists.length == 0) return this.type;
     return `${lists[0].label}[${this.node.inputs.index.value}] = ${this.node.inputs.value.value}`;
   },

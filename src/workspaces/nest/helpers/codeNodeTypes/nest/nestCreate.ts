@@ -15,8 +15,6 @@ import {
   NodeInputInterface,
   NodeOutputInterface,
   defineDynamicCodeNode,
-  formatInterfaceLabel,
-  formatLabel,
   getPositionAtColumn,
   numberType,
   stringType,
@@ -72,21 +70,21 @@ export default defineDynamicCodeNode({
     keyword = args.length < 3 ? "positions=" : "";
     if ("positions" in props) args.push(`${keyword}{{ &positions }}`);
 
-    // const model = this.node.getConnectedOutputInterfaceByInterface("model");
-    // if (model != undefined) args.push(`"${formatInterfaceLabel(model)}"`);
+    // const model = this.node.getConnectedNodeByInterface("model");
+    // if (model != undefined) args.push(`"${(model.value)}"`);
     // else args.push(`"${this.node.inputs.model.value}"`);
 
-    // const size = this.node.getConnectedOutputInterfaceByInterface("size");
-    // if (size != undefined) args.push(`${formatInterfaceLabel(size)}`);
+    // const size = this.node.getConnectedNodeByInterface("size");
+    // if (size != undefined) args.push(`${(size.value)}`);
     // else if (!this.node.inputs.size.hidden) args.push(`${this.node.inputs.size.value}`);
 
     // keyword = args.length < 2 ? "params=" : "";
-    // const params = this.node.getConnectedOutputInterfaceByInterface("params");
-    // if (params != undefined) args.push(`${keyword}${formatInterfaceLabel(params)}`);
+    // const params = this.node.getConnectedNodeByInterface("params");
+    // if (params != undefined) args.push(`${keyword}${(params.value)}`);
 
     // keyword = args.length < 3 ? "positions=" : "";
-    // const positions = this.node.getConnectedOutputInterfaceByInterface("positions");
-    // if (positions != undefined) args.push(`${keyword}${formatInterfaceLabel(positions)}`);
+    // const positions = this.node.getConnectedNodeByInterface("positions");
+    // if (positions != undefined) args.push(`${keyword}${(positions.value)}`);
 
     return `nest.Create(${args.join(", ")})`;
   },
@@ -155,12 +153,12 @@ export default defineDynamicCodeNode({
 
     const props: Record<string, unknown> = {};
 
-    const model = this.node.getConnectedOutputInterfaceByInterface("model");
-    if (model != undefined) props["model"] = formatInterfaceLabel(model);
+    const model = this.node.getConnectedNodeByInterface("model");
+    if (model != undefined) props["model"] = model.value;
     else props["model"] = `"${this.node.inputs.model.value}"`;
 
-    const size = this.node.getConnectedOutputInterfaceByInterface("size");
-    if (size != undefined) props["size"] = formatInterfaceLabel(size);
+    const size = this.node.getConnectedNodeByInterface("size");
+    if (size != undefined) props["size"] = size.value;
     else if (!this.node.inputs.size.hidden) props["size"] = this.node.inputs.size.value;
 
     const paramsNode = this.node.getConnectedNodeByInterface("params");
@@ -172,18 +170,17 @@ export default defineDynamicCodeNode({
         );
         if (connection) {
           const node = subgraph.findNodeById(connection.from.nodeId);
-          if (node) props["params"] = formatLabel(node);
+          if (node) props["params"] = node.value;
         }
       } else {
-        const params = this.node.getConnectedOutputInterfaceByInterface("params");
+        const params = this.node.getConnectedNodeByInterface("params");
         if (params && !this.node.inputs.params.hidden) {
-          props["params"] = formatInterfaceLabel(params);
+          props["params"] = params.value;
         }
       }
 
-    const positions = this.node.getConnectedOutputInterfaceByInterface("positions");
-    if (positions != undefined && !this.node.inputs.positions.hidden)
-      props["positions"] = formatInterfaceLabel(positions);
+    const positions = this.node.getConnectedNodeByInterface("positions");
+    if (positions != undefined && !this.node.inputs.positions.hidden) props["positions"] = positions.value;
 
     return props;
   },

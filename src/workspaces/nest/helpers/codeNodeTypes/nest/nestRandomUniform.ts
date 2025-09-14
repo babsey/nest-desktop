@@ -5,7 +5,6 @@ import {
   AbstractCodeNode,
   NodeOutputInterface,
   defineCodeNode,
-  formatInterfaceLabel,
   getPositionAtColumn,
   getPositionBeforeNode,
 } from "@/codeGraph";
@@ -36,13 +35,13 @@ export default defineCodeNode({
     const args: string[] = [];
     let keyword: string = "";
 
-    const min = this.node.getConnectedOutputInterfaceByInterface("min");
-    if (min != undefined) args.push(`${formatInterfaceLabel(min)}`);
+    const min = this.node.getConnectedNodeByInterface("min");
+    if (min != undefined) args.push(`${min.value}`);
     else if (!this.node.inputs.min.hidden) args.push(`${this.node.inputs.min.value}`);
 
     keyword = args.length < 1 ? "max=" : "";
-    const max = this.node.getConnectedOutputInterfaceByInterface("max");
-    if (max != undefined) args.push(`${keyword}${formatInterfaceLabel(max)}`);
+    const max = this.node.getConnectedNodeByInterface("max");
+    if (max != undefined) args.push(`${keyword}${max.value}`);
     else if (!this.node.inputs.max.hidden) args.push(`${keyword}${this.node.inputs.max.value}`);
 
     return `nest.random.uniform(${args.join(", ")})`;

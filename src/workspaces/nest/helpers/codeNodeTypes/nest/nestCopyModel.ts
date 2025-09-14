@@ -5,7 +5,6 @@ import {
   AbstractCodeNode,
   NodeInputInterface,
   defineDynamicCodeNode,
-  formatInterfaceLabel,
   getPositionAtColumn,
   stringType,
 } from "@/codeGraph";
@@ -30,8 +29,8 @@ export default defineDynamicCodeNode({
     if (!this.node) return this.type;
     const args = [`"${this.node.inputs.existing.value}"`, `"${this.node.inputs.new.value}"`];
 
-    const params = this.node.getConnectedOutputInterfaceByInterface("params");
-    if (params != undefined) args.push(`params=${formatInterfaceLabel(params)}`);
+    const params = this.node.getConnectedNodeByInterface("params");
+    if (params != undefined) args.push(`params=${params.value}`);
 
     return `nest.CopyModel(${args.join(", ")})`;
   },

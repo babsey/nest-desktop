@@ -5,16 +5,19 @@ import "@baklavajs/themes/dist/classic.css";
 
 import "./codeGraph.scss";
 
-import { registerCodeNodeTypes } from "@/helpers/codeNodeTypes";
-
-import { addToolbarCommands } from "@/codeGraph/settings";
+import { addToolbarCommands } from "./settings";
+import { registerDefaultNodeTypes, registerPythonNodeTypes } from "./codeNodeTypes";
 import { useCodeGraph } from "./viewModel";
 
 export const codeGraph = {
   async install() {
     const viewModel = useCodeGraph();
 
+    // add commands in toolbar
     addToolbarCommands(viewModel);
-    registerCodeNodeTypes(viewModel, ["python"]);
+
+    // register node types
+    registerDefaultNodeTypes(viewModel);
+    registerPythonNodeTypes(viewModel);
   },
 };

@@ -1,13 +1,7 @@
 // nestDataResponse.ts
 
 import { displayInSidebar } from "baklavajs";
-import {
-  AbstractCodeNode,
-  formatInterfaceLabels,
-  NodeInputInterface,
-  getPositionAtColumn,
-  defineCodeNode,
-} from "@/codeGraph";
+import { AbstractCodeNode, NodeInputInterface, getPositionAtColumn, defineCodeNode, formatLabels } from "@/codeGraph";
 
 import functionNode from "@/codeGraph/codeNodeTypes/default/function";
 
@@ -28,8 +22,8 @@ export default defineCodeNode({
     if (!this.node) return "";
     const responseData = [];
 
-    const events = this.node.getConnectedOutputInterfacesByInterface("events");
-    if (events.length > 0) responseData.push(`"events": [${formatInterfaceLabels(events).join(", ")}]`);
+    const events = this.node.getConnectedNodesByInterface("events");
+    if (events.length > 0) responseData.push(`"events": [${formatLabels(events).join(", ")}]`);
 
     const positions = this.node.getConnectedNodesByInterface("positions");
     const getPositions = positions.map((pos) => `pos(${pos.label})`);

@@ -25,21 +25,21 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const kernelSize = this.node.getConnectedOutputInterfacesByInterface("kernel_size");
-    if (kernelSize.length > 1) args.push(`kernel_size=(${formatInterfaceLabels(kernelSize).join(", ")})`);
-    else if (kernelSize.length > 0) args.push(`kernel_size=${formatInterfaceLabels(kernelSize).join(", ")}`);
+    const kernelSize = this.node.getConnectedNodesByInterface("kernel_size");
+    if (kernelSize.length > 1) args.push(`kernel_size=(${formatLabels(kernelSize).join(", ")})`);
+    else if (kernelSize.length > 0) args.push(`kernel_size=${formatLabels(kernelSize).join(", ")}`);
 
-    const stride = this.node.getConnectedOutputInterfacesByInterface("stride");
-    if (stride.length > 1) args.push(`stride=(${formatInterfaceLabels(stride).join(", ")})`);
-    else if (stride.length > 0) args.push(`stride=${formatInterfaceLabels(stride).join(", ")}`);
+    const stride = this.node.getConnectedNodesByInterface("stride");
+    if (stride.length > 1) args.push(`stride=(${formatLabels(stride).join(", ")})`);
+    else if (stride.length > 0) args.push(`stride=${formatLabels(stride).join(", ")}`);
 
-    const padding = this.node.getConnectedOutputInterfacesByInterface("padding");
-    if (padding.length > 1) args.push(`padding=(${formatInterfaceLabels(padding).join(", ")})`);
-    else if (padding.length > 0) args.push(`padding=${formatInterfaceLabels(padding).join(", ")}`);
+    const padding = this.node.getConnectedNodesByInterface("padding");
+    if (padding.length > 1) args.push(`padding=(${formatLabels(padding).join(", ")})`);
+    else if (padding.length > 0) args.push(`padding=${formatLabels(padding).join(", ")}`);
 
-    const dilation = this.node.getConnectedOutputInterfacesByInterface("dilation");
-    if (dilation.length > 1) args.push(`dilation=(${formatInterfaceLabels(dilation).join(", ")})`);
-    else if (dilation.length > 0) args.push(`dilation=${formatInterfaceLabels(dilation).join(", ")}`);
+    const dilation = this.node.getConnectedNodesByInterface("dilation");
+    if (dilation.length > 1) args.push(`dilation=(${formatLabels(dilation).join(", ")})`);
+    else if (dilation.length > 0) args.push(`dilation=${formatLabels(dilation).join(", ")}`);
 
     return `torch.nn.MaxPool2d(${args.join(", ")})`;
   },

@@ -2,7 +2,7 @@
 
 import { SelectInterface, setType } from "baklavajs";
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel, stringType } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode, stringType } from "@/codeGraph";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
 
@@ -21,14 +21,14 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const a = this.node.getConnectedOutputInterfaceByInterface("a");
-    if (a != undefined) args.push(`a=${formatInterfaceLabel(a)}`);
+    const a = this.node.getConnectedNodeByInterface("a");
+    if (a != undefined) args.push(`a=${a.value}`);
 
-    const v = this.node.getConnectedOutputInterfaceByInterface("v");
-    if (v != undefined) args.push(`v=${formatInterfaceLabel(v)}`);
+    const v = this.node.getConnectedNodeByInterface("v");
+    if (v != undefined) args.push(`v=${v.value}`);
 
-    const mode = this.node.getConnectedOutputInterfaceByInterface("mode");
-    if (mode != undefined) args.push(`mode=${formatInterfaceLabel(mode)}`);
+    const mode = this.node.getConnectedNodeByInterface("mode");
+    if (mode != undefined) args.push(`mode=${mode.value}`);
     else if (this.node.inputs.mode.value !== "valid") args.push(`mode=${this.node.inputs.mode.value}`);
 
     return `np.correlate(${args.join(", ")})`;

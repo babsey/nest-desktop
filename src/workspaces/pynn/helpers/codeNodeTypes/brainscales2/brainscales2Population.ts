@@ -1,7 +1,7 @@
 // brainscales2Population.ts
 
 import { IntegerInterface, SelectInterface, setType } from "baklavajs";
-import { NodeOutputInterface, formatInterfaceLabel, defineCodeNode, numberType } from "@/codeGraph";
+import { NodeOutputInterface, defineCodeNode, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "brainscales2.Population",
@@ -18,8 +18,8 @@ export default defineCodeNode({
     const args: string[] = [];
     args.push(`${this.node.inputs.size.value}`);
 
-    const cellclass = this.node.getConnectedOutputInterfaceByInterface("cellclass");
-    if (cellclass != undefined) args.push(`${formatInterfaceLabel(cellclass)}`);
+    const cellclass = this.node.getConnectedNodeByInterface("cellclass");
+    if (cellclass != undefined) args.push(`${cellclass.value}`);
     else args.push(`${this.node.inputs.cellclass.value}()`);
 
     return `pynn.Population(${args.join(", ")})`;

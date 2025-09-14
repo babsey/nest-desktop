@@ -2,7 +2,7 @@
 
 import { displayInSidebar, IntegerInterface, setType, TextInputInterface } from "baklavajs";
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode, numberType } from "@/codeGraph";
 
 import { getPlotlyExpressArgs } from "./helpers";
 
@@ -24,14 +24,14 @@ export default defineCodeNode({
     const args = getPlotlyExpressArgs(this.node);
 
     if (!this.node.inputs.nbins?.hidden) {
-      const nbins = this.node.getConnectedOutputInterfaceByInterface("nbins");
-      if (nbins != undefined) args.push(`nbins=${formatInterfaceLabel(nbins)}`);
+      const nbins = this.node.getConnectedNodeByInterface("nbins");
+      if (nbins != undefined) args.push(`nbins=${nbins.value}`);
       else if (this.node.inputs.nbins?.value) args.push(`nbins=${this.node.inputs.nbins?.value}`);
     }
 
     if (!this.node.inputs.range_x?.hidden) {
-      const rangeX = this.node.getConnectedOutputInterfaceByInterface("range_x");
-      if (rangeX != undefined) args.push(`range_x=${formatInterfaceLabel(rangeX)}`);
+      const rangeX = this.node.getConnectedNodeByInterface("range_x");
+      if (rangeX != undefined) args.push(`range_x=${rangeX.value}`);
       else if (this.node.inputs.range_x?.value) args.push(`range_x=${this.node.inputs.range_x?.value}`);
     }
 

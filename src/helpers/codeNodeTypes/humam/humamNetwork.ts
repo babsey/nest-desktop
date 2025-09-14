@@ -2,7 +2,7 @@
 
 import { displayInSidebar } from "baklavajs";
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "humam.Network",
@@ -20,14 +20,14 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const nn = this.node.getConnectedOutputInterfaceByInterface("NN");
-    if (nn != undefined) args.push(`${formatInterfaceLabel(nn)}`);
+    const nn = this.node.getConnectedNodeByInterface("NN");
+    if (nn != undefined) args.push(`${nn.value}`);
 
-    const sn = this.node.getConnectedOutputInterfaceByInterface("SN");
-    if (sn != undefined) args.push(`${formatInterfaceLabel(sn)}`);
+    const sn = this.node.getConnectedNodeByInterface("SN");
+    if (sn != undefined) args.push(`${sn.value}`);
 
-    const params = this.node.getConnectedOutputInterfaceByInterface("params");
-    if (params != undefined) args.push(`${formatInterfaceLabel(params)}`);
+    const params = this.node.getConnectedNodeByInterface("params");
+    if (params != undefined) args.push(`${params.value}`);
 
     return `humam.Network(${args.join(", ")})`;
   },

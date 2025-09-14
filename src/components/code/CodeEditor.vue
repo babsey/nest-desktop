@@ -6,7 +6,7 @@
     </v-btn-group>
     <div style="height: 100%; display: flex; justify-content: flex-end">
       <v-checkbox
-        v-model="codeGraphStore.state.autosort"
+        v-model="code.graph.state.autosort"
         density="compact"
         hide-details
         label="autosort"
@@ -34,9 +34,6 @@ import { TCode } from "@/types";
 
 import CodeMirror from "./CodeMirror.vue";
 
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
-const codeGraphStore = useCodeGraphStore();
-
 const props = defineProps<{ code: TCode }>();
 const code = computed(() => props.code);
 
@@ -49,7 +46,7 @@ const state = reactive<{
 });
 
 const onChange = (nodes: AbstractCodeNode[]) => {
-  codeGraphStore.state.autosort = false;
+  code.value.graph.state.autosort = false;
   code.value.graph.nodes = nodes;
   code.value.generate();
 };

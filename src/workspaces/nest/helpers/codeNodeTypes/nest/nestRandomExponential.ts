@@ -1,13 +1,7 @@
 // nestRandomExponential.ts
 
 import { displayInSidebar, NumberInterface } from "baklavajs";
-import {
-  AbstractCodeNode,
-  NodeOutputInterface,
-  defineCodeNode,
-  formatInterfaceLabel,
-  getPositionAtColumn,
-} from "@/codeGraph";
+import { AbstractCodeNode, NodeOutputInterface, defineCodeNode, getPositionAtColumn } from "@/codeGraph";
 
 import { CodeGraph } from "@/helpers/code/codeGraph";
 
@@ -32,8 +26,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const beta = this.node.getConnectedOutputInterfaceByInterface("beta");
-    if (beta != undefined) args.push(`${formatInterfaceLabel(beta)}`);
+    const beta = this.node.getConnectedNodeByInterface("beta");
+    if (beta != undefined) args.push(`${beta.value}`);
     else if (!this.node.inputs.beta.hidden) args.push(`${this.node.inputs.beta.value}`);
 
     return `nest.random.exponential(${args.join(", ")})`;

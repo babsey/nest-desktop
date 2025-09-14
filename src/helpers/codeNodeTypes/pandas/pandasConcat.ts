@@ -2,7 +2,7 @@
 
 import { setType } from "baklavajs";
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 import { dataframeType, IPandasDataFrame } from "./interfaceTypes";
 
@@ -19,8 +19,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const objs = this.node.getConnectedOutputInterfaceByInterface("objs");
-    if (objs != undefined) args.push(`${formatInterfaceLabel(objs)}`);
+    const objs = this.node.getConnectedNodeByInterface("objs");
+    if (objs != undefined) args.push(`${objs.value}`);
 
     return `pd.concat([${args.join(", ")}])`;
   },

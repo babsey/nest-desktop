@@ -1,7 +1,7 @@
 // plotlyHistogram.ts
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode, numberType } from "@/codeGraph";
 
 import { getPlotlyGraphObjectsArgs } from "../express/helpers";
 
@@ -23,8 +23,8 @@ export default defineCodeNode({
     const args = getPlotlyGraphObjectsArgs(this.node);
 
     if (!this.node.inputs.nbinsx?.hidden) {
-      const nbinsx = this.node.getConnectedOutputInterfaceByInterface("nbinsx");
-      if (nbinsx != undefined) args.push(`nbinsx=${formatInterfaceLabel(nbinsx)}`);
+      const nbinsx = this.node.getConnectedNodeByInterface("nbinsx");
+      if (nbinsx != undefined) args.push(`nbinsx=${nbinsx.value}`);
       else if (this.node.inputs.nbinsx?.value) args.push(`nbinsx=${this.node.inputs.nbinsx?.value}`);
     }
 

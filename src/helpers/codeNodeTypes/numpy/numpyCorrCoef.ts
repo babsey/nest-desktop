@@ -2,7 +2,7 @@
 
 import { setType } from "baklavajs";
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 import { arrayType, INumpyArray } from "./interfaceTypes";
 
@@ -19,8 +19,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const x = this.node.getConnectedOutputInterfaceByInterface("x");
-    if (x != undefined) args.push(`x=${formatInterfaceLabel(x)}`);
+    const x = this.node.getConnectedNodeByInterface("x");
+    if (x != undefined) args.push(`x=${x.value}`);
 
     return `np.corrcoef(${args.join(", ")})`;
   },

@@ -1,6 +1,6 @@
 // elephantCV.ts
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "elephant.statistics.cv",
@@ -15,8 +15,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const a = this.node.getConnectedOutputInterfaceByInterface("a");
-    if (a != undefined) args.push(`${formatInterfaceLabel(a)}`);
+    const a = this.node.getConnectedNodeByInterface("a");
+    if (a != undefined) args.push(`${a.value}`);
 
     return `elephant.statistics.cv(${args.join(", ")})`;
   },

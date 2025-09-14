@@ -2,7 +2,7 @@
 
 import { TextInputInterface } from "baklavajs";
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabels } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatLabels } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "apply",
@@ -20,8 +20,8 @@ export default defineCodeNode({
     const calls = this.node.getConnectedNodesByInterface("call");
     const call = calls.length == 0 ? this.node.inputs.call.value : calls[0].label;
 
-    const args = this.node.getConnectedOutputInterfacesByInterface("args");
+    const args = this.node.getConnectedNodesByInterface("args");
 
-    return `${call}(${formatInterfaceLabels(args).join(", ")})`;
+    return `${call}(${formatLabels(args).join(", ")})`;
   },
 });

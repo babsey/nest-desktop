@@ -1,13 +1,9 @@
 // codeNodeInterface.ts
 
 import { markRaw } from "vue";
-import { Graph, NodeInterface } from "baklavajs";
+import { NodeInterface } from "baklavajs";
 
 import CodeNodeInterfaceComponent from "./CodeNodeInterfaceComponent.vue";
-import type { AbstractCodeNode } from "../codeNode";
-
-// TODO
-import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 
 export class CodeNodeInterface<T = unknown> extends NodeInterface<T> {
   public graphId: string = "";
@@ -15,20 +11,6 @@ export class CodeNodeInterface<T = unknown> extends NodeInterface<T> {
   constructor(name: string, value: T) {
     super(name, value);
     this.setComponent(markRaw(CodeNodeInterfaceComponent));
-  }
-
-  get node(): AbstractCodeNode | undefined {
-    const codeGraphStore = useCodeGraphStore();
-
-    let graph: Graph;
-    if (this.graphId) {
-      const graphs = Array.from(codeGraphStore.editor.graphs);
-      graph = graphs.find((graph: Graph) => graph.id === this.graphId) as Graph;
-    } else {
-      graph = codeGraphStore.editor.graph as Graph;
-    }
-
-    return graph.findNodeById(this.nodeId) as AbstractCodeNode;
   }
 
   setValue(value: T): void {

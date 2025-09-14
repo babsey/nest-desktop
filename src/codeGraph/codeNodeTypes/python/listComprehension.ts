@@ -2,7 +2,7 @@
 
 import { NodeInterface } from "baklavajs";
 
-import { defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "listComprehension",
@@ -16,12 +16,10 @@ export default defineCodeNode({
   },
   codeTemplate() {
     if (!this.node) return "";
-    const list = this.node.getConnectedOutputInterfaceByInterface("list");
+    const list = this.node.getConnectedNodeByInterface("list");
     if (!list) return "[]";
-    const listValue = formatInterfaceLabel(list);
-    const expression = this.node.getConnectedOutputInterfaceByInterface("expression");
-    if (!expression) return `[i for i in ${listValue}]`;
-    const expressionValue = formatInterfaceLabel(expression);
-    return `[${expressionValue} for i in ${listValue}]`;
+    const expression = this.node.getConnectedNodeByInterface("expression");
+    if (!expression) return `[i for i in ${list.value}]`;
+    return `[${expression.value} for i in ${list.value}]`;
   },
 });

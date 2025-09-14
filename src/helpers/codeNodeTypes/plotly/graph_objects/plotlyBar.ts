@@ -1,6 +1,6 @@
 // plotlyBar.ts
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Bar",
@@ -17,11 +17,11 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args = [];
 
-    const x = this.node.getConnectedOutputInterfaceByInterface("x");
-    if (x != undefined) args.push(`x=${formatInterfaceLabel(x)}`);
+    const x = this.node.getConnectedNodeByInterface("x");
+    if (x != undefined) args.push(`x=${x.value}`);
 
-    const y = this.node.getConnectedOutputInterfaceByInterface("y");
-    if (y != undefined) args.push(`y=${formatInterfaceLabel(y)}`);
+    const y = this.node.getConnectedNodeByInterface("y");
+    if (y != undefined) args.push(`y=${y.value}`);
 
     return `go.Bar(${args.join(", ")})`;
   },

@@ -13,7 +13,7 @@ import {
 import { reactive, UnwrapRef } from "vue";
 
 import type { CodeGraph } from "../codeGraph";
-import type { NodeInputInterface, NodeOutputInterface } from "../codeNodeInterfaces";
+import type { NodeInputInterface } from "../codeNodeInterfaces";
 
 interface IAbstractCodeNodeState {
   codeTemplate: string;
@@ -137,6 +137,10 @@ export abstract class AbstractCodeNode extends AbstractNode {
 
   get subgraph(): boolean {
     return false;
+  }
+
+  get value(): string {
+    return this.state.integrated ? this.codeTemplate : this.label;
   }
 
   get view(): unknown | undefined {
@@ -282,24 +286,24 @@ export abstract class AbstractCodeNode extends AbstractNode {
     return nodeIds.map((nodeId) => this.graph?.findNodeById(nodeId)) as AbstractCodeNode[];
   }
 
-  /**
-   * Get connected node output interface to the node interface.
-   * @param nodeInterface string
-   * @returns node output interface instance
-   */
-  getConnectedOutputInterfaceByInterface(nodeInterface: string): NodeOutputInterface | undefined {
-    const nodeInterfaces = this.getConnectedOutputInterfacesByInterface(nodeInterface);
-    return nodeInterfaces.length > 0 ? nodeInterfaces[0] : undefined;
-  }
+  // /**
+  //  * Get connected node output interface to the node interface.
+  //  * @param nodeInterface string
+  //  * @returns node output interface instance
+  //  */
+  // getConnectedNodeByInterface(nodeInterface: string): NodeOutputInterface | undefined {
+  //   const nodeInterfaces = this.getConnectedNodesByInterface(nodeInterface);
+  //   return nodeInterfaces.length > 0 ? nodeInterfaces[0] : undefined;
+  // }
 
-  /**
-   * Get connected node output interfaces to the node interface.
-   * @param nodeInterface string
-   * @returns node output interface instances
-   */
-  getConnectedOutputInterfacesByInterface(nodeInterface: string): NodeOutputInterface[] {
-    return this.getConnectedInterfacesByInterface(nodeInterface, "inputs") as NodeOutputInterface[];
-  }
+  // /**
+  //  * Get connected node output interfaces to the node interface.
+  //  * @param nodeInterface string
+  //  * @returns node output interface instances
+  //  */
+  // getConnectedNodesByInterface(nodeInterface: string): NodeOutputInterface[] {
+  //   return this.getConnectedInterfacesByInterface(nodeInterface, "inputs") as NodeOutputInterface[];
+  // }
 
   /**
    * Get connected node output interface to the node interface.
@@ -307,14 +311,14 @@ export abstract class AbstractCodeNode extends AbstractNode {
    * @returns string
    */
   getConnectedOutputVariableByInterface(nodeInterface: string): string | undefined {
-    const sourceNodeInterface = this.getConnectedOutputInterfaceByInterface(nodeInterface);
-    return this.code?.graph && sourceNodeInterface ? formatInterfaceLabel(sourceNodeInterface) : undefined;
+    const node = this.getConnectedNodeByInterface(nodeInterface);
+    return this.code?.graph && node ? node.value : undefined;
   }
 
-  getInputValue(name: string): string {
-    const outputInterface = this.getConnectedOutputInterfaceByInterface(name);
-    if (outputInterface) return `${formatInterfaceLabel(outputInterface)}`;
-    else return `${this.inputs[name].value}`;
+  getInputValue(name: string, returnValue: true): string {
+    const node = this.getConnectedNodeByInterface(name);
+    if (node) return `${node.value}`;
+    else if (returnValue) return `${this.inputs[name].value}`;
   }
 
   /**
@@ -408,44 +412,6 @@ export abstract class CodeNode<I, O> extends AbstractCodeNode {
 export type AbstractCodeNodeConstructor = new () => AbstractCodeNode;
 
 /**
- * Format labels for output interfaces.
- * @param outputInterfaces output interface of the node
- * @param sorted boolean
- * @returns string array
- */
-export const formatInterfaceLabels = (outputInterfaces: NodeOutputInterface[], sorted: boolean = true): string[] => {
-  if (outputInterfaces.length === 0) return [];
-  const labels: string[] = [];
-
-  outputInterfaces.forEach((outputInterface: NodeOutputInterface) => {
-    if (!outputInterface.node) return;
-    labels.push(formatInterfaceLabel(outputInterface));
-  });
-
-  if (sorted) labels.sort();
-  return labels;
-};
-
-/**
- * Format label for output interface.
- * @param outputInterface output interface of the node
- * @returns string
- */
-export const formatInterfaceLabel = (outputInterface: NodeOutputInterface): string => {
-  if (!outputInterface.node) return "";
-  return outputInterface.node.state.integrated ? outputInterface.node.codeTemplate : outputInterface.label;
-};
-
-/**
- * Format node label.
- * @param node code node
- * @returns string
- */
-export const formatLabel = (node: AbstractCodeNode): string => {
-  return node.state.integrated ? node.codeTemplate : node.label;
-};
-
-/**
  * Format node labels.
  * @param nodes code nodes
  * @param sorted boolean
@@ -454,7 +420,7 @@ export const formatLabel = (node: AbstractCodeNode): string => {
 export const formatLabels = (nodes: AbstractCodeNode[], sorted: boolean = true): string[] => {
   if (nodes.length === 0) return [];
 
-  const labels = nodes.map((node: AbstractCodeNode) => formatLabel(node));
+  const labels = nodes.map((node: AbstractCodeNode) => node.value);
 
   if (sorted) labels.sort();
   return labels;

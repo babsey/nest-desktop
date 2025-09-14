@@ -1,6 +1,6 @@
 // plotlyHeatmap.ts
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "plotly.graph_objects.Heatmap",
@@ -16,8 +16,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args = [];
 
-    const z = this.node.getConnectedOutputInterfaceByInterface("z");
-    if (z != undefined) args.push(`z=${formatInterfaceLabel(z)}`);
+    const z = this.node.getConnectedNodeByInterface("z");
+    if (z != undefined) args.push(`z=${z.value}`);
 
     return `go.Heatmap(${args.join(", ")})`;
   },

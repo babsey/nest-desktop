@@ -1,6 +1,6 @@
 // humamSimulation.ts
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "humam.Simulation",
@@ -17,11 +17,11 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const simDict = this.node.getConnectedOutputInterfaceByInterface("sim_dict");
-    if (simDict != undefined) args.push(`${formatInterfaceLabel(simDict)}`);
+    const simDict = this.node.getConnectedNodeByInterface("sim_dict");
+    if (simDict != undefined) args.push(`${simDict.value}`);
 
-    const netDict = this.node.getConnectedOutputInterfaceByInterface("net_dict");
-    if (netDict != undefined) args.push(`${formatInterfaceLabel(netDict)}`);
+    const netDict = this.node.getConnectedNodeByInterface("net_dict");
+    if (netDict != undefined) args.push(`${netDict.value}`);
 
     return `humam.Simulation(${args.join(", ")})`;
   },

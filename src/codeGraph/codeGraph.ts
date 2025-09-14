@@ -16,7 +16,8 @@ interface IPosition {
 
 interface ICodeGraphState {
   autosort: boolean;
-  script?: string;
+  modules: Record<string, string>;
+  script: string;
 }
 
 export class CodeGraph<T = ICodeGraphState> {
@@ -193,6 +194,7 @@ export class CodeGraph<T = ICodeGraphState> {
   initState(): void {
     this._state = reactive({
       autosort: false,
+      modules: {},
       script: "",
     });
   }

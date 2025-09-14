@@ -2,7 +2,7 @@
 
 import { TextInputInterface } from "baklavajs";
 
-import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "humam.Analysis",
@@ -22,21 +22,21 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const anaParams = this.node.getConnectedOutputInterfaceByInterface("ana_params");
-    if (anaParams != undefined) args.push(`${formatInterfaceLabel(anaParams)}`);
+    const anaParams = this.node.getConnectedNodeByInterface("ana_params");
+    if (anaParams != undefined) args.push(`${anaParams.value}`);
 
-    const netDict = this.node.getConnectedOutputInterfaceByInterface("net_dict");
-    if (netDict != undefined) args.push(`${formatInterfaceLabel(netDict)}`);
+    const netDict = this.node.getConnectedNodeByInterface("net_dict");
+    if (netDict != undefined) args.push(`${netDict.value}`);
 
-    const simDict = this.node.getConnectedOutputInterfaceByInterface("sim_dict");
-    if (simDict != undefined) args.push(`${formatInterfaceLabel(simDict)}`);
+    const simDict = this.node.getConnectedNodeByInterface("sim_dict");
+    if (simDict != undefined) args.push(`${simDict.value}`);
 
-    const simFolder = this.node.getConnectedOutputInterfaceByInterface("sim_folder");
-    if (simFolder != undefined) args.push(`${formatInterfaceLabel(simFolder)}`);
+    const simFolder = this.node.getConnectedNodeByInterface("sim_folder");
+    if (simFolder != undefined) args.push(`${simFolder.value}`);
     else args.push(`"${this.node.inputs.sim_folder.value}"`);
 
-    const basePath = this.node.getConnectedOutputInterfaceByInterface("base_path");
-    if (basePath != undefined) args.push(`${formatInterfaceLabel(basePath)}`);
+    const basePath = this.node.getConnectedNodeByInterface("base_path");
+    if (basePath != undefined) args.push(`${basePath.value}`);
     else args.push(`"${this.node.inputs.base_path.value}"`);
 
     return `humam.Analysis(${args.join(", ")})`;

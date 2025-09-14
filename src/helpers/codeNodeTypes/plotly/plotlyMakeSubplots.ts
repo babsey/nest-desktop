@@ -2,7 +2,7 @@
 
 import { IntegerInterface } from "baklavajs";
 
-import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel } from "@/codeGraph";
+import { NodeOutputInterface, defineCodeNode } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "plotly.subplots.make_subplots",
@@ -19,12 +19,12 @@ export default defineCodeNode({
     if (!this.node) return "";
     const args = [];
 
-    const rows = this.node.getConnectedOutputInterfaceByInterface("rows");
-    if (rows != undefined) args.push(`rows=${formatInterfaceLabel(rows)}`);
+    const rows = this.node.getConnectedNodeByInterface("rows");
+    if (rows != undefined) args.push(`rows=${rows.value}`);
     else args.push(`rows=${this.node.inputs.rows.value}`);
 
-    const cols = this.node.getConnectedOutputInterfaceByInterface("cols");
-    if (cols != undefined) args.push(`cols=${formatInterfaceLabel(cols)}`);
+    const cols = this.node.getConnectedNodeByInterface("cols");
+    if (cols != undefined) args.push(`cols=${cols.value}`);
     else args.push(`cols=${this.node.inputs.cols.value}`);
 
     return `subplots.make_subplots(${args.join(", ")})`;

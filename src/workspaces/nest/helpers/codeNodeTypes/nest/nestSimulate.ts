@@ -1,7 +1,7 @@
 // nestSimulate.ts
 
 import { displayInSidebar, IntegerInterface, setType } from "baklavajs";
-import { AbstractCodeNode, defineCodeNode, formatInterfaceLabel, getPositionAtColumn, numberType } from "@/codeGraph";
+import { AbstractCodeNode, defineCodeNode, getPositionAtColumn, numberType } from "@/codeGraph";
 
 import { CodeGraph } from "@/helpers/code/codeGraph";
 
@@ -25,8 +25,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const time = this.node.getConnectedOutputInterfaceByInterface("time");
-    if (time != undefined) args.push(`${formatInterfaceLabel(time)}`);
+    const time = this.node.getConnectedNodeByInterface("time");
+    if (time != undefined) args.push(`${time.value}`);
     else args.push(`${this.node.inputs.time.value}`);
 
     return `nest.Simulate(${args.join(",")})`;

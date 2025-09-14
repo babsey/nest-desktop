@@ -6,8 +6,7 @@ import {
   NodeInputInterface,
   NodeOutputInterface,
   defineCodeNode,
-  formatInterfaceLabel,
-  formatInterfaceLabels,
+  formatLabels,
   getPositionAtColumn,
   getPositionBeforeNode,
 } from "@/codeGraph";
@@ -49,25 +48,25 @@ export default defineCodeNode({
     const args: string[] = [];
     let keyword: string = "";
 
-    const pos = this.node.getConnectedOutputInterfacesByInterface("pos");
-    if (pos.length > 0) args.push(`${formatInterfaceLabels(pos).join(", ")}`);
+    const pos = this.node.getConnectedNodesByInterface("pos");
+    if (pos.length > 0) args.push(`${formatLabels(pos).join(", ")}`);
 
     keyword = "extent=";
-    const extent = this.node.getConnectedOutputInterfacesByInterface("extent");
-    if (extent.length > 1) args.push(`${keyword}${formatInterfaceLabels(extent).join(", ")}`);
+    const extent = this.node.getConnectedNodesByInterface("extent");
+    if (extent.length > 1) args.push(`${keyword}${formatLabels(extent).join(", ")}`);
     else if (extent.length > 0) {
-      const x = `${formatInterfaceLabels(extent).join(", ")}`;
+      const x = `${formatLabels(extent).join(", ")}`;
       args.push(`${keyword}[-${x}, ${x}]`);
     } else if (!this.node.inputs.extent.hidden) args.push(`${keyword}${this.node.inputs.extent.value}`);
 
     keyword = "edge_wrap=";
-    const edgeWrap = this.node.getConnectedOutputInterfaceByInterface("edge_wrap");
-    if (edgeWrap != undefined) args.push(`${keyword}${formatInterfaceLabel(edgeWrap)}`);
+    const edgeWrap = this.node.getConnectedNodeByInterface("edge_wrap");
+    if (edgeWrap != undefined) args.push(`${keyword}${edgeWrap.value}`);
     else if (!this.node.inputs.edge_wrap.hidden) args.push(`${keyword}${this.node.inputs.edge_wrap.value}`);
 
     keyword = "num_dimensions=";
-    const numDimensions = this.node.getConnectedOutputInterfaceByInterface("num_dimensions");
-    if (numDimensions != undefined) args.push(`${keyword}${formatInterfaceLabel(numDimensions)}`);
+    const numDimensions = this.node.getConnectedNodeByInterface("num_dimensions");
+    if (numDimensions != undefined) args.push(`${keyword}${numDimensions.value}`);
     else if (!this.node.inputs.num_dimensions.hidden) args.push(`${keyword}${this.node.inputs.num_dimensions.value}`);
 
     return args.length > 1 ? `nest.spatial.free(\n\t${args.join(",\n\t")}\n)` : `nest.spatial.free(${args.join(", ")})`;

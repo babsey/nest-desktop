@@ -1,13 +1,7 @@
 // nestRandomUniform.ts
 
 import { displayInSidebar, IntegerInterface } from "baklavajs";
-import {
-  AbstractCodeNode,
-  NodeOutputInterface,
-  defineCodeNode,
-  formatInterfaceLabel,
-  getPositionAtColumn,
-} from "@/codeGraph";
+import { AbstractCodeNode, NodeOutputInterface, defineCodeNode, getPositionAtColumn } from "@/codeGraph";
 
 import { CodeGraph } from "@/helpers/code/codeGraph";
 
@@ -32,8 +26,8 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const max = this.node.getConnectedOutputInterfaceByInterface("max");
-    if (max != undefined) args.push(`${formatInterfaceLabel(max)}`);
+    const max = this.node.getConnectedNodeByInterface("max");
+    if (max != undefined) args.push(`${max.value}`);
     else args.push(`${this.node.inputs.max.value}`);
 
     return `nest.random.uniform_int(${args.join(", ")})`;

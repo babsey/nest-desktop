@@ -2,7 +2,7 @@
 
 import { IntegerInterface, NodeInterface, TextInputInterface, displayInSidebar, setType } from "baklavajs";
 
-import { NodeOutputInterface, defineDynamicCodeNode, formatInterfaceLabels } from "@/codeGraph";
+import { NodeOutputInterface, defineDynamicCodeNode, formatLabels } from "@/codeGraph";
 import { numberType } from "..";
 
 export default defineDynamicCodeNode({
@@ -26,10 +26,10 @@ export default defineDynamicCodeNode({
     const nArgs = this.inputs?.nArgs.value ?? 1;
     for (let i = 0; i < nArgs; i++) {
       const argId = "arg" + (i + 1);
-      const args = this.node.getConnectedOutputInterfacesByInterface(argId);
+      const args = this.node.getConnectedNodesByInterface(argId);
       if (args.length > 0) {
         keyword = this.node.inputs[argId].value;
-        value = formatInterfaceLabels(args).join(", ");
+        value = formatLabels(args).join(", ");
         kwargs.push(keyword ? `${keyword}=${value}` : `${value}`);
       }
     }

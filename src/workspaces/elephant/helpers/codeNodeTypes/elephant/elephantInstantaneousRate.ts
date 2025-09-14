@@ -2,14 +2,7 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
-import {
-  NodeInputInterface,
-  NodeOutputInterface,
-  defineCodeNode,
-  formatInterfaceLabel,
-  formatInterfaceLabels,
-  numberType,
-} from "@/codeGraph";
+import { NodeInputInterface, NodeOutputInterface, defineCodeNode, formatLabels, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "elephant.statistics.instantaneous_rate",
@@ -25,12 +18,12 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const spiketrains = this.node.getConnectedOutputInterfacesByInterface("spiketrains");
-    if (spiketrains.length > 1) args.push(`[${formatInterfaceLabels(spiketrains).join(", ")}]`);
-    if (spiketrains.length > 0) args.push(`${formatInterfaceLabels(spiketrains).join(", ")}`);
+    const spiketrains = this.node.getConnectedNodesByInterface("spiketrains");
+    if (spiketrains.length > 1) args.push(`[${formatLabels(spiketrains).join(", ")}]`);
+    if (spiketrains.length > 0) args.push(`${formatLabels(spiketrains).join(", ")}`);
 
-    const samplingPeriod = this.node.getConnectedOutputInterfaceByInterface("sampling_period");
-    if (samplingPeriod != undefined) args.push(`${formatInterfaceLabel(samplingPeriod)}`);
+    const samplingPeriod = this.node.getConnectedNodeByInterface("sampling_period");
+    if (samplingPeriod != undefined) args.push(`${samplingPeriod.value}`);
     else if (!this.node.inputs.sampling_period.hidden) args.push(`${this.node.inputs.sampling_period.value}`);
 
     return `elephant.statistics.instantaneous_rate(${args.join(", ")})`;

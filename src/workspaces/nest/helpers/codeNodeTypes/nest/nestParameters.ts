@@ -13,8 +13,7 @@ import {
   NodeOutputInterface,
   booleanType,
   defineDynamicCodeNode,
-  formatInterfaceLabel,
-  formatInterfaceLabels,
+  formatLabels,
   getPositionBeforeNode,
   numberType,
   stringType,
@@ -57,8 +56,8 @@ export default defineDynamicCodeNode({
         if (!this.node) return;
         const paramInterface = this.node.inputs[key];
         if (paramInterface.hidden) return;
-        const outputInterface = this.node.getConnectedOutputInterfaceByInterface(key);
-        if (outputInterface != undefined) params.push(`"${key}": ${formatInterfaceLabel(outputInterface)}`);
+        const outputInterface = this.node.getConnectedNodeByInterface(key);
+        if (outputInterface != undefined) params.push(`"${key}": ${outputInterface.value}`);
         else params.push(`"${key}": ${paramInterface.value}`);
       });
 
@@ -91,8 +90,8 @@ export default defineDynamicCodeNode({
 
     if (this.node && this.node.inputs)
       Object.entries(this.node.inputs).forEach((input: [string, NodeInterface]) => {
-        const paramValues = this.node.getConnectedOutputInterfacesByInterface(input[0]);
-        if (paramValues.length > 0) props[input[0]] = formatInterfaceLabels(paramValues).join(", ");
+        const paramValues = this.node.getConnectedNodesByInterface(input[0]);
+        if (paramValues.length > 0) props[input[0]] = formatLabels(paramValues).join(", ");
         else if (!input[1].hidden) props[input[0]] = input[1].value;
       });
 

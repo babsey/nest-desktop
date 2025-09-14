@@ -6,11 +6,10 @@ import { AbstractCodeNode, NodeOutputInterface, defineCodeNode } from "@/codeGra
 import { liParametersType } from "./interfaceTypes";
 
 const getParam = (node: AbstractCodeNode, name: string): string => {
-  const outputInterface = node.getConnectedOutputInterfaceByInterface(name);
-  if (outputInterface) {
-    if (outputInterface.node?.type !== "torch.tensor")
-      return `${name}=torch.tensor(${node.code?.graph.formatInterfaceLabel(outputInterface)})`;
-    else return `${name}=${node.code?.graph.formatInterfaceLabel(outputInterface)}`;
+  const sourceNode = node.getConnectedNodeByInterface(name);
+  if (sourceNode) {
+    if (sourceNode.type !== "torch.tensor") return `${name}=torch.tensor(${sourceNode.value})`;
+    else return `${name}=${sourceNode.value}`;
   } else return `${name}=torch.tensor(${node.inputs[name].value})`;
 };
 

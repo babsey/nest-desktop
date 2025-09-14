@@ -2,7 +2,7 @@
 
 import { CheckboxInterface, displayInSidebar, IntegerInterface, NumberInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
+import { NodeOutputInterface, defineCodeNode, numberType } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "elephant.spike_train_generation.homogeneous_gamma_process",
@@ -28,21 +28,21 @@ export default defineCodeNode({
     const args: string[] = [];
     let keyword: string = "";
 
-    const a = this.node.getConnectedOutputInterfaceByInterface("a");
-    if (a != undefined) args.push(`${formatInterfaceLabel(a)}`);
+    const a = this.node.getConnectedNodeByInterface("a");
+    if (a != undefined) args.push(`${a.value}`);
     else args.push(`${this.node.inputs.a.value}`);
 
-    const b = this.node.getConnectedOutputInterfaceByInterface("b");
-    if (b != undefined) args.push(`${formatInterfaceLabel(b)}*pq.Hz`);
+    const b = this.node.getConnectedNodeByInterface("b");
+    if (b != undefined) args.push(`${b.value}*pq.Hz`);
     else args.push(`${this.node.inputs.b.value}*pq.Hz`);
 
-    const t_start = this.node.getConnectedOutputInterfaceByInterface("t_start");
-    if (t_start != undefined) args.push(`${formatInterfaceLabel(t_start)}*pq.ms`);
+    const t_start = this.node.getConnectedNodeByInterface("t_start");
+    if (t_start != undefined) args.push(`${t_start.value}*pq.ms`);
     else if (this.node.inputs.t_start.value > 0) args.push(`${this.node.inputs.t_start.value}*pq.ms`);
 
     keyword = args.length < 2 ? "t_stop=" : "";
-    const t_stop = this.node.getConnectedOutputInterfaceByInterface("t_stop");
-    if (t_stop != undefined) args.push(`${keyword}${formatInterfaceLabel(t_stop)}*pq.ms`);
+    const t_stop = this.node.getConnectedNodeByInterface("t_stop");
+    if (t_stop != undefined) args.push(`${keyword}${t_stop.value}*pq.ms`);
     else if (this.node.inputs.t_stop.value !== 1000) args.push(`${keyword}${this.node.inputs.t_stop.value}*pq.ms`);
 
     return `elephant.spike_train_generation.homogeneous_gamma_process(${args.join(", ")})`;

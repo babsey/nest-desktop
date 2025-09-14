@@ -2,7 +2,7 @@
 
 import { IntegerInterface, setType } from "baklavajs";
 
-import { NodeOutputInterface, defineCodeNode, formatInterfaceLabel, numberType } from "@/codeGraph";
+import { NodeOutputInterface, defineCodeNode, numberType } from "@/codeGraph";
 
 import { ITorchTensor, torchTensorType } from "./interfaceTypes";
 
@@ -21,11 +21,11 @@ export default defineCodeNode({
     if (!this.node) return this.type;
     const args: string[] = [];
 
-    const inFeatures = this.node.getConnectedOutputInterfaceByInterface("in_features");
-    if (inFeatures != undefined) args.push(`in_features=${formatInterfaceLabel(inFeatures)}`);
+    const inFeatures = this.node.getConnectedNodeByInterface("in_features");
+    if (inFeatures != undefined) args.push(`in_features=${inFeatures.value}`);
 
-    const outFeatures = this.node.getConnectedOutputInterfaceByInterface("out_features");
-    if (outFeatures != undefined) args.push(`out_features=${formatInterfaceLabel(outFeatures)}`);
+    const outFeatures = this.node.getConnectedNodeByInterface("out_features");
+    if (outFeatures != undefined) args.push(`out_features=${outFeatures.value}`);
 
     return `torch.nn.Linear(${args.join(", ")})`;
   },

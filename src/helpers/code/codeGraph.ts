@@ -11,7 +11,9 @@ import { useCodeGraphStore } from "@/stores/graph/codeGraphStore";
 import { BaseCode } from "./code";
 
 interface ICodeGraphState {
+  autosort: boolean;
   editor: IEditorState | null;
+  script: string;
   token: symbol | null;
 }
 
@@ -61,7 +63,7 @@ export class CodeGraph extends BaseCodeGraph<ICodeGraphState> {
    */
   override initState(): void {
     this.state = reactive({
-      autosort: false,
+      autosort: true,
       editor: null,
       script: "",
       token: null,
@@ -90,7 +92,7 @@ export class CodeGraph extends BaseCodeGraph<ICodeGraphState> {
   override onUpdate = () => {
     if (this.uuid !== this.graph.id) return;
 
-    if (this.codeGraphStore.state.autosort && this.nodes.length > 0 && this.connections.length > 0) this.sortNodes();
+    if (this.state.autosort && this.nodes.length > 0 && this.connections.length > 0) this.sortNodes();
 
     nextTick(() => {
       this.codeNodes.forEach((node: AbstractCodeNode) => {

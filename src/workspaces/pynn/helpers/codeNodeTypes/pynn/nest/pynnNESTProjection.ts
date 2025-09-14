@@ -1,7 +1,7 @@
 // pynnNESTProjection.ts
 
 import { SelectInterface } from "baklavajs";
-import { NodeInputInterface, defineCodeNode, formatInterfaceLabels } from "@/codeGraph";
+import { NodeInputInterface, defineCodeNode, formatLabels } from "@/codeGraph";
 
 export default defineCodeNode({
   type: "pyNN.nest.Projection",
@@ -15,13 +15,13 @@ export default defineCodeNode({
   },
   codeTemplate() {
     if (!this.node) return this.type;
-    const presynapticNeurons = this.node.getConnectedOutputInterfacesByInterface("presynaptic_neurons");
-    const postsynapticNeurons = this.node.getConnectedOutputInterfacesByInterface("postsynaptic_neurons");
+    const presynapticNeurons = this.node.getConnectedNodesByInterface("presynaptic_neurons");
+    const postsynapticNeurons = this.node.getConnectedNodesByInterface("postsynaptic_neurons");
     if (presynapticNeurons.length === 0 || postsynapticNeurons.length === 0) return this.type;
 
     const args: string[] = [
-      formatInterfaceLabels(presynapticNeurons).join("+") as string,
-      formatInterfaceLabels(postsynapticNeurons).join("+") as string,
+      formatLabels(presynapticNeurons).join("+") as string,
+      formatLabels(postsynapticNeurons).join("+") as string,
     ];
 
     args.push(this.node.inputs.connector.value as string);
