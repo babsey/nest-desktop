@@ -1,4 +1,4 @@
-// codeGraph/plugin.ts
+// plugin.ts
 
 import "@baklavajs/themes/dist/classic.css";
 // import "@baklavajs/themes/dist/syrup-dark.css";

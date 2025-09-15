@@ -19,7 +19,7 @@ import { BaklavaEditor } from "@baklavajs/renderer-vue";
 
 import CodeGraphNode from "./CodeGraphNode.vue";
 import CodeGraphSidebar from "./CodeGraphSidebar.vue";
-import CodeNodePalette from "../codeNode/CodeNodePalette.vue";
+import CodeNodePalette from "../codeNodePalette/CodeNodePalette.vue";
 
 import type { AbstractCodeNode } from "../codeNode";
 import { ICodeGraphViewModel } from "../viewModel";
