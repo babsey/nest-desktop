@@ -8,7 +8,7 @@ version: 2
 multi-ecosystem-groups:
   python-deps:
     schedule:
-      interval: weekly
+      interval: "weekly"
 
 updates:
   # GitHub Actions
