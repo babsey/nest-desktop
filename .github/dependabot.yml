@@ -19,20 +19,19 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 1
     groups:
-      actions-deps:
-        # Low risk - merge without much review
-        minor-and-patch:
-          patterns:
-            - "*"
-          update-types:
-            - "minor"
-            - "patch"
-        # Higher risk - review more carefully
-        major:
-          patterns:
-            - "*"
-          update-types:
-            - "major"
+      # Low risk - merge without much review
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Higher risk - review more carefully
+      major:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
 
   # Node dependencies
   - package-ecosystem: "npm"
@@ -41,19 +40,19 @@ updates:
     schedule:
       interval: "daily"
     groups:
-        # Low risk - merge without much review
-        minor-and-patch:
-          patterns:
-            - "*"
-          update-types:
-            - "minor"
-            - "patch"
-        # Higher risk - review more carefully
-        major:
-          patterns:
-            - "*"
-          update-types:
-            - "major"
+      # Low risk - merge without much review
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Higher risk - review more carefully
+      major:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
 
   # Pre-commit hooks
   - package-ecosystem: "pre-commit"
@@ -63,20 +62,19 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 1
     groups:
-      pre-commit-hooks:
-        # Low risk - merge without much review
-        minor-and-patch:
-          patterns:
-            - "*"
-          update-types:
-            - "minor"
-            - "patch"
-        # Higher risk - review more carefully
-        major:
-          patterns:
-            - "*"
-          update-types:
-            - "major"
+      # Low risk - merge without much review
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Higher risk - review more carefully
+      major:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
 
   # Python dependencies
   - package-ecosystem: "pip"
