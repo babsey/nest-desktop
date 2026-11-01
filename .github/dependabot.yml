@@ -20,7 +20,19 @@ updates:
     open-pull-requests-limit: 1
     groups:
       actions-deps:
-        patterns: ["*"]
+        # Low risk - merge without much review
+        minor-and-patch:
+          patterns:
+            - "*"
+          update-types:
+            - "minor"
+            - "patch"
+        # Higher risk - review more carefully
+        major:
+          patterns:
+            - "*"
+          update-types:
+            - "major"
 
   # Node dependencies
   - package-ecosystem: "npm"
@@ -29,8 +41,19 @@ updates:
     schedule:
       interval: "daily"
     groups:
-      patch-npm-deps:
-        update-types: ["patch"]
+        # Low risk - merge without much review
+        minor-and-patch:
+          patterns:
+            - "*"
+          update-types:
+            - "minor"
+            - "patch"
+        # Higher risk - review more carefully
+        major:
+          patterns:
+            - "*"
+          update-types:
+            - "major"
 
   # Pre-commit hooks
   - package-ecosystem: "pre-commit"
@@ -41,20 +64,30 @@ updates:
     open-pull-requests-limit: 1
     groups:
       pre-commit-hooks:
-        patterns: ["*"]
+        # Low risk - merge without much review
+        minor-and-patch:
+          patterns:
+            - "*"
+          update-types:
+            - "minor"
+            - "patch"
+        # Higher risk - review more carefully
+        major:
+          patterns:
+            - "*"
+          update-types:
+            - "major"
 
   # Python dependencies
   - package-ecosystem: "pip"
     # Look for "pyproject.toml" in the `root` directory
     directory: "/"
-    schedule:
-      interval: "weekly"
+    patterns: ["*"]
     multi-ecosystem-group: python-deps
 
   # UV dependencies
   - package-ecosystem: "uv"
     # Look for "uv.lock" in the `root` directory
     directory: "/"
-    schedule:
-      interval: "weekly"
+    patterns: ["*"]
     multi-ecosystem-group: python-deps
