@@ -6,9 +6,10 @@
 version: 2
 
 multi-ecosystem-groups:
-  python-deps:
+  python:
     schedule:
       interval: "weekly"
+  open-pull-requests-limit: 3
 
 updates:
   # GitHub Actions
@@ -48,12 +49,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-      # # Higher risk - review more carefully
-      # major-npm:
-      #   patterns:
-      #     - "*"
-      #   update-types:
-      #     - "major"
 
   # Pre-commit hooks
   - package-ecosystem: "pre-commit"
@@ -70,23 +65,33 @@ updates:
         update-types:
           - "minor"
           - "patch"
-      # # Higher risk - review more carefully
-      # major-pre-commit:
-      #   patterns:
-      #     - "*"
-      #   update-types:
-      #     - "major"
 
   # Python dependencies
   - package-ecosystem: "pip"
+    multi-ecosystem-group: python
     # Look for "pyproject.toml" in the `root` directory
     directory: "/"
     patterns: ["*"]
-    multi-ecosystem-group: python-deps
+    groups:
+      # Low risk - merge without much review
+      minor-and-patch-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   # UV dependencies
   - package-ecosystem: "uv"
+    multi-ecosystem-group: python
     # Look for "uv.lock" in the `root` directory
     directory: "/"
     patterns: ["*"]
-    multi-ecosystem-group: python-deps
+    groups:
+      # Low risk - merge without much review
+      minor-and-patch-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
