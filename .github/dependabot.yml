@@ -17,21 +17,21 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 3
     groups:
       # Low risk - merge without much review
-      minor-and-patch:
+      minor-and-patch-actions:
         patterns:
           - "*"
         update-types:
           - "minor"
           - "patch"
-      # Higher risk - review more carefully
-      major:
-        patterns:
-          - "*"
-        update-types:
-          - "major"
+      # # Higher risk - review more carefully
+      # major-actions:
+      #   patterns:
+      #     - "*"
+      #   update-types:
+      #     - "major"
 
   # Node dependencies
   - package-ecosystem: "npm"
@@ -39,20 +39,21 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 3
     groups:
       # Low risk - merge without much review
-      minor-and-patch:
+      minor-and-patch-npm:
         patterns:
           - "*"
         update-types:
           - "minor"
           - "patch"
-      # Higher risk - review more carefully
-      major:
-        patterns:
-          - "*"
-        update-types:
-          - "major"
+      # # Higher risk - review more carefully
+      # major-npm:
+      #   patterns:
+      #     - "*"
+      #   update-types:
+      #     - "major"
 
   # Pre-commit hooks
   - package-ecosystem: "pre-commit"
@@ -60,21 +61,21 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 3
     groups:
       # Low risk - merge without much review
-      minor-and-patch:
+      minor-and-patch-pre-commit:
         patterns:
           - "*"
         update-types:
           - "minor"
           - "patch"
-      # Higher risk - review more carefully
-      major:
-        patterns:
-          - "*"
-        update-types:
-          - "major"
+      # # Higher risk - review more carefully
+      # major-pre-commit:
+      #   patterns:
+      #     - "*"
+      #   update-types:
+      #     - "major"
 
   # Python dependencies
   - package-ecosystem: "pip"
